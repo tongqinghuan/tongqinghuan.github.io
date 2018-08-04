@@ -15,7 +15,7 @@
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="什么是java反射机制？反射这个概念用在生物学中是指在中枢神经系统的参与下，人的机体对外界环境刺激作出的规律性的反应。那么反射在java中赋予了新的含义，即程序在运行时可以动态加载编译期完全未知的类，并动态获取整个类的完整结构，从而达到运行时去动态检测类的状态并修改类的结构的目的。 从具体实现的角度来说：通过Class类，在程序运行中，可以动态获取编译期未知的类的成员变量，动态的调用类中任意的方法">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-08-04T10:51:36.632Z">
+<meta property="og:updated_time" content="2018-08-04T15:45:57.098Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="java反射机制的基本概念">
 <meta name="twitter:description" content="什么是java反射机制？反射这个概念用在生物学中是指在中枢神经系统的参与下，人的机体对外界环境刺激作出的规律性的反应。那么反射在java中赋予了新的含义，即程序在运行时可以动态加载编译期完全未知的类，并动态获取整个类的完整结构，从而达到运行时去动态检测类的状态并修改类的结构的目的。 从具体实现的角度来说：通过Class类，在程序运行中，可以动态获取编译期未知的类的成员变量，动态的调用类中任意的方法">
@@ -200,17 +200,21 @@
 <li>Array类 提供动态生成和访问java数组的方法</li>
 <li>Constructor类 提供一个类的构造函数的信息，同时提供访问一个类的构造函数的接口</li>
 <li>Filed类 提供一个类的成员变量的信息以及访问类成员变量的接口</li>
-<li>Method类 提供一个类的方法的信息以及访问类中的方法的接口</li>
+<li>Method类 提供一个类的方法的信息以及访问类中的方法的接口<br>Method.invoke()</li>
 <li>Modifiler类 提供一个类static方法和常量的信息</li>
-<li>Proxy 提供动态生成代理类和类实例的静态方法</li>
+<li>Proxy 提供动态生成代理类和类实例的静态方法   </li>
 </ol>
 <p>综上Reflect提供的API，总结出java反射机制提供的功能：</p>
 <ol>
-<li>在运行时判断对象所属的类型</li>
-<li>在运行时获取类的完整信息，包括成员变量和方法，常量和静态方法</li>
-<li>在运行时动态创建对象</li>
-<li>在运行时调用类中任意的方法</li>
-<li>创建动态代理实例</li>
+<li>在运行时判断对象所属的类型        object.getClass==Onject.class</li>
+<li>在运行时获取类的完整信息，包括成员变量和方法，常量和静态方法 </li>
+<li>在运行时动态创建对象             class.newInstance()</li>
+<li>在运行时调用类中任意的方法<br>Method[] methods=getDeclaredMethods()&amp;&amp;<br>method.invoke(Object,parameters[])</li>
+<li>创建动态代理实例  Proxy.newProxyInstance(classloader, interfaces, InvocationHandler)</li>
+</ol>
+<h2 id="java反射机制的弊端？"><a href="#java反射机制的弊端？" class="headerlink" title="java反射机制的弊端？"></a>java反射机制的弊端？</h2><ol>
+<li>java反射机制核心思想是在程序运行时动态加载编译期完全未知的类，那么必然会损失程序的性能，对于性能要求高的程序尽量慎重使用java反射</li>
+<li>java反射机制将整个类的结构完全暴漏给了用户，破坏了类的封装性，有可能会造成安全威胁，对于安全性要求高的系统要尽量避免java反射</li>
 </ol>
 
       
