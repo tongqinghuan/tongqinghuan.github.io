@@ -152,6 +152,80 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-java反射机制 - 动态代理" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/08/05/java反射机制 - 动态代理/">java反射机制-动态代理</a>
+    </h1>
+  
+
+        
+        <a href="/2018/08/05/java反射机制 - 动态代理/" class="archive-article-date">
+  	<time datetime="2018-08-04T16:19:34.755Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-08-05</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="java的设计模式-代理模式"><a href="#java的设计模式-代理模式" class="headerlink" title="java的设计模式-代理模式"></a>java的设计模式-代理模式</h2><p>代理模式中存在两种对象：代理类 和委托类</p>
+<p>代理模式的特点：代理类和委托类都实现相同的接口，委托类委托代理类实现一些与核心业务无关的通用业务逻辑，而自己专注处理核心的业务逻辑。例如演艺圈，艺人们都需要经纪人去代替他们和第三方洽谈档期等等事宜，而他们则专注做好表演的工作。那么经纪人就起着代理的作用。代理模式结构如图（图片来自大话设计模式）：<img src="https://i.imgur.com/kl0ztCD.jpg" alt=""></p>
+<h2 id="静态代理模式"><a href="#静态代理模式" class="headerlink" title="静态代理模式"></a>静态代理模式</h2><p>静态代理模式中的代理类是由程序员创建或者工具创建，在程序编译期间，接口、代理类和被代理类就是确定的。类比明星，静态代理模式下每位艺人都会安排固定的经纪人，不管艺人的档期的忙或闲，某个经纪人就只负责代理特定的艺人的事务。</p>
+<p>共有的接口</p>
+<figure class="highlight plain"><figcaption><span>interface Person&#123;</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">	public void sing(String name);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>委托类：</p>
+<p>`public class Star implements Person{</p>
+<pre><code>public void sing(String name) {
+    System.out.println(&quot;正在演唱：&quot;+name);
+}
+</code></pre><p>}`  </p>
+<p>代理类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">public class Proxy implements Person&#123;</span><br><span class="line"></span><br><span class="line">	Star star;</span><br><span class="line">	public Proxy(Person person) &#123;</span><br><span class="line">		if(person.getClass()==Star.class) &#123;</span><br><span class="line">			this.star=person;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public void sing(String name) &#123;</span><br><span class="line">		System.out.println(&quot;通知明星演唱&quot;);</span><br><span class="line">		star.sing(name);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/08/05/java反射机制 - 动态代理/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-java反射机制" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
