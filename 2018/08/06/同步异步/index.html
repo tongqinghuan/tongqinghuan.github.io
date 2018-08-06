@@ -6,19 +6,26 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Hexo</title>
+  <title>同步异步阻塞非阻塞 | Hexo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="title: 同步异步阻塞非阻塞同步异步从分布式系统的角度分析，同步异步关注的是分布式消息通信系统，所谓同步即消息的发送者发送出消息后，需要等待消息处理后的返回结果，此时发送者发送出消息后获得的可能是空值，一部分结果，或者全部结果（取决于接收方消息处理系统的能力）；异步即消息的发送者发送完消息后，就立即返回，一定不会得到结果，而消息的处理正确性则由消息接收方去保证。可以看出同步异步关心的点在于如">
+  <meta name="description" content="同步异步从分布式系统的角度分析，同步异步关注的是分布式消息通信系统，所谓同步即消息的发送者发送出消息后，需要等待消息处理后的返回结果，此时发送者发送出消息后获得的可能是空值，一部分结果，或者全部结果（取决于接收方消息处理系统的能力）；异步即消息的发送者发送完消息后，就立即返回，一定不会得到结果，而消息的处理正确性则由消息接收方去保证。可以看出同步异步关心的点在于如何去协调发送方和接收方。 从单机系">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hexo">
+<meta property="og:title" content="同步异步阻塞非阻塞">
 <meta property="og:url" content="http://yoursite.com/2018/08/06/同步异步/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="title: 同步异步阻塞非阻塞同步异步从分布式系统的角度分析，同步异步关注的是分布式消息通信系统，所谓同步即消息的发送者发送出消息后，需要等待消息处理后的返回结果，此时发送者发送出消息后获得的可能是空值，一部分结果，或者全部结果（取决于接收方消息处理系统的能力）；异步即消息的发送者发送完消息后，就立即返回，一定不会得到结果，而消息的处理正确性则由消息接收方去保证。可以看出同步异步关心的点在于如">
+<meta property="og:description" content="同步异步从分布式系统的角度分析，同步异步关注的是分布式消息通信系统，所谓同步即消息的发送者发送出消息后，需要等待消息处理后的返回结果，此时发送者发送出消息后获得的可能是空值，一部分结果，或者全部结果（取决于接收方消息处理系统的能力）；异步即消息的发送者发送完消息后，就立即返回，一定不会得到结果，而消息的处理正确性则由消息接收方去保证。可以看出同步异步关心的点在于如何去协调发送方和接收方。 从单机系">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-08-06T12:13:32.504Z">
+<meta property="og:image" content="https://i.imgur.com/WpWmCfM.png">
+<meta property="og:image" content="https://i.imgur.com/M6BvV5e.png">
+<meta property="og:image" content="https://i.imgur.com/tAO3ZYr.png">
+<meta property="og:image" content="https://i.imgur.com/dhzZ5nJ.png">
+<meta property="og:image" content="https://i.imgur.com/EaDfHnU.png">
+<meta property="og:image" content="https://i.imgur.com/JODswlb.png">
+<meta property="og:updated_time" content="2018-08-06T12:41:28.207Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hexo">
-<meta name="twitter:description" content="title: 同步异步阻塞非阻塞同步异步从分布式系统的角度分析，同步异步关注的是分布式消息通信系统，所谓同步即消息的发送者发送出消息后，需要等待消息处理后的返回结果，此时发送者发送出消息后获得的可能是空值，一部分结果，或者全部结果（取决于接收方消息处理系统的能力）；异步即消息的发送者发送完消息后，就立即返回，一定不会得到结果，而消息的处理正确性则由消息接收方去保证。可以看出同步异步关心的点在于如">
+<meta name="twitter:title" content="同步异步阻塞非阻塞">
+<meta name="twitter:description" content="同步异步从分布式系统的角度分析，同步异步关注的是分布式消息通信系统，所谓同步即消息的发送者发送出消息后，需要等待消息处理后的返回结果，此时发送者发送出消息后获得的可能是空值，一部分结果，或者全部结果（取决于接收方消息处理系统的能力）；异步即消息的发送者发送完消息后，就立即返回，一定不会得到结果，而消息的处理正确性则由消息接收方去保证。可以看出同步异步关心的点在于如何去协调发送方和接收方。 从单机系">
+<meta name="twitter:image" content="https://i.imgur.com/WpWmCfM.png">
   
     <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -157,13 +164,56 @@
             <article id="post-同步异步" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      同步异步阻塞非阻塞
+    </h1>
+  
+
+        
+        <a href="/2018/08/06/同步异步/" class="archive-article-date">
+  	<time datetime="2018-08-06T03:43:06.809Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-08-06</time>
+</a>
+        
+      </header>
+    
     <div class="article-entry" itemprop="articleBody">
       
-        <hr>
-<h1 id="title-同步异步阻塞非阻塞"><a href="#title-同步异步阻塞非阻塞" class="headerlink" title="title: 同步异步阻塞非阻塞"></a>title: 同步异步阻塞非阻塞</h1><h1 id="同步异步"><a href="#同步异步" class="headerlink" title="同步异步"></a>同步异步</h1><p>从分布式系统的角度分析，同步异步关注的是分布式消息通信系统，所谓同步即消息的发送者发送出消息后，需要等待消息处理后的返回结果，此时发送者发送出消息后获得的可能是空值，一部分结果，或者全部结果（取决于接收方消息处理系统的能力）；异步即消息的发送者发送完消息后，就立即返回，一定不会得到结果，而消息的处理正确性则由消息接收方去保证。可以看出同步异步关心的点在于如何去协调发送方和接收方。</p>
+        <h2 id="同步异步"><a href="#同步异步" class="headerlink" title="同步异步"></a>同步异步</h2><p>从分布式系统的角度分析，同步异步关注的是分布式消息通信系统，所谓同步即消息的发送者发送出消息后，需要等待消息处理后的返回结果，此时发送者发送出消息后获得的可能是空值，一部分结果，或者全部结果（取决于接收方消息处理系统的能力）；异步即消息的发送者发送完消息后，就立即返回，一定不会得到结果，而消息的处理正确性则由消息接收方去保证。可以看出同步异步关心的点在于如何去协调发送方和接收方。</p>
 <p>从单机系统来说，同步异步关注的就是调用方和服务方是如何协调的。所谓同步就是调用方发出调用请求后，需要主动等待调用结果；而异步方式则是发出调用请求后，立即返回，接着干别的任务，而由别的线程去处理请求，请求处理结束后，将结果通知当前线程。</p>
 <p>综上同步异步关注的一定是通信中的双方或者调用方和服务方。</p>
-<h1 id="阻塞非阻塞"><a href="#阻塞非阻塞" class="headerlink" title="阻塞非阻塞"></a>阻塞非阻塞</h1><p>阻塞和非阻塞关注的是程序发出调用后，等待返回结果的一种状态，可以阻塞，将当前线程挂起，从运行状态切换到阻塞状态，也可以轮询等待返回结果，让线程一直处于运行状态。因此，只有在同步的模式下才谈论阻塞和非阻塞。可以看出阻塞和非阻塞关注的仅仅是发起调用的一方，而与被调用者无关。</p>
+<h2 id="阻塞非阻塞"><a href="#阻塞非阻塞" class="headerlink" title="阻塞非阻塞"></a>阻塞非阻塞</h2><p>阻塞和非阻塞关注的是程序发出调用后，等待返回结果的一种状态，可以阻塞，将当前线程挂起，从运行状态切换到阻塞状态，也可以轮询等待返回结果，让线程一直处于运行状态。因此，只有在同步的模式下才谈论阻塞和非阻塞。可以看出阻塞和非阻塞关注的仅仅是发起调用的一方，而与被调用者无关。</p>
+<p>同步异步阻塞和非阻塞用在很多场景下，因此在讨论的时候应该给出合理的上下文环境。</p>
+<h2 id="从五种上下文环境来谈论同步异步阻塞和非阻塞"><a href="#从五种上下文环境来谈论同步异步阻塞和非阻塞" class="headerlink" title="从五种上下文环境来谈论同步异步阻塞和非阻塞"></a>从五种上下文环境来谈论同步异步阻塞和非阻塞</h2><p>1、CPU进行IO</p>
+<p>CPU进行IO时，使用异步非阻塞方式进行IO，即发出IO请求后，并不等待IO完成，而是继续执行后续的指令，IO操作和CPU操作并行执行，IO操作完成后，通过中断方式通知CPU。</p>
+<p>2、消息通信系统（网络的同步与异步）</p>
+<p>一般采用异步的方式，即消息发送者发送完消息就立即返回，消息处理和结果的正确性由消息的接收方去保证。这样可以达到系统高度解耦，同时进行流量肖锋。例如天猫淘宝的消息系统，是如何可以抗住双十一的高峰流量。</p>
+<p>3、数据刷盘</p>
+<p>同步刷盘：当消息写入内存后，并且写入磁盘后，在将结果返回给消息的发送方<br>异步刷盘：当消息写入内存后，立即返回，告诉消息的发送者，消息已经发送成功，然后由其他的线程将消息写入磁盘，并且保证写入磁盘的正确性。</p>
+<p>4、IO</p>
+<p>网络IO的本质是对Socket的读取，Socket在操作系统中被抽象为流，IO操作可以理解为对流的操作。从socket流的角度来看IO，可以分为两个阶段：</p>
+<ol>
+<li>等待网络上的数据分组到达，复制到内核的某个缓冲区</li>
+<li>把数据从内核缓冲区复制到用户进程缓冲区</li>
+</ol>
+<p>Unix网络编程中给出了五种IO模型<br><img src="https://i.imgur.com/WpWmCfM.png" alt=""></p>
+<p>阻塞IO模型：<br>这是常用的IO模型，默认情况下所有的套接字都是阻塞的。<br><img src="https://i.imgur.com/M6BvV5e.png" alt=""><br>recvfrom是系统调用，在应用进行发生系统调用到将数据从内核缓冲区复制到用户进程缓冲区都是阻塞的。</p>
+<p>优点：编程简单，调试简单，单次响应时间低</p>
+<p>缺点：需要等待</p>
+<p>非阻塞模型：<br>用户进程轮询内核，查看内核的数据报文是否准备好。<br><img src="https://i.imgur.com/tAO3ZYr.png" alt=""><br>优点：用户进程轮询期间可以干别的任务，不用仅仅处于等待状态，即当前进程可以同时处理多个任务。<br>系统总的吞吐量增大。</p>
+<p>缺点：导致IO任务完成的响应时间增大，因为在轮询期间进程会处理别的任务，有可能在处理别的任务期间，内核就已经将数据准备好。</p>
+<p>IO多路复用（select poll epoll）</p>
+<p>调用select，让其阻塞在两个系统调用（select询问数据是否准备好并且直到数据准备才返回，recvfrom 是否把数据全部复制到用户进程缓冲区，在未完成复制之前，进程一直阻塞在recvfrom函数上 ）中的某一个。<br><img src="https://i.imgur.com/dhzZ5nJ.png" alt=""></p>
+<p>对比之前的同步非阻塞IO，Select可以同时轮询多个socket的状态，只要有socket处于可读状态，select就可以返回。然后进程在调用recvfrom将数据从内核拷贝到用户缓冲区。当然这个过程进程也处于阻塞的状态。</p>
+<p>优点：能同时处理多个连接，不用为每个新接入的连接都分配一个线程去处理。节省系统开销。‘</p>
+<p>缺点：当连接的数目不多时，可能性能比不上多线程+阻塞IO。</p>
+<p>信号驱动IO<br><img src="https://i.imgur.com/EaDfHnU.png" alt=""></p>
+<p>异步IO</p>
+<p>发起系统调用，立即返回，数据准备和数据复制都由内核完成，然后通知用户进程。<br><img src="https://i.imgur.com/JODswlb.png" alt=""></p>
+<p>5、程序员感知到的异步同步和阻塞和非阻塞</p>
+<p>底层接口使用会比较复杂，因此各种对底层接口封装的类库各式各样，可以选择同步的方式或者异步的方式来实现。比如node.js在程序员感知层次提供了异步非阻塞的API。</p>
 
       
 
