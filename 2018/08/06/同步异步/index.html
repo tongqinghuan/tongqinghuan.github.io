@@ -6,19 +6,19 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>内核空间与用户空间 | Hexo</title>
+  <title>Hexo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="内核空间与用户空间的概念：内核空间与用户空间是操作系统对物理内存在逻辑上的划分。 内核空间：存放内核代码和数据，独立于普通应用程序空间。运行在较高的特权级别上，拥有访问所有硬件设备的权限。 用户空间：存放用户进程代码和数据，只能访问到部分系统资源，不能直接访问内核空间以及硬件设备。 内核态和用户态的概念：描述的是操作系统运行的两个不同级别。 内核态：当一个进程因为触发软中断陷入内核空间执行时，那么">
+  <meta name="description" content="title: 同步异步阻塞非阻塞同步异步从分布式系统的角度分析，同步异步关注的是分布式消息通信系统，所谓同步即消息的发送者发送出消息后，需要等待消息处理后的返回结果，此时发送者发送出消息后获得的可能是空值，一部分结果，或者全部结果（取决于接收方消息处理系统的能力）；异步即消息的发送者发送完消息后，就立即返回，一定不会得到结果，而消息的处理正确性则由消息接收方去保证。可以看出同步异步关心的点在于如">
 <meta property="og:type" content="article">
-<meta property="og:title" content="内核空间与用户空间">
-<meta property="og:url" content="http://yoursite.com/2018/08/06/内核空间与用户空间/index.html">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="http://yoursite.com/2018/08/06/同步异步/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="内核空间与用户空间的概念：内核空间与用户空间是操作系统对物理内存在逻辑上的划分。 内核空间：存放内核代码和数据，独立于普通应用程序空间。运行在较高的特权级别上，拥有访问所有硬件设备的权限。 用户空间：存放用户进程代码和数据，只能访问到部分系统资源，不能直接访问内核空间以及硬件设备。 内核态和用户态的概念：描述的是操作系统运行的两个不同级别。 内核态：当一个进程因为触发软中断陷入内核空间执行时，那么">
+<meta property="og:description" content="title: 同步异步阻塞非阻塞同步异步从分布式系统的角度分析，同步异步关注的是分布式消息通信系统，所谓同步即消息的发送者发送出消息后，需要等待消息处理后的返回结果，此时发送者发送出消息后获得的可能是空值，一部分结果，或者全部结果（取决于接收方消息处理系统的能力）；异步即消息的发送者发送完消息后，就立即返回，一定不会得到结果，而消息的处理正确性则由消息接收方去保证。可以看出同步异步关心的点在于如">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-08-06T03:43:00.234Z">
+<meta property="og:updated_time" content="2018-08-06T12:13:32.504Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="内核空间与用户空间">
-<meta name="twitter:description" content="内核空间与用户空间的概念：内核空间与用户空间是操作系统对物理内存在逻辑上的划分。 内核空间：存放内核代码和数据，独立于普通应用程序空间。运行在较高的特权级别上，拥有访问所有硬件设备的权限。 用户空间：存放用户进程代码和数据，只能访问到部分系统资源，不能直接访问内核空间以及硬件设备。 内核态和用户态的概念：描述的是操作系统运行的两个不同级别。 内核态：当一个进程因为触发软中断陷入内核空间执行时，那么">
+<meta name="twitter:title" content="Hexo">
+<meta name="twitter:description" content="title: 同步异步阻塞非阻塞同步异步从分布式系统的角度分析，同步异步关注的是分布式消息通信系统，所谓同步即消息的发送者发送出消息后，需要等待消息处理后的返回结果，此时发送者发送出消息后获得的可能是空值，一部分结果，或者全部结果（取决于接收方消息处理系统的能力）；异步即消息的发送者发送完消息后，就立即返回，一定不会得到结果，而消息的处理正确性则由消息接收方去保证。可以看出同步异步关心的点在于如">
   
     <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -154,32 +154,16 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-内核空间与用户空间" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-同步异步" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 class="article-title" itemprop="name">
-      内核空间与用户空间
-    </h1>
-  
-
-        
-        <a href="/2018/08/06/内核空间与用户空间/" class="archive-article-date">
-  	<time datetime="2018-08-06T02:44:28.406Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-08-06</time>
-</a>
-        
-      </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="内核空间与用户空间的概念："><a href="#内核空间与用户空间的概念：" class="headerlink" title="内核空间与用户空间的概念："></a>内核空间与用户空间的概念：</h2><p>内核空间与用户空间是操作系统对物理内存在逻辑上的划分。</p>
-<p>内核空间：存放内核代码和数据，独立于普通应用程序空间。运行在较高的特权级别上，拥有访问所有硬件设备的权限。</p>
-<p>用户空间：存放用户进程代码和数据，只能访问到部分系统资源，不能直接访问内核空间以及硬件设备。</p>
-<h2 id="内核态和用户态的概念："><a href="#内核态和用户态的概念：" class="headerlink" title="内核态和用户态的概念："></a>内核态和用户态的概念：</h2><p>描述的是操作系统运行的两个不同级别。</p>
-<p>内核态：当一个进程因为触发软中断陷入内核空间执行时，那么此时进程处于内核态；（内核栈）</p>
-<p>用户态：当一个进程在执行自己的代码时，称之处于用户态。（用户栈）</p>
+        <hr>
+<h1 id="title-同步异步阻塞非阻塞"><a href="#title-同步异步阻塞非阻塞" class="headerlink" title="title: 同步异步阻塞非阻塞"></a>title: 同步异步阻塞非阻塞</h1><h1 id="同步异步"><a href="#同步异步" class="headerlink" title="同步异步"></a>同步异步</h1><p>从分布式系统的角度分析，同步异步关注的是分布式消息通信系统，所谓同步即消息的发送者发送出消息后，需要等待消息处理后的返回结果，此时发送者发送出消息后获得的可能是空值，一部分结果，或者全部结果（取决于接收方消息处理系统的能力）；异步即消息的发送者发送完消息后，就立即返回，一定不会得到结果，而消息的处理正确性则由消息接收方去保证。可以看出同步异步关心的点在于如何去协调发送方和接收方。</p>
+<p>从单机系统来说，同步异步关注的就是调用方和服务方是如何协调的。所谓同步就是调用方发出调用请求后，需要主动等待调用结果；而异步方式则是发出调用请求后，立即返回，接着干别的任务，而由别的线程去处理请求，请求处理结束后，将结果通知当前线程。</p>
+<p>综上同步异步关注的一定是通信中的双方或者调用方和服务方。</p>
+<h1 id="阻塞非阻塞"><a href="#阻塞非阻塞" class="headerlink" title="阻塞非阻塞"></a>阻塞非阻塞</h1><p>阻塞和非阻塞关注的是程序发出调用后，等待返回结果的一种状态，可以阻塞，将当前线程挂起，从运行状态切换到阻塞状态，也可以轮询等待返回结果，让线程一直处于运行状态。因此，只有在同步的模式下才谈论阻塞和非阻塞。可以看出阻塞和非阻塞关注的仅仅是发起调用的一方，而与被调用者无关。</p>
 
       
 
@@ -259,7 +243,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2018/08/06/内核空间与用户空间/" alt="微信分享二维码">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2018/08/06/同步异步/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -273,18 +257,9 @@
   
 <nav id="article-nav">
   
-    <a href="/2018/08/06/同步异步/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          (no title)
-        
-      </div>
-    </a>
   
-  
-    <a href="/2018/08/05/java反射机制 - 动态代理/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">java反射机制-动态代理</div>
+    <a href="/2018/08/06/内核空间与用户空间/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">内核空间与用户空间</div>
       <i class="icon-circle-right"></i>
     </a>
   
