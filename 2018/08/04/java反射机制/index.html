@@ -15,7 +15,7 @@
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="什么是java反射机制？反射这个概念用在生物学中是指在中枢神经系统的参与下，人的机体对外界环境刺激作出的规律性的反应。那么反射在java中赋予了新的含义，即程序在运行时可以动态加载编译期完全未知的类，并动态获取整个类的完整结构，从而达到运行时去动态检测类的状态并修改类的结构的目的。 从具体实现的角度来说：通过Class类，在程序运行中，可以动态获取编译期未知的类的成员变量，动态的调用类中任意的方法">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-08-04T15:45:57.098Z">
+<meta property="og:updated_time" content="2018-08-05T05:34:14.242Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="java反射机制的基本概念">
 <meta name="twitter:description" content="什么是java反射机制？反射这个概念用在生物学中是指在中枢神经系统的参与下，人的机体对外界环境刺激作出的规律性的反应。那么反射在java中赋予了新的含义，即程序在运行时可以动态加载编译期完全未知的类，并动态获取整个类的完整结构，从而达到运行时去动态检测类的状态并修改类的结构的目的。 从具体实现的角度来说：通过Class类，在程序运行中，可以动态获取编译期未知的类的成员变量，动态的调用类中任意的方法">
@@ -177,7 +177,7 @@
         <h2 id="什么是java反射机制？"><a href="#什么是java反射机制？" class="headerlink" title="什么是java反射机制？"></a>什么是java反射机制？</h2><p>反射这个概念用在生物学中是指在中枢神经系统的参与下，人的机体对外界环境刺激作出的规律性的反应。那么反射在java中赋予了新的含义，即程序在运行时可以动态加载编译期完全未知的类，并动态获取整个类的完整结构，从而达到运行时去动态检测类的状态并修改类的结构的目的。</p>
 <p>从具体实现的角度来说：通过Class类，在程序运行中，可以动态获取编译期未知的类的成员变量，动态的调用类中任意的方法，获取当前对象所属的类，这种动态获取类自身的信息并进行动态改变类结构的功能就被称为java的反射机制。</p>
 <h2 id="java反射机制提供了哪些功能？"><a href="#java反射机制提供了哪些功能？" class="headerlink" title="java反射机制提供了哪些功能？"></a>java反射机制提供了哪些功能？</h2><p>与java发射相关的API在包java.lang.raflect中。</p>
-<p>java.lang.reflect API中最核心的类是Class 类（也可以称之为反射类，java就是通过这个反射类实现了java的反射的功能）。获取Class类的对象有三种方式：</p>
+<p>java反射机制最核心的类是Class 类（也可以称之为反射类，java就是通过这个反射类实现了java的反射的功能）。获取Class类的对象有三种方式：</p>
 <ol>
 <li>.class 每个类都隐含一个Class对象<br>Class<string> class=String.class  </string></li>
 <li>通过getClass方法<br>String str=”java reflect”<br>Class<string> class=str.getClass();</string></li>
@@ -206,15 +206,11 @@
 </ol>
 <p>综上Reflect提供的API，总结出java反射机制提供的功能：</p>
 <ol>
-<li>在运行时判断对象所属的类型        object.getClass==Onject.class</li>
+<li>在运行时判断对象所属的类型        object.getClass==Object.class</li>
 <li>在运行时获取类的完整信息，包括成员变量和方法，常量和静态方法 </li>
 <li>在运行时动态创建对象             class.newInstance()</li>
 <li>在运行时调用类中任意的方法<br>Method[] methods=getDeclaredMethods()&amp;&amp;<br>method.invoke(Object,parameters[])</li>
 <li>创建动态代理实例  Proxy.newProxyInstance(classloader, interfaces, InvocationHandler)</li>
-</ol>
-<h2 id="java反射机制的弊端？"><a href="#java反射机制的弊端？" class="headerlink" title="java反射机制的弊端？"></a>java反射机制的弊端？</h2><ol>
-<li>java反射机制核心思想是在程序运行时动态加载编译期完全未知的类，那么必然会损失程序的性能，对于性能要求高的程序尽量慎重使用java反射</li>
-<li>java反射机制将整个类的结构完全暴漏给了用户，破坏了类的封装性，有可能会造成安全威胁，对于安全性要求高的系统要尽量避免java反射</li>
 </ol>
 
       

@@ -6,21 +6,19 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>java反射机制-动态代理 | Hexo</title>
+  <title>内核空间与用户空间 | Hexo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="java的设计模式-代理模式代理模式中存在两种对象：代理类 和委托类 代理模式的特点：代理类和委托类都实现相同的接口，委托类委托代理类实现一些与核心业务无关的通用业务逻辑，而自己专注处理核心的业务逻辑。例如演艺圈，艺人们都需要经纪人去代替他们和第三方洽谈档期等等事宜，而他们则专注做好表演的工作。那么经纪人就起着代理的作用。代理模式结构如图（图片来自大话设计模式）： 静态代理模式静态代理模式中的代理">
+  <meta name="description" content="内核空间与用户空间的概念：内核空间与用户空间是操作系统对物理内存在逻辑上的划分。 内核空间：存放内核代码和数据，独立于普通应用程序空间。运行在较高的特权级别上，拥有访问所有硬件设备的权限。 用户空间：存放用户进程代码和数据，只能访问到部分系统资源，不能直接访问内核空间以及硬件设备。 内核态和用户态的概念：描述的是操作系统运行的两个不同级别。 内核态：当一个进程因为触发软中断陷入内核空间执行时，那么">
 <meta property="og:type" content="article">
-<meta property="og:title" content="java反射机制-动态代理">
-<meta property="og:url" content="http://yoursite.com/2018/08/05/java反射机制 - 动态代理/index.html">
+<meta property="og:title" content="内核空间与用户空间">
+<meta property="og:url" content="http://yoursite.com/2018/08/06/内核空间与用户空间/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="java的设计模式-代理模式代理模式中存在两种对象：代理类 和委托类 代理模式的特点：代理类和委托类都实现相同的接口，委托类委托代理类实现一些与核心业务无关的通用业务逻辑，而自己专注处理核心的业务逻辑。例如演艺圈，艺人们都需要经纪人去代替他们和第三方洽谈档期等等事宜，而他们则专注做好表演的工作。那么经纪人就起着代理的作用。代理模式结构如图（图片来自大话设计模式）： 静态代理模式静态代理模式中的代理">
+<meta property="og:description" content="内核空间与用户空间的概念：内核空间与用户空间是操作系统对物理内存在逻辑上的划分。 内核空间：存放内核代码和数据，独立于普通应用程序空间。运行在较高的特权级别上，拥有访问所有硬件设备的权限。 用户空间：存放用户进程代码和数据，只能访问到部分系统资源，不能直接访问内核空间以及硬件设备。 内核态和用户态的概念：描述的是操作系统运行的两个不同级别。 内核态：当一个进程因为触发软中断陷入内核空间执行时，那么">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="https://i.imgur.com/kl0ztCD.jpg">
-<meta property="og:updated_time" content="2018-08-06T02:03:10.695Z">
+<meta property="og:updated_time" content="2018-08-06T03:43:00.234Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="java反射机制-动态代理">
-<meta name="twitter:description" content="java的设计模式-代理模式代理模式中存在两种对象：代理类 和委托类 代理模式的特点：代理类和委托类都实现相同的接口，委托类委托代理类实现一些与核心业务无关的通用业务逻辑，而自己专注处理核心的业务逻辑。例如演艺圈，艺人们都需要经纪人去代替他们和第三方洽谈档期等等事宜，而他们则专注做好表演的工作。那么经纪人就起着代理的作用。代理模式结构如图（图片来自大话设计模式）： 静态代理模式静态代理模式中的代理">
-<meta name="twitter:image" content="https://i.imgur.com/kl0ztCD.jpg">
+<meta name="twitter:title" content="内核空间与用户空间">
+<meta name="twitter:description" content="内核空间与用户空间的概念：内核空间与用户空间是操作系统对物理内存在逻辑上的划分。 内核空间：存放内核代码和数据，独立于普通应用程序空间。运行在较高的特权级别上，拥有访问所有硬件设备的权限。 用户空间：存放用户进程代码和数据，只能访问到部分系统资源，不能直接访问内核空间以及硬件设备。 内核态和用户态的概念：描述的是操作系统运行的两个不同级别。 内核态：当一个进程因为触发软中断陷入内核空间执行时，那么">
   
     <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -156,46 +154,33 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-java反射机制 - 动态代理" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-内核空间与用户空间" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      java反射机制-动态代理
+      内核空间与用户空间
     </h1>
   
 
         
-        <a href="/2018/08/05/java反射机制 - 动态代理/" class="archive-article-date">
-  	<time datetime="2018-08-04T16:19:34.755Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-08-05</time>
+        <a href="/2018/08/06/内核空间与用户空间/" class="archive-article-date">
+  	<time datetime="2018-08-06T02:44:28.406Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-08-06</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="java的设计模式-代理模式"><a href="#java的设计模式-代理模式" class="headerlink" title="java的设计模式-代理模式"></a>java的设计模式-代理模式</h2><p>代理模式中存在两种对象：代理类 和委托类</p>
-<p>代理模式的特点：代理类和委托类都实现相同的接口，委托类委托代理类实现一些与核心业务无关的通用业务逻辑，而自己专注处理核心的业务逻辑。例如演艺圈，艺人们都需要经纪人去代替他们和第三方洽谈档期等等事宜，而他们则专注做好表演的工作。那么经纪人就起着代理的作用。代理模式结构如图（图片来自大话设计模式）：<img src="https://i.imgur.com/kl0ztCD.jpg" alt=""></p>
-<h2 id="静态代理模式"><a href="#静态代理模式" class="headerlink" title="静态代理模式"></a>静态代理模式</h2><p>静态代理模式中的代理类是由程序员创建或者工具创建，在程序编译期间，接口、代理类和被代理类就是确定的。类比明星，静态代理模式下每位艺人都会安排固定的经纪人，不管艺人的档期的忙或闲，某个经纪人就只负责代理特定的艺人的事务。下面通过一个简单的静态代理的例子来描述静态代理</p>
-<p>共有的接口</p>
-<figure class="highlight plain"><figcaption><span>interface Person&#123;</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">	public void sing(String name);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>委托类：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public class Star implements Person&#123;</span><br><span class="line"></span><br><span class="line">	public void sing(String name) &#123;</span><br><span class="line">		System.out.println(&quot;正在演唱：&quot;+name);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>代理类：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">public class Proxy implements Person&#123;</span><br><span class="line"></span><br><span class="line">	Star star;</span><br><span class="line">	public Proxy(Person person) &#123;</span><br><span class="line">		if(person.getClass()==Star.class) &#123;</span><br><span class="line">			this.star=person;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public void sing(String name) &#123;</span><br><span class="line">		System.out.println(&quot;通知明星演唱&quot;);</span><br><span class="line">		star.sing(name);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>测试</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">public class StaticProxyTest&#123;</span><br><span class="line"></span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		//创建被委托对象</span><br><span class="line">		Star star=new Star();</span><br><span class="line">		//创建代理对象</span><br><span class="line">		Proxy proxy=new Proxy(star);</span><br><span class="line">		proxy.sing(&quot;同一首歌&quot;);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="动态代理"><a href="#动态代理" class="headerlink" title="动态代理"></a>动态代理</h2><p>从上述的静态代理的例子中可以得到结论：静态代理模式中的代理类在运行前必须编写好，如果需要为多个艺人代理，那就必须预先编写好所有的为每位艺人代理的代理类。这样做，成本非常高，试想一下，如果很多艺人都是三线或者四线，档期很空闲，那么他们的艺人就会无事可做，导致资源浪费。为什么不是根据当前艺人们的需求动态配置经纪人呢？因此动态代理就产生了。</p>
-<p>动态代理模式中的代理类是在程序运行期间动态生成的。类比艺人，当某个艺人需要代理事务时，从现有的代理中查询有没有合适的经纪人可以代理此艺人的当前的事务，如果没有就为该艺人配置一个新的艺人。下面举例说明：</p>
-<p>程序运行时动态生成代理对象</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">public class Proxy &#123;</span><br><span class="line"></span><br><span class="line">	//即将被代理的对象</span><br><span class="line">	Person person;</span><br><span class="line">	public Proxy(Person person)&#123;</span><br><span class="line">		this.person=person;</span><br><span class="line">	&#125;</span><br><span class="line">	//已经被代理的对象(将被代理对象和代理对象关联)</span><br><span class="line">	public Person getPersonProxy() &#123;</span><br><span class="line">		ClassLoader loader=Person.class.getClassLoader();</span><br><span class="line">		Class[] interfaces= &#123;Person.class&#125;;</span><br><span class="line">		InvocationHandler h=new InvocationHandler() &#123;</span><br><span class="line">        //proxy 代理的对象</span><br><span class="line">		//method 被代理的对象中的方法</span><br><span class="line">		//参数</span><br><span class="line">			@Override</span><br><span class="line">			public Object invoke(Object proxy, Method method, Object[] args) throws Throwable &#123;</span><br><span class="line">				System.out.println(&quot;通知明星演唱：&quot;);</span><br><span class="line">				Object o=method.invoke(person, args);</span><br><span class="line">				return o;</span><br><span class="line">			&#125;</span><br><span class="line">			</span><br><span class="line">		&#125;;</span><br><span class="line">		Person p=(Person)Proxy.newProxyInstance(loader, interfaces, h);</span><br><span class="line">		return p;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>测试</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">public class DynamicProxy&#123;</span><br><span class="line"></span><br><span class="line">	public static void mian(String[] args) &#123;</span><br><span class="line">		//获取代理类对象</span><br><span class="line">		Person p=(Person)new Proxy(new Star()).getPersonProxy();</span><br><span class="line">		p.sing(&quot;同一首歌&quot;);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>通过上述动态代理的例子发现动态代理中的代理类是在程序运行时生成。动态代理抽象了InvocationHandler接口，对代理类代理的事务方法进行统一处理（这里用到java反射，Method.invoke（）方法执行方法调用）。我们可以很方便的在方法执行前后增加核心业务无关的业务逻辑，例如日志，验证等等，大大的减少了代码量。</p>
-<h2 id="简单分析newProxyInstance的过程"><a href="#简单分析newProxyInstance的过程" class="headerlink" title="简单分析newProxyInstance的过程"></a>简单分析newProxyInstance的过程</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">生成与指定的类加载器和一组接口相关的代理类</span><br><span class="line"></span><br><span class="line">Class cl = getProxyClass0(loader, interfaces);</span><br><span class="line"></span><br><span class="line">    proxyClassCache.get(loader, interfaces);</span><br><span class="line"></span><br><span class="line">    保存已经生成的代理类，在生成代理类时，如果存在与指定类加载器和一组接口相关的代理类，则直接返回，否则生成新的代理类。</span><br><span class="line"></span><br><span class="line">    proxyClassCache = new WeakCache&lt;&gt;(new KeyFactory(), new ProxyClassFactory());</span><br><span class="line"></span><br><span class="line">通过反射获取构造函数并生成代理类实例对象</span><br><span class="line"></span><br><span class="line">final Constructor&lt;?&gt; cons = cl.getConstructor(constructorParams);</span><br><span class="line">cons.newInstance(new Object[]&#123;h&#125;);</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">深入分析newProxyInstance的过程</span><br><span class="line">https://www.ibm.com/developerworks/cn/java/j-lo-proxy1/index.html</span><br></pre></td></tr></table></figure>
+        <h2 id="内核空间与用户空间的概念："><a href="#内核空间与用户空间的概念：" class="headerlink" title="内核空间与用户空间的概念："></a>内核空间与用户空间的概念：</h2><p>内核空间与用户空间是操作系统对物理内存在逻辑上的划分。</p>
+<p>内核空间：存放内核代码和数据，独立于普通应用程序空间。运行在较高的特权级别上，拥有访问所有硬件设备的权限。</p>
+<p>用户空间：存放用户进程代码和数据，只能访问到部分系统资源，不能直接访问内核空间以及硬件设备。</p>
+<h2 id="内核态和用户态的概念："><a href="#内核态和用户态的概念：" class="headerlink" title="内核态和用户态的概念："></a>内核态和用户态的概念：</h2><p>描述的是操作系统运行的两个不同级别。</p>
+<p>内核态：当一个进程因为触发软中断陷入内核空间执行时，那么此时进程处于内核态；（内核栈）</p>
+<p>用户态：当一个进程在执行自己的代码时，称之处于用户态。（用户栈）</p>
+
       
 
       
@@ -274,7 +259,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2018/08/05/java反射机制 - 动态代理/" alt="微信分享二维码">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2018/08/06/内核空间与用户空间/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -288,18 +273,9 @@
   
 <nav id="article-nav">
   
-    <a href="/2018/08/06/内核空间与用户空间/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          内核空间与用户空间
-        
-      </div>
-    </a>
   
-  
-    <a href="/2018/08/04/java反射机制/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">java反射机制的基本概念</div>
+    <a href="/2018/08/05/java反射机制 - 动态代理/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">java反射机制-动态代理</div>
       <i class="icon-circle-right"></i>
     </a>
   
