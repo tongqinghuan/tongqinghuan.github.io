@@ -14,26 +14,25 @@
     
     
     
-    <title>JDK 空轮询bug | 浵通的博客</title>
+    <title>java反射机制 | 浵通的博客</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     
     <meta name="theme-color" content="#3F51B5">
     
     
-    <meta name="keywords" content="">
-    <meta name="description" content="为什么会产生JDK的空轮询bug呢？JDK中NIO空轮询主要是因为select本来应该是阻塞的，然而在程序里select在IO事件没有就绪的时候返回了，导致selectKeys列表是空的，程序变成了死循环。">
+    <meta name="keywords" content="Java">
+    <meta name="description" content="什么是java反射机制？反射这个概念用在生物学中是指在中枢神经系统的参与下，人的机体对外界环境刺激作出的规律性的反应。那么反射在java中赋予了新的含义，即程序在运行时可以动态加载编译期完全未知的类，并动态获取整个类的完整结构，从而达到运行时去动态检测类的状态并修改类的结构的目的。 从具体实现的角度来说：通过Class类，在程序运行中，可以动态获取编译期未知的类的成员变量，动态的调用类中任意的方法">
+<meta name="keywords" content="Java">
 <meta property="og:type" content="article">
-<meta property="og:title" content="JDK 空轮询bug">
-<meta property="og:url" content="//litten.me/2018/08/07/应用服务器中对JDK的epoll空转bug的处理 - 副本/index.html">
+<meta property="og:title" content="java反射机制">
+<meta property="og:url" content="//litten.me/2018/08/09/java反射机制/index.html">
 <meta property="og:site_name" content="浵通的博客">
-<meta property="og:description" content="为什么会产生JDK的空轮询bug呢？JDK中NIO空轮询主要是因为select本来应该是阻塞的，然而在程序里select在IO事件没有就绪的时候返回了，导致selectKeys列表是空的，程序变成了死循环。">
+<meta property="og:description" content="什么是java反射机制？反射这个概念用在生物学中是指在中枢神经系统的参与下，人的机体对外界环境刺激作出的规律性的反应。那么反射在java中赋予了新的含义，即程序在运行时可以动态加载编译期完全未知的类，并动态获取整个类的完整结构，从而达到运行时去动态检测类的状态并修改类的结构的目的。 从具体实现的角度来说：通过Class类，在程序运行中，可以动态获取编译期未知的类的成员变量，动态的调用类中任意的方法">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="https://i.imgur.com/Vau679X.jpg">
-<meta property="og:updated_time" content="2018-08-07T06:33:15.561Z">
+<meta property="og:updated_time" content="2018-08-09T15:53:17.455Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="JDK 空轮询bug">
-<meta name="twitter:description" content="为什么会产生JDK的空轮询bug呢？JDK中NIO空轮询主要是因为select本来应该是阻塞的，然而在程序里select在IO事件没有就绪的时候返回了，导致selectKeys列表是空的，程序变成了死循环。">
-<meta name="twitter:image" content="https://i.imgur.com/Vau679X.jpg">
+<meta name="twitter:title" content="java反射机制">
+<meta name="twitter:description" content="什么是java反射机制？反射这个概念用在生物学中是指在中枢神经系统的参与下，人的机体对外界环境刺激作出的规律性的反应。那么反射在java中赋予了新的含义，即程序在运行时可以动态加载编译期完全未知的类，并动态获取整个类的完整结构，从而达到运行时去动态检测类的状态并修改类的结构的目的。 从具体实现的角度来说：通过Class类，在程序运行中，可以动态获取编译期未知的类的成员变量，动态的调用类中任意的方法">
     
         <link rel="alternate" type="application/atom+xml" title="浵通的博客" href="/atom.xml">
     
@@ -121,7 +120,7 @@
         <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
           <i class="icon icon-lg icon-navicon"></i>
         </a>
-        <div class="flex-col header-title ellipsis">JDK 空轮询bug</div>
+        <div class="flex-col header-title ellipsis">java反射机制</div>
         
         <div class="search-wrap" id="search-wrap">
             <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
@@ -143,11 +142,11 @@
 <header class="content-header post-header">
 
     <div class="container fade-scale">
-        <h1 class="title">JDK 空轮询bug</h1>
+        <h1 class="title">java反射机制</h1>
         <h5 class="subtitle">
             
-                <time datetime="2018-08-07T08:04:15.975Z" itemprop="datePublished" class="page-time">
-  2018-08-07
+                <time datetime="2018-08-09T15:45:46.000Z" itemprop="datePublished" class="page-time">
+  2018-08-09
 </time>
 
 
@@ -166,18 +165,18 @@
     <aside class="post-widget">
         <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
             <h4>TOC</h4>
-            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#为什么会产生JDK的空轮询bug呢？"><span class="post-toc-number">1.</span> <span class="post-toc-text">为什么会产生JDK的空轮询bug呢？</span></a></li></ol>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#什么是java反射机制？"><span class="post-toc-number">1.</span> <span class="post-toc-text">什么是java反射机制？</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#java反射机制提供了哪些功能？"><span class="post-toc-number">2.</span> <span class="post-toc-text">java反射机制提供了哪些功能？</span></a></li></ol>
         </nav>
     </aside>
 
 
-<article id="post-应用服务器中对JDK的epoll空转bug的处理 - 副本"
+<article id="post-java反射机制"
   class="post-article article-type-post fade" itemprop="blogPost">
 
     <div class="post-card">
-        <h1 class="post-card-title">JDK 空轮询bug</h1>
+        <h1 class="post-card-title">java反射机制</h1>
         <div class="post-meta">
-            <time class="post-time" title="2018-08-07 16:04:15" datetime="2018-08-07T08:04:15.975Z"  itemprop="datePublished">2018-08-07</time>
+            <time class="post-time" title="2018-08-09 23:45:46" datetime="2018-08-09T15:45:46.000Z"  itemprop="datePublished">2018-08-09</time>
 
             
 
@@ -190,18 +189,44 @@
 
         </div>
         <div class="post-content" id="post-content" itemprop="postContent">
-            <h2 id="为什么会产生JDK的空轮询bug呢？"><a href="#为什么会产生JDK的空轮询bug呢？" class="headerlink" title="为什么会产生JDK的空轮询bug呢？"></a>为什么会产生JDK的空轮询bug呢？</h2><p>JDK中NIO空轮询主要是因为select本来应该是阻塞的，然而在程序里select在IO事件没有就绪的时候返回了，导致selectKeys列表是空的，程序变成了死循环。<br><figure class="image-bubble">
-                <div class="img-lightbox">
-                    <div class="overlay"></div>
-                    <img src="https://i.imgur.com/Vau679X.jpg" alt="" title="">
-                </div>
-                <div class="image-caption"></div>
-            </figure></p>
-<p>1、JDK空轮询BUG是如何触发的呢？</p>
-<p>JDK空轮询BUG被触发的时机是随机的，不知道会发生在什么时候，否则JDK空轮询的BUG就早已被解决了。</p>
-<p>2、Netty是如何解决JDK空轮询bug的呢？</p>
-<p>Netty并没有从根本上解决JDK空轮询的BUG，而是曲线拯救了JDK的BUG。通过统计select操作开始和结束的时间的方式感知select是否进行了一次空轮询，然后统计连续空轮询的次数，如果超过设置的阈值，则重新创建selector，并将channel重新注册到新的selector上。但是这样做，有一定的副作用，如果在新的selector上select操作依然会可能发生空轮询，那么每个阈值的次数，就需要重建selector，这时候就需要权衡selector重建的代价和去修复空轮询bug的代价。</p>
-<p>参考文章：<a href="应用服务器中对JDK的epoll空转bug的处理">应用服务器中对JDK的epoll空转bug的处理</a></p>
+            <h2 id="什么是java反射机制？"><a href="#什么是java反射机制？" class="headerlink" title="什么是java反射机制？"></a>什么是java反射机制？</h2><p>反射这个概念用在生物学中是指在中枢神经系统的参与下，人的机体对外界环境刺激作出的规律性的反应。那么反射在java中赋予了新的含义，即程序在运行时可以动态加载编译期完全未知的类，并动态获取整个类的完整结构，从而达到运行时去动态检测类的状态并修改类的结构的目的。</p>
+<p>从具体实现的角度来说：通过Class类，在程序运行中，可以动态获取编译期未知的类的成员变量，动态的调用类中任意的方法，获取当前对象所属的类，这种动态获取类自身的信息并进行动态改变类结构的功能就被称为java的反射机制。</p>
+<h2 id="java反射机制提供了哪些功能？"><a href="#java反射机制提供了哪些功能？" class="headerlink" title="java反射机制提供了哪些功能？"></a>java反射机制提供了哪些功能？</h2><p>与java发射相关的API在包java.lang.raflect中。</p>
+<p>java反射机制最核心的类是Class 类（也可以称之为反射类，java就是通过这个反射类实现了java的反射的功能）。获取Class类的对象有三种方式：</p>
+<ol>
+<li>.class 每个类都隐含一个Class对象<br>Class<string> class=String.class  </string></li>
+<li>通过getClass方法<br>String str=”java reflect”<br>Class<string> class=str.getClass();</string></li>
+<li>通过Class.forName(“”);<br>Class<string> class=Calss.forName(“java.lang.String”);</string></li>
+</ol>
+<p>Class类的方法如下：</p>
+<ol>
+<li>getName():获取类的完整名字</li>
+<li>getFileds():获取类的公有属性</li>
+<li>getDeclaredFileds():获取类的所有属性</li>
+<li>getMethods():获取类的公有方法</li>
+<li>getDeclaredMethods():获取类的所有方法</li>
+<li>getMethod(String name,Class[] parameterTypes)获取指定类的指定参数列表的方法</li>
+<li>getConstructors():获取类的公有的构造方法</li>
+<li>getConstructor(Class[] parameterTypes):获取类特定的构造方法</li>
+<li>newInstance():通过类的不带参数的构造方法创建这个类的一个对象；</li>
+</ol>
+<p>除了上述的Class类，与反射相关的类还有如下列举的：</p>
+<ol>
+<li>Array类 提供动态生成和访问java数组的方法</li>
+<li>Constructor类 提供一个类的构造函数的信息，同时提供访问一个类的构造函数的接口</li>
+<li>Filed类 提供一个类的成员变量的信息以及访问类成员变量的接口</li>
+<li>Method类 提供一个类的方法的信息以及访问类中的方法的接口<br>Method.invoke()</li>
+<li>Modifiler类 提供一个类static方法和常量的信息</li>
+<li>Proxy 提供动态生成代理类和类实例的静态方法   </li>
+</ol>
+<p>综上Reflect提供的API，总结出java反射机制提供的功能：</p>
+<ol>
+<li>在运行时判断对象所属的类型        object.getClass==Object.class</li>
+<li>在运行时获取类的完整信息，包括成员变量和方法，常量和静态方法 </li>
+<li>在运行时动态创建对象             class.newInstance()</li>
+<li>在运行时调用类中任意的方法<br>Method[] methods=getDeclaredMethods()&amp;&amp;<br>method.invoke(Object,parameters[])</li>
+<li>创建动态代理实例  Proxy.newProxyInstance(classloader, interfaces, InvocationHandler)</li>
+</ol>
 
         </div>
 
@@ -210,7 +235,7 @@
     <div class="content">
         
 <span class="post-time">
-    Last updated: <time datetime="2018-08-07T06:33:15.561Z" itemprop="dateUpdated">2018-08-07 14:33:15</time>
+    Last updated: <time datetime="2018-08-09T15:53:17.455Z" itemprop="dateUpdated">2018-08-09 23:53:17</time>
 </span><br>
 
 
@@ -234,6 +259,8 @@
 
         <div class="post-footer">
             
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li></ul>
+
 
             
 <div class="page-share-wrap">
@@ -242,7 +269,7 @@
 <div class="page-share" id="pageShare">
     <ul class="reset share-icons">
       <li>
-        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=//litten.me/2018/08/07/应用服务器中对JDK的epoll空转bug的处理 - 副本/&title=《JDK 空轮询bug》 — 浵通的博客&pic=//litten.meundefined" data-title="微博">
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=//litten.me/2018/08/09/java反射机制/&title=《java反射机制》 — 浵通的博客&pic=//litten.meundefined" data-title="微博">
           <i class="icon icon-weibo"></i>
         </a>
       </li>
@@ -252,22 +279,22 @@
         </a>
       </li>
       <li>
-        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=//litten.me/2018/08/07/应用服务器中对JDK的epoll空转bug的处理 - 副本/&title=《JDK 空轮询bug》 — 浵通的博客&source=" data-title=" QQ">
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=//litten.me/2018/08/09/java反射机制/&title=《java反射机制》 — 浵通的博客&source=" data-title=" QQ">
           <i class="icon icon-qq"></i>
         </a>
       </li>
       <li>
-        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=//litten.me/2018/08/07/应用服务器中对JDK的epoll空转bug的处理 - 副本/" data-title=" Facebook">
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=//litten.me/2018/08/09/java反射机制/" data-title=" Facebook">
           <i class="icon icon-facebook"></i>
         </a>
       </li>
       <li>
-        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《JDK 空轮询bug》 — 浵通的博客&url=//litten.me/2018/08/07/应用服务器中对JDK的epoll空转bug的处理 - 副本/&via=//litten.me" data-title=" Twitter">
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《java反射机制》 — 浵通的博客&url=//litten.me/2018/08/09/java反射机制/&via=//litten.me" data-title=" Twitter">
           <i class="icon icon-twitter"></i>
         </a>
       </li>
       <li>
-        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=//litten.me/2018/08/07/应用服务器中对JDK的epoll空转bug的处理 - 副本/" data-title=" Google+">
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=//litten.me/2018/08/09/java反射机制/" data-title=" Google+">
           <i class="icon icon-google-plus"></i>
         </a>
       </li>
@@ -290,18 +317,18 @@
 <nav class="post-nav flex-row flex-justify-between">
   
     <div class="waves-block waves-effect prev">
-      <a href="/2018/08/09/custom/" id="post-prev" class="post-nav-link">
+      <a href="/2018/08/09/java反射机制-动态代理/" id="post-prev" class="post-nav-link">
         <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
-        <h4 class="title">Indigo</h4>
+        <h4 class="title">java反射机制-动态代理</h4>
       </a>
     </div>
   
 
   
     <div class="waves-block waves-effect next">
-      <a href="/2018/08/07/NioEventLoop/" id="post-next" class="post-nav-link">
+      <a href="/2018/08/09/应用服务器中对JDK的epoll空转bug的处理/" id="post-next" class="post-nav-link">
         <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
-        <h4 class="title">Netty-NioEventLoop源码分析</h4>
+        <h4 class="title">应用服务器中对JDK的epoll空转bug的处理</h4>
       </a>
     </div>
   
@@ -398,7 +425,7 @@
 <div class="global-share" id="globalShare">
     <ul class="reset share-icons">
       <li>
-        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=//litten.me/2018/08/07/应用服务器中对JDK的epoll空转bug的处理 - 副本/&title=《JDK 空轮询bug》 — 浵通的博客&pic=//litten.meundefined" data-title="微博">
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=//litten.me/2018/08/09/java反射机制/&title=《java反射机制》 — 浵通的博客&pic=//litten.meundefined" data-title="微博">
           <i class="icon icon-weibo"></i>
         </a>
       </li>
@@ -408,22 +435,22 @@
         </a>
       </li>
       <li>
-        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=//litten.me/2018/08/07/应用服务器中对JDK的epoll空转bug的处理 - 副本/&title=《JDK 空轮询bug》 — 浵通的博客&source=" data-title=" QQ">
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=//litten.me/2018/08/09/java反射机制/&title=《java反射机制》 — 浵通的博客&source=" data-title=" QQ">
           <i class="icon icon-qq"></i>
         </a>
       </li>
       <li>
-        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=//litten.me/2018/08/07/应用服务器中对JDK的epoll空转bug的处理 - 副本/" data-title=" Facebook">
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=//litten.me/2018/08/09/java反射机制/" data-title=" Facebook">
           <i class="icon icon-facebook"></i>
         </a>
       </li>
       <li>
-        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《JDK 空轮询bug》 — 浵通的博客&url=//litten.me/2018/08/07/应用服务器中对JDK的epoll空转bug的处理 - 副本/&via=//litten.me" data-title=" Twitter">
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《java反射机制》 — 浵通的博客&url=//litten.me/2018/08/09/java反射机制/&via=//litten.me" data-title=" Twitter">
           <i class="icon icon-twitter"></i>
         </a>
       </li>
       <li>
-        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=//litten.me/2018/08/07/应用服务器中对JDK的epoll空转bug的处理 - 副本/" data-title=" Google+">
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=//litten.me/2018/08/09/java反射机制/" data-title=" Google+">
           <i class="icon icon-google-plus"></i>
         </a>
       </li>
@@ -434,7 +461,7 @@
 <div class="page-modal wx-share" id="wxShare">
     <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
-    <img src="//api.qrserver.com/v1/create-qr-code/?data=//litten.me/2018/08/07/应用服务器中对JDK的epoll空转bug的处理 - 副本/" alt="微信分享二维码">
+    <img src="//api.qrserver.com/v1/create-qr-code/?data=//litten.me/2018/08/09/java反射机制/" alt="微信分享二维码">
 </div>
 
 
