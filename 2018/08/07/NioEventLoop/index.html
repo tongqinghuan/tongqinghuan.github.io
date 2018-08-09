@@ -14,31 +14,31 @@
     
     
     
-    <title>No title | 浵通的博客</title>
+    <title>Netty-NioEventLoop源码分析 | 浵通的博客</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     
     <meta name="theme-color" content="#3F51B5">
     
     
     <meta name="keywords" content="">
-    <meta name="description" content="title: Netty-NioEventLoop源码分析NioEventLoop组件整体思维导图：                                                                                                            NioEventLoopGroup创建NioEventLoopGroup创建流程源码">
+    <meta name="description" content="NioEventLoop组件整体思维导图：                                                                                                            NioEventLoopGroup创建NioEventLoopGroup创建流程源码分析 NioEventLoop在服务器端启动的时候通过ne">
 <meta property="og:type" content="article">
-<meta property="og:title" content="No title">
+<meta property="og:title" content="Netty-NioEventLoop源码分析">
 <meta property="og:url" content="//litten.me/2018/08/07/NioEventLoop/index.html">
 <meta property="og:site_name" content="浵通的博客">
-<meta property="og:description" content="title: Netty-NioEventLoop源码分析NioEventLoop组件整体思维导图：                                                                                                            NioEventLoopGroup创建NioEventLoopGroup创建流程源码">
+<meta property="og:description" content="NioEventLoop组件整体思维导图：                                                                                                            NioEventLoopGroup创建NioEventLoopGroup创建流程源码分析 NioEventLoop在服务器端启动的时候通过ne">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="https://i.imgur.com/MVchtxO.png">
 <meta property="og:image" content="https://i.imgur.com/PbKdTrd.png">
-<meta property="og:updated_time" content="2018-08-09T14:27:36.647Z">
+<meta property="og:updated_time" content="2018-08-09T14:33:39.519Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="No title">
-<meta name="twitter:description" content="title: Netty-NioEventLoop源码分析NioEventLoop组件整体思维导图：                                                                                                            NioEventLoopGroup创建NioEventLoopGroup创建流程源码">
+<meta name="twitter:title" content="Netty-NioEventLoop源码分析">
+<meta name="twitter:description" content="NioEventLoop组件整体思维导图：                                                                                                            NioEventLoopGroup创建NioEventLoopGroup创建流程源码分析 NioEventLoop在服务器端启动的时候通过ne">
 <meta name="twitter:image" content="https://i.imgur.com/MVchtxO.png">
     
         <link rel="alternate" type="application/atom+xml" title="浵通的博客" href="/atom.xml">
     
-    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="shortcut icon" href="/">
     <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
     <script>window.lazyScripts=[]</script>
 
@@ -55,10 +55,10 @@
     <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
         <i class="icon icon-lg icon-close"></i>
     </a>
-    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+    <div class="brand-wrap" style="background-image:url(/)">
       <div class="brand">
         <a href="/" class="avatar waves-effect waves-circle waves-light">
-          <img src="/img/avatar.jpg">
+          <img src="/">
         </a>
         <hgroup class="introduce">
           <h5 class="nickname">浵通</h5>
@@ -129,7 +129,7 @@
         <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
           <i class="icon icon-lg icon-navicon"></i>
         </a>
-        <div class="flex-col header-title ellipsis"></div>
+        <div class="flex-col header-title ellipsis">Netty-NioEventLoop源码分析</div>
         
         <div class="search-wrap" id="search-wrap">
             <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
@@ -148,10 +148,10 @@
         
     </div>
 </header>
-<header class="content-header page-header">
+<header class="content-header post-header">
 
     <div class="container fade-scale">
-        <h1 class="title"></h1>
+        <h1 class="title">Netty-NioEventLoop源码分析</h1>
         <h5 class="subtitle">
             
                 <time datetime="2018-08-07T03:13:29.664Z" itemprop="datePublished" class="page-time">
@@ -170,9 +170,35 @@
 
 
 <div class="container body-wrap">
-    <article class="page-article fade" itemprop="blogPage">
-        <div class="post-content page-content" id="page-content" itemprop="pageContent">
-            <h2 id="title-Netty-NioEventLoop源码分析"><a href="#title-Netty-NioEventLoop源码分析" class="headerlink" title="title: Netty-NioEventLoop源码分析"></a>title: Netty-NioEventLoop源码分析</h2><p>NioEventLoop组件整体思维导图：</p>
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#NioEventLoopGroup创建"><span class="post-toc-number">1.</span> <span class="post-toc-text">NioEventLoopGroup创建</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#NioEventLoop的执行-SingleThreadEventExecutor-this-run"><span class="post-toc-number">2.</span> <span class="post-toc-text">NioEventLoop的执行 SingleThreadEventExecutor.this.run()</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#最后分析NioEventLoop是如何保证异步串行无锁化的？"><span class="post-toc-number">3.</span> <span class="post-toc-text">最后分析NioEventLoop是如何保证异步串行无锁化的？</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-NioEventLoop"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Netty-NioEventLoop源码分析</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-08-07 11:13:29" datetime="2018-08-07T03:13:29.664Z"  itemprop="datePublished">2018-08-07</time>
+
+            
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>NioEventLoop组件整体思维导图：</p>
 <figure class="image-bubble">
                 <div class="img-lightbox">
                     <div class="overlay"></div>
@@ -231,14 +257,37 @@
 
         </div>
 
+        <blockquote class="post-copyright">
+    
+    <div class="content">
         
-        <div class="card page-about-me flex-row">
-            <a href="/" class="avatar waves-effect waves-circle waves-light"><img src="/img/avatar.jpg"></a>
-            <div class="content flex-col">
-                <p><strong>浵通</strong></p>
-                <p><em></em></p>
-                <p>用户页面中作者相关的描述性文字，如不需要设为 false</p>
-            </div>
+<span class="post-time">
+    Last updated: <time datetime="2018-08-09T14:33:39.519Z" itemprop="dateUpdated">2018-08-09 22:33:39</time>
+</span><br>
+
+
+        
+        这里可以写作者留言，标签和 hexo 中所有变量及辅助函数等均可调用，示例：<a href="/2018/08/07/NioEventLoop/" target="_blank" rel="external">//litten.me/2018/08/07/NioEventLoop/</a>
+        
+    </div>
+    
+    <footer>
+        <a href="//litten.me">
+            <img src="/" alt="浵通">
+            浵通
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
 
             
 <div class="page-share-wrap">
@@ -247,7 +296,7 @@
 <div class="page-share" id="pageShare">
     <ul class="reset share-icons">
       <li>
-        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=//litten.me/2018/08/07/NioEventLoop/&title=浵通的博客&pic=//litten.me/img/avatar.jpg" data-title="微博">
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=//litten.me/2018/08/07/NioEventLoop/&title=《Netty-NioEventLoop源码分析》 — 浵通的博客&pic=//litten.meundefined" data-title="微博">
           <i class="icon icon-weibo"></i>
         </a>
       </li>
@@ -257,7 +306,7 @@
         </a>
       </li>
       <li>
-        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=//litten.me/2018/08/07/NioEventLoop/&title=浵通的博客&source=" data-title=" QQ">
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=//litten.me/2018/08/07/NioEventLoop/&title=《Netty-NioEventLoop源码分析》 — 浵通的博客&source=" data-title=" QQ">
           <i class="icon icon-qq"></i>
         </a>
       </li>
@@ -267,7 +316,7 @@
         </a>
       </li>
       <li>
-        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=浵通的博客&url=//litten.me/2018/08/07/NioEventLoop/&via=//litten.me" data-title=" Twitter">
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Netty-NioEventLoop源码分析》 — 浵通的博客&url=//litten.me/2018/08/07/NioEventLoop/&via=//litten.me" data-title=" Twitter">
           <i class="icon icon-twitter"></i>
         </a>
       </li>
@@ -289,35 +338,51 @@
 
 
         </div>
-        
+    </div>
 
-        
-<div class="page-reward">
-    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
-</div>
-
-
-
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    </article>
     
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2018/08/07/应用服务器中对JDK的epoll空转bug的处理 - 副本/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">JDK 空轮询bug</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2018/08/07/select内核实现/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">select内核实现</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
 <div id="reward" class="page-modal reward-lay">
     <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
     <h3 class="reward-title">
@@ -343,6 +408,7 @@
         
     </div>
 </div>
+
 
 
 </div>
@@ -386,7 +452,7 @@
 <div class="global-share" id="globalShare">
     <ul class="reset share-icons">
       <li>
-        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=//litten.me/2018/08/07/NioEventLoop/&title=《No title》 — 浵通的博客&pic=//litten.me/img/avatar.jpg" data-title="微博">
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=//litten.me/2018/08/07/NioEventLoop/&title=《Netty-NioEventLoop源码分析》 — 浵通的博客&pic=//litten.meundefined" data-title="微博">
           <i class="icon icon-weibo"></i>
         </a>
       </li>
@@ -396,7 +462,7 @@
         </a>
       </li>
       <li>
-        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=//litten.me/2018/08/07/NioEventLoop/&title=《No title》 — 浵通的博客&source=" data-title=" QQ">
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=//litten.me/2018/08/07/NioEventLoop/&title=《Netty-NioEventLoop源码分析》 — 浵通的博客&source=" data-title=" QQ">
           <i class="icon icon-qq"></i>
         </a>
       </li>
@@ -406,7 +472,7 @@
         </a>
       </li>
       <li>
-        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《No title》 — 浵通的博客&url=//litten.me/2018/08/07/NioEventLoop/&via=//litten.me" data-title=" Twitter">
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Netty-NioEventLoop源码分析》 — 浵通的博客&url=//litten.me/2018/08/07/NioEventLoop/&via=//litten.me" data-title=" Twitter">
           <i class="icon icon-twitter"></i>
         </a>
       </li>
