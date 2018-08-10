@@ -25,11 +25,11 @@
 <meta name="keywords" content="Linux">
 <meta property="og:type" content="article">
 <meta property="og:title" content="select实现细节分析">
-<meta property="og:url" content="//litten.me/2018/08/09/select实现细节分析/index.html">
+<meta property="og:url" content="//litten.me/2018/08/03/select实现细节分析/index.html">
 <meta property="og:site_name" content="Tongtong&#39;s Blog">
 <meta property="og:description" content="我觉的下面这篇文章对select内核的实现分析的很透彻，希望能帮助更多的人去理解selcet的底层实现细节。 https://blog.csdn.net/shuxiaogd/article/details/50366039">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-08-09T15:54:43.896Z">
+<meta property="og:updated_time" content="2018-08-10T01:51:40.631Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="select实现细节分析">
 <meta name="twitter:description" content="我觉的下面这篇文章对select内核的实现分析的很透彻，希望能帮助更多的人去理解selcet的底层实现细节。 https://blog.csdn.net/shuxiaogd/article/details/50366039">
@@ -138,8 +138,8 @@
         <h1 class="title">select实现细节分析</h1>
         <h5 class="subtitle">
             
-                <time datetime="2018-08-09T15:51:27.000Z" itemprop="datePublished" class="page-time">
-  2018-08-09
+                <time datetime="2018-08-03T06:51:27.000Z" itemprop="datePublished" class="page-time">
+  2018-08-03
 </time>
 
 
@@ -162,16 +162,12 @@
     <div class="post-card">
         <h1 class="post-card-title">select实现细节分析</h1>
         <div class="post-meta">
-            <time class="post-time" title="2018-08-09 23:51:27" datetime="2018-08-09T15:51:27.000Z"  itemprop="datePublished">2018-08-09</time>
+            <time class="post-time" title="2018-08-03 14:51:27" datetime="2018-08-03T06:51:27.000Z"  itemprop="datePublished">2018-08-03</time>
 
             
 
 
             
-<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
-    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
-</span>
-
 
         </div>
         <div class="post-content" id="post-content" itemprop="postContent">
@@ -185,7 +181,7 @@
     <div class="content">
         
 <span class="post-time">
-    Last updated: <time datetime="2018-08-09T15:54:43.896Z" itemprop="dateUpdated">2018-08-09 23:54:43</time>
+    Last updated: <time datetime="2018-08-10T01:51:40.631Z" itemprop="dateUpdated">2018-08-10 09:51:40</time>
 </span><br>
 
 
@@ -215,7 +211,7 @@
 <div class="page-share" id="pageShare">
     <ul class="reset share-icons">
       <li>
-        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=//litten.me/2018/08/09/select实现细节分析/&title=《select实现细节分析》 — Tongtong's Blog&pic=//litten.me/img/tongtong.jpg" data-title="微博">
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=//litten.me/2018/08/03/select实现细节分析/&title=《select实现细节分析》 — Tongtong's Blog&pic=//litten.me/img/tongtong.jpg" data-title="微博">
           <i class="icon icon-weibo"></i>
         </a>
       </li>
@@ -225,22 +221,22 @@
         </a>
       </li>
       <li>
-        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=//litten.me/2018/08/09/select实现细节分析/&title=《select实现细节分析》 — Tongtong's Blog&source=" data-title=" QQ">
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=//litten.me/2018/08/03/select实现细节分析/&title=《select实现细节分析》 — Tongtong's Blog&source=" data-title=" QQ">
           <i class="icon icon-qq"></i>
         </a>
       </li>
       <li>
-        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=//litten.me/2018/08/09/select实现细节分析/" data-title=" Facebook">
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=//litten.me/2018/08/03/select实现细节分析/" data-title=" Facebook">
           <i class="icon icon-facebook"></i>
         </a>
       </li>
       <li>
-        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《select实现细节分析》 — Tongtong's Blog&url=//litten.me/2018/08/09/select实现细节分析/&via=//litten.me" data-title=" Twitter">
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《select实现细节分析》 — Tongtong's Blog&url=//litten.me/2018/08/03/select实现细节分析/&via=//litten.me" data-title=" Twitter">
           <i class="icon icon-twitter"></i>
         </a>
       </li>
       <li>
-        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=//litten.me/2018/08/09/select实现细节分析/" data-title=" Google+">
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=//litten.me/2018/08/03/select实现细节分析/" data-title=" Google+">
           <i class="icon icon-google-plus"></i>
         </a>
       </li>
@@ -260,14 +256,21 @@
     </div>
 
     
-<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2018/08/03/内核空间与用户空间/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">内核空间与用户空间</h4>
+      </a>
+    </div>
   
 
   
     <div class="waves-block waves-effect next">
-      <a href="/2018/08/09/同步异步阻塞非阻塞/" id="post-next" class="post-nav-link">
+      <a href="/2018/08/02/java反射机制-动态代理/" id="post-next" class="post-nav-link">
         <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
-        <h4 class="title">同步异步阻塞非阻塞</h4>
+        <h4 class="title">java反射机制-动态代理</h4>
       </a>
     </div>
   
@@ -302,15 +305,6 @@
         <footer class="footer">
     <div class="top">
         
-<p>
-    <span id="busuanzi_container_site_uv" style='display:none'>
-        站点总访客数：<span id="busuanzi_value_site_uv"></span>
-    </span>
-    <span id="busuanzi_container_site_pv" style='display:none'>
-        站点总访问量：<span id="busuanzi_value_site_pv"></span>
-    </span>
-</p>
-
 
         <p>
             
@@ -338,7 +332,7 @@
 <div class="global-share" id="globalShare">
     <ul class="reset share-icons">
       <li>
-        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=//litten.me/2018/08/09/select实现细节分析/&title=《select实现细节分析》 — Tongtong's Blog&pic=//litten.me/img/tongtong.jpg" data-title="微博">
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=//litten.me/2018/08/03/select实现细节分析/&title=《select实现细节分析》 — Tongtong's Blog&pic=//litten.me/img/tongtong.jpg" data-title="微博">
           <i class="icon icon-weibo"></i>
         </a>
       </li>
@@ -348,22 +342,22 @@
         </a>
       </li>
       <li>
-        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=//litten.me/2018/08/09/select实现细节分析/&title=《select实现细节分析》 — Tongtong's Blog&source=" data-title=" QQ">
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=//litten.me/2018/08/03/select实现细节分析/&title=《select实现细节分析》 — Tongtong's Blog&source=" data-title=" QQ">
           <i class="icon icon-qq"></i>
         </a>
       </li>
       <li>
-        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=//litten.me/2018/08/09/select实现细节分析/" data-title=" Facebook">
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=//litten.me/2018/08/03/select实现细节分析/" data-title=" Facebook">
           <i class="icon icon-facebook"></i>
         </a>
       </li>
       <li>
-        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《select实现细节分析》 — Tongtong's Blog&url=//litten.me/2018/08/09/select实现细节分析/&via=//litten.me" data-title=" Twitter">
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《select实现细节分析》 — Tongtong's Blog&url=//litten.me/2018/08/03/select实现细节分析/&via=//litten.me" data-title=" Twitter">
           <i class="icon icon-twitter"></i>
         </a>
       </li>
       <li>
-        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=//litten.me/2018/08/09/select实现细节分析/" data-title=" Google+">
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=//litten.me/2018/08/03/select实现细节分析/" data-title=" Google+">
           <i class="icon icon-google-plus"></i>
         </a>
       </li>
@@ -374,7 +368,7 @@
 <div class="page-modal wx-share" id="wxShare">
     <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
-    <img src="//api.qrserver.com/v1/create-qr-code/?data=//litten.me/2018/08/09/select实现细节分析/" alt="微信分享二维码">
+    <img src="//api.qrserver.com/v1/create-qr-code/?data=//litten.me/2018/08/03/select实现细节分析/" alt="微信分享二维码">
 </div>
 
 
@@ -413,8 +407,6 @@ var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
 
 
 
-
-<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
 
 

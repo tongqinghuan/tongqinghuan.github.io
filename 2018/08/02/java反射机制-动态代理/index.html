@@ -25,12 +25,12 @@
 <meta name="keywords" content="Java">
 <meta property="og:type" content="article">
 <meta property="og:title" content="java反射机制-动态代理">
-<meta property="og:url" content="//litten.me/2018/08/09/java反射机制-动态代理/index.html">
+<meta property="og:url" content="//litten.me/2018/08/02/java反射机制-动态代理/index.html">
 <meta property="og:site_name" content="Tongtong&#39;s Blog">
 <meta property="og:description" content="java的设计模式-代理模式代理模式中存在两种对象：代理类 和委托类 代理模式的特点：代理类和委托类都实现相同的接口，委托类委托代理类实现一些与核心业务无关的通用业务逻辑，而自己专注处理核心的业务逻辑。例如演艺圈，艺人们都需要经纪人去代替他们和第三方洽谈档期等等事宜，而他们则专注做好表演的工作。那么经纪人就起着代理的作用。代理模式结构如图（图片来自大话设计模式）：">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="https://i.imgur.com/kl0ztCD.jpg">
-<meta property="og:updated_time" content="2018-08-09T15:53:40.016Z">
+<meta property="og:updated_time" content="2018-08-10T01:50:02.360Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="java反射机制-动态代理">
 <meta name="twitter:description" content="java的设计模式-代理模式代理模式中存在两种对象：代理类 和委托类 代理模式的特点：代理类和委托类都实现相同的接口，委托类委托代理类实现一些与核心业务无关的通用业务逻辑，而自己专注处理核心的业务逻辑。例如演艺圈，艺人们都需要经纪人去代替他们和第三方洽谈档期等等事宜，而他们则专注做好表演的工作。那么经纪人就起着代理的作用。代理模式结构如图（图片来自大话设计模式）：">
@@ -140,8 +140,8 @@
         <h1 class="title">java反射机制-动态代理</h1>
         <h5 class="subtitle">
             
-                <time datetime="2018-08-09T15:46:19.000Z" itemprop="datePublished" class="page-time">
-  2018-08-09
+                <time datetime="2018-08-02T11:46:19.000Z" itemprop="datePublished" class="page-time">
+  2018-08-02
 </time>
 
 
@@ -171,16 +171,12 @@
     <div class="post-card">
         <h1 class="post-card-title">java反射机制-动态代理</h1>
         <div class="post-meta">
-            <time class="post-time" title="2018-08-09 23:46:19" datetime="2018-08-09T15:46:19.000Z"  itemprop="datePublished">2018-08-09</time>
+            <time class="post-time" title="2018-08-02 19:46:19" datetime="2018-08-02T11:46:19.000Z"  itemprop="datePublished">2018-08-02</time>
 
             
 
 
             
-<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
-    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
-</span>
-
 
         </div>
         <div class="post-content" id="post-content" itemprop="postContent">
@@ -218,7 +214,7 @@
     <div class="content">
         
 <span class="post-time">
-    Last updated: <time datetime="2018-08-09T15:53:40.016Z" itemprop="dateUpdated">2018-08-09 23:53:40</time>
+    Last updated: <time datetime="2018-08-10T01:50:02.360Z" itemprop="dateUpdated">2018-08-10 09:50:02</time>
 </span><br>
 
 
@@ -248,7 +244,7 @@
 <div class="page-share" id="pageShare">
     <ul class="reset share-icons">
       <li>
-        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=//litten.me/2018/08/09/java反射机制-动态代理/&title=《java反射机制-动态代理》 — Tongtong's Blog&pic=//litten.me/img/tongtong.jpg" data-title="微博">
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=//litten.me/2018/08/02/java反射机制-动态代理/&title=《java反射机制-动态代理》 — Tongtong's Blog&pic=//litten.me/img/tongtong.jpg" data-title="微博">
           <i class="icon icon-weibo"></i>
         </a>
       </li>
@@ -258,22 +254,22 @@
         </a>
       </li>
       <li>
-        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=//litten.me/2018/08/09/java反射机制-动态代理/&title=《java反射机制-动态代理》 — Tongtong's Blog&source=" data-title=" QQ">
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=//litten.me/2018/08/02/java反射机制-动态代理/&title=《java反射机制-动态代理》 — Tongtong's Blog&source=" data-title=" QQ">
           <i class="icon icon-qq"></i>
         </a>
       </li>
       <li>
-        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=//litten.me/2018/08/09/java反射机制-动态代理/" data-title=" Facebook">
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=//litten.me/2018/08/02/java反射机制-动态代理/" data-title=" Facebook">
           <i class="icon icon-facebook"></i>
         </a>
       </li>
       <li>
-        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《java反射机制-动态代理》 — Tongtong's Blog&url=//litten.me/2018/08/09/java反射机制-动态代理/&via=//litten.me" data-title=" Twitter">
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《java反射机制-动态代理》 — Tongtong's Blog&url=//litten.me/2018/08/02/java反射机制-动态代理/&via=//litten.me" data-title=" Twitter">
           <i class="icon icon-twitter"></i>
         </a>
       </li>
       <li>
-        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=//litten.me/2018/08/09/java反射机制-动态代理/" data-title=" Google+">
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=//litten.me/2018/08/02/java反射机制-动态代理/" data-title=" Google+">
           <i class="icon icon-google-plus"></i>
         </a>
       </li>
@@ -296,18 +292,18 @@
 <nav class="post-nav flex-row flex-justify-between">
   
     <div class="waves-block waves-effect prev">
-      <a href="/2018/08/09/NioEventLoop源码分析/" id="post-prev" class="post-nav-link">
+      <a href="/2018/08/03/select实现细节分析/" id="post-prev" class="post-nav-link">
         <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
-        <h4 class="title">NioEventLoop源码分析</h4>
+        <h4 class="title">select实现细节分析</h4>
       </a>
     </div>
   
 
   
     <div class="waves-block waves-effect next">
-      <a href="/2018/08/09/应用服务器中对JDK的epoll空转bug的处理/" id="post-next" class="post-nav-link">
+      <a href="/2018/08/01/java反射机制/" id="post-next" class="post-nav-link">
         <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
-        <h4 class="title">应用服务器中对JDK的epoll空转bug的处理</h4>
+        <h4 class="title">java反射机制</h4>
       </a>
     </div>
   
@@ -342,15 +338,6 @@
         <footer class="footer">
     <div class="top">
         
-<p>
-    <span id="busuanzi_container_site_uv" style='display:none'>
-        站点总访客数：<span id="busuanzi_value_site_uv"></span>
-    </span>
-    <span id="busuanzi_container_site_pv" style='display:none'>
-        站点总访问量：<span id="busuanzi_value_site_pv"></span>
-    </span>
-</p>
-
 
         <p>
             
@@ -378,7 +365,7 @@
 <div class="global-share" id="globalShare">
     <ul class="reset share-icons">
       <li>
-        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=//litten.me/2018/08/09/java反射机制-动态代理/&title=《java反射机制-动态代理》 — Tongtong's Blog&pic=//litten.me/img/tongtong.jpg" data-title="微博">
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=//litten.me/2018/08/02/java反射机制-动态代理/&title=《java反射机制-动态代理》 — Tongtong's Blog&pic=//litten.me/img/tongtong.jpg" data-title="微博">
           <i class="icon icon-weibo"></i>
         </a>
       </li>
@@ -388,22 +375,22 @@
         </a>
       </li>
       <li>
-        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=//litten.me/2018/08/09/java反射机制-动态代理/&title=《java反射机制-动态代理》 — Tongtong's Blog&source=" data-title=" QQ">
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=//litten.me/2018/08/02/java反射机制-动态代理/&title=《java反射机制-动态代理》 — Tongtong's Blog&source=" data-title=" QQ">
           <i class="icon icon-qq"></i>
         </a>
       </li>
       <li>
-        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=//litten.me/2018/08/09/java反射机制-动态代理/" data-title=" Facebook">
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=//litten.me/2018/08/02/java反射机制-动态代理/" data-title=" Facebook">
           <i class="icon icon-facebook"></i>
         </a>
       </li>
       <li>
-        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《java反射机制-动态代理》 — Tongtong's Blog&url=//litten.me/2018/08/09/java反射机制-动态代理/&via=//litten.me" data-title=" Twitter">
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《java反射机制-动态代理》 — Tongtong's Blog&url=//litten.me/2018/08/02/java反射机制-动态代理/&via=//litten.me" data-title=" Twitter">
           <i class="icon icon-twitter"></i>
         </a>
       </li>
       <li>
-        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=//litten.me/2018/08/09/java反射机制-动态代理/" data-title=" Google+">
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=//litten.me/2018/08/02/java反射机制-动态代理/" data-title=" Google+">
           <i class="icon icon-google-plus"></i>
         </a>
       </li>
@@ -414,7 +401,7 @@
 <div class="page-modal wx-share" id="wxShare">
     <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
-    <img src="//api.qrserver.com/v1/create-qr-code/?data=//litten.me/2018/08/09/java反射机制-动态代理/" alt="微信分享二维码">
+    <img src="//api.qrserver.com/v1/create-qr-code/?data=//litten.me/2018/08/02/java反射机制-动态代理/" alt="微信分享二维码">
 </div>
 
 
@@ -453,8 +440,6 @@ var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
 
 
 
-
-<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
 
 
