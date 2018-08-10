@@ -21,19 +21,19 @@
     
     
     <meta name="keywords" content="Java">
-    <meta name="description" content="为什么会产生JDK的空轮询bug呢？JDK中NIO空轮询主要是因为select本来应该是阻塞的，然而在程序里select在IO事件没有就绪的时候返回了，导致selectKeys列表是空的，程序变成了死循环。 1、JDK空轮询BUG是如何触发的呢？ JDK空轮询BUG被触发的时机是随机的，不知道会发生在什么时候，否则JDK空轮询的BUG就早已被解决了。 2、Netty是如何解决JDK空轮询bug的呢">
+    <meta name="description" content="为什么会产生JDK的空轮询bug呢？JDK中NIO空轮询主要是因为select本来应该是阻塞的，然而在程序里select在IO事件没有就绪的时候返回了，导致selectKeys列表是空的，程序变成了死循环。">
 <meta name="keywords" content="Java">
 <meta property="og:type" content="article">
 <meta property="og:title" content="应用服务器中对JDK的epoll空转bug的处理">
 <meta property="og:url" content="//litten.me/2018/08/06/应用服务器中对JDK的epoll空转bug的处理/index.html">
 <meta property="og:site_name" content="Tongtong&#39;s Blog">
-<meta property="og:description" content="为什么会产生JDK的空轮询bug呢？JDK中NIO空轮询主要是因为select本来应该是阻塞的，然而在程序里select在IO事件没有就绪的时候返回了，导致selectKeys列表是空的，程序变成了死循环。 1、JDK空轮询BUG是如何触发的呢？ JDK空轮询BUG被触发的时机是随机的，不知道会发生在什么时候，否则JDK空轮询的BUG就早已被解决了。 2、Netty是如何解决JDK空轮询bug的呢">
+<meta property="og:description" content="为什么会产生JDK的空轮询bug呢？JDK中NIO空轮询主要是因为select本来应该是阻塞的，然而在程序里select在IO事件没有就绪的时候返回了，导致selectKeys列表是空的，程序变成了死循环。">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="https://i.imgur.com/Vau679X.jpg">
 <meta property="og:updated_time" content="2018-08-10T01:53:01.337Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="应用服务器中对JDK的epoll空转bug的处理">
-<meta name="twitter:description" content="为什么会产生JDK的空轮询bug呢？JDK中NIO空轮询主要是因为select本来应该是阻塞的，然而在程序里select在IO事件没有就绪的时候返回了，导致selectKeys列表是空的，程序变成了死循环。 1、JDK空轮询BUG是如何触发的呢？ JDK空轮询BUG被触发的时机是随机的，不知道会发生在什么时候，否则JDK空轮询的BUG就早已被解决了。 2、Netty是如何解决JDK空轮询bug的呢">
+<meta name="twitter:description" content="为什么会产生JDK的空轮询bug呢？JDK中NIO空轮询主要是因为select本来应该是阻塞的，然而在程序里select在IO事件没有就绪的时候返回了，导致selectKeys列表是空的，程序变成了死循环。">
 <meta name="twitter:image" content="https://i.imgur.com/Vau679X.jpg">
     
         <link rel="alternate" type="application/atom+xml" title="Tongtong&#39;s Blog" href="/atom.xml">
@@ -91,13 +91,6 @@
             </li>
         
             <li class="waves-block waves-effect">
-              <a href="/categories"  >
-                <i class="icon icon-lg icon-th-list"></i>
-                Categories
-              </a>
-            </li>
-        
-            <li class="waves-block waves-effect">
               <a href="https://github.com/tongqinghuan" target="_blank" >
                 <i class="icon icon-lg icon-github"></i>
                 Github
@@ -105,7 +98,7 @@
             </li>
         
             <li class="waves-block waves-effect">
-              <a href="http://www.weibo.com/tongqinghuan" target="_blank" >
+              <a href="https://www.weibo.com/tongqinghuan" target="_blank" >
                 <i class="icon icon-lg icon-weibo"></i>
                 Weibo
               </a>
@@ -187,7 +180,13 @@
 
         </div>
         <div class="post-content" id="post-content" itemprop="postContent">
-            <h2 id="为什么会产生JDK的空轮询bug呢？"><a href="#为什么会产生JDK的空轮询bug呢？" class="headerlink" title="为什么会产生JDK的空轮询bug呢？"></a>为什么会产生JDK的空轮询bug呢？</h2><p>JDK中NIO空轮询主要是因为select本来应该是阻塞的，然而在程序里select在IO事件没有就绪的时候返回了，导致selectKeys列表是空的，程序变成了死循环。<br><img src="https://i.imgur.com/Vau679X.jpg" alt=""></p>
+            <h2 id="为什么会产生JDK的空轮询bug呢？"><a href="#为什么会产生JDK的空轮询bug呢？" class="headerlink" title="为什么会产生JDK的空轮询bug呢？"></a>为什么会产生JDK的空轮询bug呢？</h2><p>JDK中NIO空轮询主要是因为select本来应该是阻塞的，然而在程序里select在IO事件没有就绪的时候返回了，导致selectKeys列表是空的，程序变成了死循环。<br><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://i.imgur.com/Vau679X.jpg" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure></p>
 <p>1、JDK空轮询BUG是如何触发的呢？</p>
 <p>JDK空轮询BUG被触发的时机是随机的，不知道会发生在什么时候，否则JDK空轮询的BUG就早已被解决了。</p>
 <p>2、Netty是如何解决JDK空轮询bug的呢？</p>

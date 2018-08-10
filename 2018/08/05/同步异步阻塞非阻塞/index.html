@@ -96,13 +96,6 @@
             </li>
         
             <li class="waves-block waves-effect">
-              <a href="/categories"  >
-                <i class="icon icon-lg icon-th-list"></i>
-                Categories
-              </a>
-            </li>
-        
-            <li class="waves-block waves-effect">
               <a href="https://github.com/tongqinghuan" target="_blank" >
                 <i class="icon icon-lg icon-github"></i>
                 Github
@@ -110,7 +103,7 @@
             </li>
         
             <li class="waves-block waves-effect">
-              <a href="http://www.weibo.com/tongqinghuan" target="_blank" >
+              <a href="https://www.weibo.com/tongqinghuan" target="_blank" >
                 <i class="icon icon-lg icon-weibo"></i>
                 Weibo
               </a>
@@ -209,20 +202,56 @@
 <li>等待网络上的数据分组到达，复制到内核的某个缓冲区</li>
 <li>把数据从内核缓冲区复制到用户进程缓冲区</li>
 </ol>
-<p>Unix网络编程中给出了五种IO模型<br><img src="https://i.imgur.com/WpWmCfM.png" alt=""></p>
-<p>阻塞IO模型：<br>这是常用的IO模型，默认情况下所有的套接字都是阻塞的。<br><img src="https://i.imgur.com/M6BvV5e.png" alt=""><br>recvfrom是系统调用，在应用进行发生系统调用到将数据从内核缓冲区复制到用户进程缓冲区都是阻塞的。</p>
+<p>Unix网络编程中给出了五种IO模型<br><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://i.imgur.com/WpWmCfM.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure></p>
+<p>阻塞IO模型：<br>这是常用的IO模型，默认情况下所有的套接字都是阻塞的。<br><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://i.imgur.com/M6BvV5e.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure><br>recvfrom是系统调用，在应用进行发生系统调用到将数据从内核缓冲区复制到用户进程缓冲区都是阻塞的。</p>
 <p>优点：编程简单，调试简单，单次响应时间低</p>
 <p>缺点：需要等待</p>
-<p>非阻塞模型：<br>用户进程轮询内核，查看内核的数据报文是否准备好。<br><img src="https://i.imgur.com/tAO3ZYr.png" alt=""><br>优点：用户进程轮询期间可以干别的任务，不用仅仅处于等待状态，即当前进程可以同时处理多个任务。<br>系统总的吞吐量增大。</p>
+<p>非阻塞模型：<br>用户进程轮询内核，查看内核的数据报文是否准备好。<br><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://i.imgur.com/tAO3ZYr.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure><br>优点：用户进程轮询期间可以干别的任务，不用仅仅处于等待状态，即当前进程可以同时处理多个任务。<br>系统总的吞吐量增大。</p>
 <p>缺点：导致IO任务完成的响应时间增大，因为在轮询期间进程会处理别的任务，有可能在处理别的任务期间，内核就已经将数据准备好。</p>
 <p>IO多路复用（select poll epoll）</p>
-<p>调用select，让其阻塞在两个系统调用（select询问数据是否准备好并且直到数据准备才返回，recvfrom 是否把数据全部复制到用户进程缓冲区，在未完成复制之前，进程一直阻塞在recvfrom函数上 ）中的某一个。<br><img src="https://i.imgur.com/dhzZ5nJ.png" alt=""></p>
+<p>调用select，让其阻塞在两个系统调用（select询问数据是否准备好并且直到数据准备才返回，recvfrom 是否把数据全部复制到用户进程缓冲区，在未完成复制之前，进程一直阻塞在recvfrom函数上 ）中的某一个。<br><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://i.imgur.com/dhzZ5nJ.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure></p>
 <p>对比之前的同步非阻塞IO，Select可以同时轮询多个socket的状态，只要有socket处于可读状态，select就可以返回。然后进程在调用recvfrom将数据从内核拷贝到用户缓冲区。当然这个过程进程也处于阻塞的状态。</p>
 <p>优点：能同时处理多个连接，不用为每个新接入的连接都分配一个线程去处理。节省系统开销。‘</p>
 <p>缺点：当连接的数目不多时，可能性能比不上多线程+阻塞IO。</p>
-<p>信号驱动IO<br><img src="https://i.imgur.com/EaDfHnU.png" alt=""></p>
+<p>信号驱动IO<br><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://i.imgur.com/EaDfHnU.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure></p>
 <p>异步IO</p>
-<p>发起系统调用，立即返回，数据准备和数据复制都由内核完成，然后通知用户进程。<br><img src="https://i.imgur.com/JODswlb.png" alt=""></p>
+<p>发起系统调用，立即返回，数据准备和数据复制都由内核完成，然后通知用户进程。<br><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://i.imgur.com/JODswlb.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure></p>
 <p>5、程序员感知到的异步同步和阻塞和非阻塞</p>
 <p>底层接口使用会比较复杂，因此各种对底层接口封装的类库各式各样，可以选择同步的方式或者异步的方式来实现。比如node.js在程序员感知层次提供了异步非阻塞的API。</p>
 
