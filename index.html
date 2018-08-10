@@ -31,7 +31,7 @@
     
         <link rel="alternate" type="application/atom+xml" title="Tongtong&#39;s Blog" href="/atom.xml">
     
-    <link rel="shortcut icon" href="/img/brand.jpg">
+    <link rel="shortcut icon" href="/favicon.ico">
     <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
     <script>window.lazyScripts=[]</script>
 
@@ -48,7 +48,7 @@
     <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
         <i class="icon icon-lg icon-close"></i>
     </a>
-    <div class="brand-wrap" style="background-image:url(/img/backgroud.jpg)">
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
       <div class="brand">
         <a href="/" class="avatar waves-effect waves-circle waves-light">
           <img src="/img/tongtong.jpg">
@@ -183,14 +183,10 @@
     
         NioEventLoop组件整体思维导图：
 
-                
-                    
-                    
-                
-                
-            
 NioEventLoopGroup创建NioEventLoopGroup创建流程源码分析
-NioEventLoop在服务器端启动的时候通...
+NioEventLoop在服务器端启动的时候通过newNioEventLoopGroup（）创建。
+1EventLoopGroup bossGroup = new NioEventLoopGroup(1);
+最终通过调用MultithreadEventExe...
     
 
         <a href="/2018/08/08/NioEventLoop源码分析/" class="post-more waves-effect waves-button">
@@ -236,12 +232,9 @@ NioEventLoop在服务器端启动的时候通...
 
     
         为什么会产生JDK的空轮询bug呢？JDK中NIO空轮询主要是因为select本来应该是阻塞的，然而在程序里select在IO事件没有就绪的时候返回了，导致selectKeys列表是空的，程序变成了死循环。
-                
-                    
-                    
-                
-                
-...
+1、JDK空轮询BUG是如何触发的呢？
+JDK空轮询BUG被触发的时机是随机的，不知道会发生在什么时候，否则JDK空轮询的BUG就早已被解决了。
+2、Netty是如何解决JDK空轮询bu...
     
 
         <a href="/2018/08/06/应用服务器中对JDK的epoll空转bug的处理/" class="post-more waves-effect waves-button">
@@ -430,7 +423,7 @@ https://blog.csdn.net/shuxiaogd/article/details/50366039
     
         java的设计模式-代理模式代理模式中存在两种对象：代理类 和委托类
 代理模式的特点：代理类和委托类都实现相同的接口，委托类委托代理类实现一些与核心业务无关的通用业务逻辑，而自己专注处理核心的业务逻辑。例如演艺圈，艺人们都需要经纪人去代替他们和第三方洽谈档期等等事宜，而他们则专注做好表演的工作。那么经纪人就起着代理的作用。代理模式结构如图（图片来自大话设计模式）：
-             ...
+静态代理模式静态代理模式中...
     
 
         <a href="/2018/08/02/java反射机制-动态代理/" class="post-more waves-effect waves-button">
@@ -654,6 +647,23 @@ var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
 
 
 
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '死鬼去哪里了！';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '(つェ⊂)咦!又好了!';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
 
 
 

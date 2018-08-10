@@ -43,7 +43,7 @@
     
         <link rel="alternate" type="application/atom+xml" title="Tongtong&#39;s Blog" href="/atom.xml">
     
-    <link rel="shortcut icon" href="/img/brand.jpg">
+    <link rel="shortcut icon" href="/favicon.ico">
     <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
     <script>window.lazyScripts=[]</script>
 
@@ -60,7 +60,7 @@
     <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
         <i class="icon icon-lg icon-close"></i>
     </a>
-    <div class="brand-wrap" style="background-image:url(/img/backgroud.jpg)">
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
       <div class="brand">
         <a href="/" class="avatar waves-effect waves-circle waves-light">
           <img src="/img/tongtong.jpg">
@@ -209,56 +209,20 @@
 <li>等待网络上的数据分组到达，复制到内核的某个缓冲区</li>
 <li>把数据从内核缓冲区复制到用户进程缓冲区</li>
 </ol>
-<p>Unix网络编程中给出了五种IO模型<br><figure class="image-bubble">
-                <div class="img-lightbox">
-                    <div class="overlay"></div>
-                    <img src="https://i.imgur.com/WpWmCfM.png" alt="" title="">
-                </div>
-                <div class="image-caption"></div>
-            </figure></p>
-<p>阻塞IO模型：<br>这是常用的IO模型，默认情况下所有的套接字都是阻塞的。<br><figure class="image-bubble">
-                <div class="img-lightbox">
-                    <div class="overlay"></div>
-                    <img src="https://i.imgur.com/M6BvV5e.png" alt="" title="">
-                </div>
-                <div class="image-caption"></div>
-            </figure><br>recvfrom是系统调用，在应用进行发生系统调用到将数据从内核缓冲区复制到用户进程缓冲区都是阻塞的。</p>
+<p>Unix网络编程中给出了五种IO模型<br><img src="https://i.imgur.com/WpWmCfM.png" alt=""></p>
+<p>阻塞IO模型：<br>这是常用的IO模型，默认情况下所有的套接字都是阻塞的。<br><img src="https://i.imgur.com/M6BvV5e.png" alt=""><br>recvfrom是系统调用，在应用进行发生系统调用到将数据从内核缓冲区复制到用户进程缓冲区都是阻塞的。</p>
 <p>优点：编程简单，调试简单，单次响应时间低</p>
 <p>缺点：需要等待</p>
-<p>非阻塞模型：<br>用户进程轮询内核，查看内核的数据报文是否准备好。<br><figure class="image-bubble">
-                <div class="img-lightbox">
-                    <div class="overlay"></div>
-                    <img src="https://i.imgur.com/tAO3ZYr.png" alt="" title="">
-                </div>
-                <div class="image-caption"></div>
-            </figure><br>优点：用户进程轮询期间可以干别的任务，不用仅仅处于等待状态，即当前进程可以同时处理多个任务。<br>系统总的吞吐量增大。</p>
+<p>非阻塞模型：<br>用户进程轮询内核，查看内核的数据报文是否准备好。<br><img src="https://i.imgur.com/tAO3ZYr.png" alt=""><br>优点：用户进程轮询期间可以干别的任务，不用仅仅处于等待状态，即当前进程可以同时处理多个任务。<br>系统总的吞吐量增大。</p>
 <p>缺点：导致IO任务完成的响应时间增大，因为在轮询期间进程会处理别的任务，有可能在处理别的任务期间，内核就已经将数据准备好。</p>
 <p>IO多路复用（select poll epoll）</p>
-<p>调用select，让其阻塞在两个系统调用（select询问数据是否准备好并且直到数据准备才返回，recvfrom 是否把数据全部复制到用户进程缓冲区，在未完成复制之前，进程一直阻塞在recvfrom函数上 ）中的某一个。<br><figure class="image-bubble">
-                <div class="img-lightbox">
-                    <div class="overlay"></div>
-                    <img src="https://i.imgur.com/dhzZ5nJ.png" alt="" title="">
-                </div>
-                <div class="image-caption"></div>
-            </figure></p>
+<p>调用select，让其阻塞在两个系统调用（select询问数据是否准备好并且直到数据准备才返回，recvfrom 是否把数据全部复制到用户进程缓冲区，在未完成复制之前，进程一直阻塞在recvfrom函数上 ）中的某一个。<br><img src="https://i.imgur.com/dhzZ5nJ.png" alt=""></p>
 <p>对比之前的同步非阻塞IO，Select可以同时轮询多个socket的状态，只要有socket处于可读状态，select就可以返回。然后进程在调用recvfrom将数据从内核拷贝到用户缓冲区。当然这个过程进程也处于阻塞的状态。</p>
 <p>优点：能同时处理多个连接，不用为每个新接入的连接都分配一个线程去处理。节省系统开销。‘</p>
 <p>缺点：当连接的数目不多时，可能性能比不上多线程+阻塞IO。</p>
-<p>信号驱动IO<br><figure class="image-bubble">
-                <div class="img-lightbox">
-                    <div class="overlay"></div>
-                    <img src="https://i.imgur.com/EaDfHnU.png" alt="" title="">
-                </div>
-                <div class="image-caption"></div>
-            </figure></p>
+<p>信号驱动IO<br><img src="https://i.imgur.com/EaDfHnU.png" alt=""></p>
 <p>异步IO</p>
-<p>发起系统调用，立即返回，数据准备和数据复制都由内核完成，然后通知用户进程。<br><figure class="image-bubble">
-                <div class="img-lightbox">
-                    <div class="overlay"></div>
-                    <img src="https://i.imgur.com/JODswlb.png" alt="" title="">
-                </div>
-                <div class="image-caption"></div>
-            </figure></p>
+<p>发起系统调用，立即返回，数据准备和数据复制都由内核完成，然后通知用户进程。<br><img src="https://i.imgur.com/JODswlb.png" alt=""></p>
 <p>5、程序员感知到的异步同步和阻塞和非阻塞</p>
 <p>底层接口使用会比较复杂，因此各种对底层接口封装的类库各式各样，可以选择同步的方式或者异步的方式来实现。比如node.js在程序员感知层次提供了异步非阻塞的API。</p>
 
@@ -274,6 +238,8 @@
 
 
         
+        这里可以写作者留言，标签和 hexo 中所有变量及辅助函数等均可调用，示例：<a href="/2018/08/05/同步异步阻塞非阻塞/" target="_blank" rel="external">//litten.me/2018/08/05/同步异步阻塞非阻塞/</a>
+        
     </div>
     
     <footer>
@@ -285,6 +251,10 @@
 </blockquote>
 
         
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
 
 
         <div class="post-footer">
@@ -386,6 +356,32 @@
 
 </article>
 
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        谢谢大爷~
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
 
 
 </div>
@@ -464,7 +460,7 @@
 
     <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
 <script>
-var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
 
 
 </script>
@@ -497,6 +493,23 @@ var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
 
 
 
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '死鬼去哪里了！';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '(つェ⊂)咦!又好了!';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
 
 
 

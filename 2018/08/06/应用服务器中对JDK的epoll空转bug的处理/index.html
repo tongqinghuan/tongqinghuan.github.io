@@ -21,24 +21,24 @@
     
     
     <meta name="keywords" content="Java">
-    <meta name="description" content="为什么会产生JDK的空轮询bug呢？JDK中NIO空轮询主要是因为select本来应该是阻塞的，然而在程序里select在IO事件没有就绪的时候返回了，导致selectKeys列表是空的，程序变成了死循环。">
+    <meta name="description" content="为什么会产生JDK的空轮询bug呢？JDK中NIO空轮询主要是因为select本来应该是阻塞的，然而在程序里select在IO事件没有就绪的时候返回了，导致selectKeys列表是空的，程序变成了死循环。 1、JDK空轮询BUG是如何触发的呢？ JDK空轮询BUG被触发的时机是随机的，不知道会发生在什么时候，否则JDK空轮询的BUG就早已被解决了。 2、Netty是如何解决JDK空轮询bug的呢">
 <meta name="keywords" content="Java">
 <meta property="og:type" content="article">
 <meta property="og:title" content="应用服务器中对JDK的epoll空转bug的处理">
 <meta property="og:url" content="//litten.me/2018/08/06/应用服务器中对JDK的epoll空转bug的处理/index.html">
 <meta property="og:site_name" content="Tongtong&#39;s Blog">
-<meta property="og:description" content="为什么会产生JDK的空轮询bug呢？JDK中NIO空轮询主要是因为select本来应该是阻塞的，然而在程序里select在IO事件没有就绪的时候返回了，导致selectKeys列表是空的，程序变成了死循环。">
+<meta property="og:description" content="为什么会产生JDK的空轮询bug呢？JDK中NIO空轮询主要是因为select本来应该是阻塞的，然而在程序里select在IO事件没有就绪的时候返回了，导致selectKeys列表是空的，程序变成了死循环。 1、JDK空轮询BUG是如何触发的呢？ JDK空轮询BUG被触发的时机是随机的，不知道会发生在什么时候，否则JDK空轮询的BUG就早已被解决了。 2、Netty是如何解决JDK空轮询bug的呢">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="https://i.imgur.com/Vau679X.jpg">
 <meta property="og:updated_time" content="2018-08-10T01:53:01.337Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="应用服务器中对JDK的epoll空转bug的处理">
-<meta name="twitter:description" content="为什么会产生JDK的空轮询bug呢？JDK中NIO空轮询主要是因为select本来应该是阻塞的，然而在程序里select在IO事件没有就绪的时候返回了，导致selectKeys列表是空的，程序变成了死循环。">
+<meta name="twitter:description" content="为什么会产生JDK的空轮询bug呢？JDK中NIO空轮询主要是因为select本来应该是阻塞的，然而在程序里select在IO事件没有就绪的时候返回了，导致selectKeys列表是空的，程序变成了死循环。 1、JDK空轮询BUG是如何触发的呢？ JDK空轮询BUG被触发的时机是随机的，不知道会发生在什么时候，否则JDK空轮询的BUG就早已被解决了。 2、Netty是如何解决JDK空轮询bug的呢">
 <meta name="twitter:image" content="https://i.imgur.com/Vau679X.jpg">
     
         <link rel="alternate" type="application/atom+xml" title="Tongtong&#39;s Blog" href="/atom.xml">
     
-    <link rel="shortcut icon" href="/img/brand.jpg">
+    <link rel="shortcut icon" href="/favicon.ico">
     <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
     <script>window.lazyScripts=[]</script>
 
@@ -55,7 +55,7 @@
     <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
         <i class="icon icon-lg icon-close"></i>
     </a>
-    <div class="brand-wrap" style="background-image:url(/img/backgroud.jpg)">
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
       <div class="brand">
         <a href="/" class="avatar waves-effect waves-circle waves-light">
           <img src="/img/tongtong.jpg">
@@ -187,13 +187,7 @@
 
         </div>
         <div class="post-content" id="post-content" itemprop="postContent">
-            <h2 id="为什么会产生JDK的空轮询bug呢？"><a href="#为什么会产生JDK的空轮询bug呢？" class="headerlink" title="为什么会产生JDK的空轮询bug呢？"></a>为什么会产生JDK的空轮询bug呢？</h2><p>JDK中NIO空轮询主要是因为select本来应该是阻塞的，然而在程序里select在IO事件没有就绪的时候返回了，导致selectKeys列表是空的，程序变成了死循环。<br><figure class="image-bubble">
-                <div class="img-lightbox">
-                    <div class="overlay"></div>
-                    <img src="https://i.imgur.com/Vau679X.jpg" alt="" title="">
-                </div>
-                <div class="image-caption"></div>
-            </figure></p>
+            <h2 id="为什么会产生JDK的空轮询bug呢？"><a href="#为什么会产生JDK的空轮询bug呢？" class="headerlink" title="为什么会产生JDK的空轮询bug呢？"></a>为什么会产生JDK的空轮询bug呢？</h2><p>JDK中NIO空轮询主要是因为select本来应该是阻塞的，然而在程序里select在IO事件没有就绪的时候返回了，导致selectKeys列表是空的，程序变成了死循环。<br><img src="https://i.imgur.com/Vau679X.jpg" alt=""></p>
 <p>1、JDK空轮询BUG是如何触发的呢？</p>
 <p>JDK空轮询BUG被触发的时机是随机的，不知道会发生在什么时候，否则JDK空轮询的BUG就早已被解决了。</p>
 <p>2、Netty是如何解决JDK空轮询bug的呢？</p>
@@ -212,6 +206,8 @@
 
 
         
+        这里可以写作者留言，标签和 hexo 中所有变量及辅助函数等均可调用，示例：<a href="/2018/08/06/应用服务器中对JDK的epoll空转bug的处理/" target="_blank" rel="external">//litten.me/2018/08/06/应用服务器中对JDK的epoll空转bug的处理/</a>
+        
     </div>
     
     <footer>
@@ -223,6 +219,10 @@
 </blockquote>
 
         
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
 
 
         <div class="post-footer">
@@ -324,6 +324,32 @@
 
 </article>
 
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        谢谢大爷~
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
 
 
 </div>
@@ -402,7 +428,7 @@
 
     <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
 <script>
-var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
 
 
 </script>
@@ -435,6 +461,23 @@ var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
 
 
 
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '死鬼去哪里了！';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '(つェ⊂)咦!又好了!';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
 
 
 

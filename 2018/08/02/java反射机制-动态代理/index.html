@@ -21,24 +21,24 @@
     
     
     <meta name="keywords" content="Java">
-    <meta name="description" content="java的设计模式-代理模式代理模式中存在两种对象：代理类 和委托类 代理模式的特点：代理类和委托类都实现相同的接口，委托类委托代理类实现一些与核心业务无关的通用业务逻辑，而自己专注处理核心的业务逻辑。例如演艺圈，艺人们都需要经纪人去代替他们和第三方洽谈档期等等事宜，而他们则专注做好表演的工作。那么经纪人就起着代理的作用。代理模式结构如图（图片来自大话设计模式）：">
+    <meta name="description" content="java的设计模式-代理模式代理模式中存在两种对象：代理类 和委托类 代理模式的特点：代理类和委托类都实现相同的接口，委托类委托代理类实现一些与核心业务无关的通用业务逻辑，而自己专注处理核心的业务逻辑。例如演艺圈，艺人们都需要经纪人去代替他们和第三方洽谈档期等等事宜，而他们则专注做好表演的工作。那么经纪人就起着代理的作用。代理模式结构如图（图片来自大话设计模式）： 静态代理模式静态代理模式中的代理">
 <meta name="keywords" content="Java">
 <meta property="og:type" content="article">
 <meta property="og:title" content="java反射机制-动态代理">
 <meta property="og:url" content="//litten.me/2018/08/02/java反射机制-动态代理/index.html">
 <meta property="og:site_name" content="Tongtong&#39;s Blog">
-<meta property="og:description" content="java的设计模式-代理模式代理模式中存在两种对象：代理类 和委托类 代理模式的特点：代理类和委托类都实现相同的接口，委托类委托代理类实现一些与核心业务无关的通用业务逻辑，而自己专注处理核心的业务逻辑。例如演艺圈，艺人们都需要经纪人去代替他们和第三方洽谈档期等等事宜，而他们则专注做好表演的工作。那么经纪人就起着代理的作用。代理模式结构如图（图片来自大话设计模式）：">
+<meta property="og:description" content="java的设计模式-代理模式代理模式中存在两种对象：代理类 和委托类 代理模式的特点：代理类和委托类都实现相同的接口，委托类委托代理类实现一些与核心业务无关的通用业务逻辑，而自己专注处理核心的业务逻辑。例如演艺圈，艺人们都需要经纪人去代替他们和第三方洽谈档期等等事宜，而他们则专注做好表演的工作。那么经纪人就起着代理的作用。代理模式结构如图（图片来自大话设计模式）： 静态代理模式静态代理模式中的代理">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="https://i.imgur.com/kl0ztCD.jpg">
 <meta property="og:updated_time" content="2018-08-10T01:50:02.360Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="java反射机制-动态代理">
-<meta name="twitter:description" content="java的设计模式-代理模式代理模式中存在两种对象：代理类 和委托类 代理模式的特点：代理类和委托类都实现相同的接口，委托类委托代理类实现一些与核心业务无关的通用业务逻辑，而自己专注处理核心的业务逻辑。例如演艺圈，艺人们都需要经纪人去代替他们和第三方洽谈档期等等事宜，而他们则专注做好表演的工作。那么经纪人就起着代理的作用。代理模式结构如图（图片来自大话设计模式）：">
+<meta name="twitter:description" content="java的设计模式-代理模式代理模式中存在两种对象：代理类 和委托类 代理模式的特点：代理类和委托类都实现相同的接口，委托类委托代理类实现一些与核心业务无关的通用业务逻辑，而自己专注处理核心的业务逻辑。例如演艺圈，艺人们都需要经纪人去代替他们和第三方洽谈档期等等事宜，而他们则专注做好表演的工作。那么经纪人就起着代理的作用。代理模式结构如图（图片来自大话设计模式）： 静态代理模式静态代理模式中的代理">
 <meta name="twitter:image" content="https://i.imgur.com/kl0ztCD.jpg">
     
         <link rel="alternate" type="application/atom+xml" title="Tongtong&#39;s Blog" href="/atom.xml">
     
-    <link rel="shortcut icon" href="/img/brand.jpg">
+    <link rel="shortcut icon" href="/favicon.ico">
     <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
     <script>window.lazyScripts=[]</script>
 
@@ -55,7 +55,7 @@
     <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
         <i class="icon icon-lg icon-close"></i>
     </a>
-    <div class="brand-wrap" style="background-image:url(/img/backgroud.jpg)">
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
       <div class="brand">
         <a href="/" class="avatar waves-effect waves-circle waves-light">
           <img src="/img/tongtong.jpg">
@@ -188,13 +188,7 @@
         </div>
         <div class="post-content" id="post-content" itemprop="postContent">
             <h2 id="java的设计模式-代理模式"><a href="#java的设计模式-代理模式" class="headerlink" title="java的设计模式-代理模式"></a>java的设计模式-代理模式</h2><p>代理模式中存在两种对象：代理类 和委托类</p>
-<p>代理模式的特点：代理类和委托类都实现相同的接口，委托类委托代理类实现一些与核心业务无关的通用业务逻辑，而自己专注处理核心的业务逻辑。例如演艺圈，艺人们都需要经纪人去代替他们和第三方洽谈档期等等事宜，而他们则专注做好表演的工作。那么经纪人就起着代理的作用。代理模式结构如图（图片来自大话设计模式）：<figure class="image-bubble">
-                <div class="img-lightbox">
-                    <div class="overlay"></div>
-                    <img src="https://i.imgur.com/kl0ztCD.jpg" alt="" title="">
-                </div>
-                <div class="image-caption"></div>
-            </figure></p>
+<p>代理模式的特点：代理类和委托类都实现相同的接口，委托类委托代理类实现一些与核心业务无关的通用业务逻辑，而自己专注处理核心的业务逻辑。例如演艺圈，艺人们都需要经纪人去代替他们和第三方洽谈档期等等事宜，而他们则专注做好表演的工作。那么经纪人就起着代理的作用。代理模式结构如图（图片来自大话设计模式）：<img src="https://i.imgur.com/kl0ztCD.jpg" alt=""></p>
 <h2 id="静态代理模式"><a href="#静态代理模式" class="headerlink" title="静态代理模式"></a>静态代理模式</h2><p>静态代理模式中的代理类是由程序员创建或者工具创建，在程序编译期间，接口、代理类和被代理类就是确定的。类比明星，静态代理模式下每位艺人都会安排固定的经纪人，不管艺人的档期的忙或闲，某个经纪人就只负责代理特定的艺人的事务。下面通过一个简单的静态代理的例子来描述静态代理</p>
 <p>共有的接口</p>
 <figure class="highlight plain"><figcaption><span>interface Person&#123;</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">	public void sing(String name);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -226,6 +220,8 @@
 
 
         
+        这里可以写作者留言，标签和 hexo 中所有变量及辅助函数等均可调用，示例：<a href="/2018/08/02/java反射机制-动态代理/" target="_blank" rel="external">//litten.me/2018/08/02/java反射机制-动态代理/</a>
+        
     </div>
     
     <footer>
@@ -237,6 +233,10 @@
 </blockquote>
 
         
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
 
 
         <div class="post-footer">
@@ -338,6 +338,32 @@
 
 </article>
 
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        谢谢大爷~
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
 
 
 </div>
@@ -416,7 +442,7 @@
 
     <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
 <script>
-var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
 
 
 </script>
@@ -449,6 +475,23 @@ var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
 
 
 
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '死鬼去哪里了！';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '(つェ⊂)咦!又好了!';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
 
 
 

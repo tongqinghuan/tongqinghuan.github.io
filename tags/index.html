@@ -32,7 +32,7 @@
     
         <link rel="alternate" type="application/atom+xml" title="Tongtong&#39;s Blog" href="/atom.xml">
     
-    <link rel="shortcut icon" href="/img/brand.jpg">
+    <link rel="shortcut icon" href="/favicon.ico">
     <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
     <script>window.lazyScripts=[]</script>
 
@@ -49,7 +49,7 @@
     <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
         <i class="icon icon-lg icon-close"></i>
     </a>
-    <div class="brand-wrap" style="background-image:url(/img/backgroud.jpg)">
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
       <div class="brand">
         <a href="/" class="avatar waves-effect waves-circle waves-light">
           <img src="/img/tongtong.jpg">
@@ -151,11 +151,11 @@
              active">All</a>
         
 
-            <a href="/tags/Java/" style="-webkit-order:0;order:0" class="tags-list-item waves-effect waves-button waves-light">Java</a>
+            <a href="/tags/Netty源码分析/" style="-webkit-order:0;order:0" class="tags-list-item waves-effect waves-button waves-light">Netty源码分析</a>
 
         
 
-            <a href="/tags/Netty源码分析/" style="-webkit-order:1;order:1" class="tags-list-item waves-effect waves-button waves-light">Netty源码分析</a>
+            <a href="/tags/Java/" style="-webkit-order:1;order:1" class="tags-list-item waves-effect waves-button waves-light">Java</a>
 
         
 
@@ -179,6 +179,45 @@
 
 <div class="container body-wrap fade">
     
+
+            <h3 class="archive-separator" id="tag-Netty源码分析">Netty源码分析</h3>
+
+            <div class="waterfall">
+            
+
+                <div class="waterfall-item">
+  <article class="article-card archive-article">
+    <div class="post-meta">
+      <time class="post-time" title="2018-08-08 22:46:03" datetime="2018-08-08T14:46:03.000Z"  itemprop="datePublished">2018-08-08</time>
+
+      
+
+
+    </div>
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2018/08/08/NioEventLoop源码分析/">NioEventLoop源码分析</a>
+    </h3>
+  
+
+
+
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Netty源码分析/">Netty源码分析</a></li></ul>
+
+    </div>
+    
+  </article>
+</div>
+
+            
+            </div>
+            
 
             <h3 class="archive-separator" id="tag-Java">Java</h3>
 
@@ -315,45 +354,6 @@
             </div>
             
 
-            <h3 class="archive-separator" id="tag-Netty源码分析">Netty源码分析</h3>
-
-            <div class="waterfall">
-            
-
-                <div class="waterfall-item">
-  <article class="article-card archive-article">
-    <div class="post-meta">
-      <time class="post-time" title="2018-08-08 22:46:03" datetime="2018-08-08T14:46:03.000Z"  itemprop="datePublished">2018-08-08</time>
-
-      
-
-
-    </div>
-    
-
-
-  
-    <h3 class="post-title" itemprop="name">
-      <a class="post-title-link" href="/2018/08/08/NioEventLoop源码分析/">NioEventLoop源码分析</a>
-    </h3>
-  
-
-
-
-    
-    <div class="post-footer">
-        
-	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Netty源码分析/">Netty源码分析</a></li></ul>
-
-    </div>
-    
-  </article>
-</div>
-
-            
-            </div>
-            
-
             <h3 class="archive-separator" id="tag-Linux">Linux</h3>
 
             <div class="waterfall">
@@ -362,7 +362,7 @@
                 <div class="waterfall-item">
   <article class="article-card archive-article">
     <div class="post-meta">
-      <time class="post-time" title="2018-08-03 23:47:03" datetime="2018-08-03T15:47:03.000Z"  itemprop="datePublished">2018-08-03</time>
+      <time class="post-time" title="2018-08-03 14:51:27" datetime="2018-08-03T06:51:27.000Z"  itemprop="datePublished">2018-08-03</time>
 
       
 
@@ -373,7 +373,7 @@
 
   
     <h3 class="post-title" itemprop="name">
-      <a class="post-title-link" href="/2018/08/03/内核空间与用户空间/">内核空间与用户空间</a>
+      <a class="post-title-link" href="/2018/08/03/select实现细节分析/">select实现细节分析</a>
     </h3>
   
 
@@ -394,7 +394,7 @@
                 <div class="waterfall-item">
   <article class="article-card archive-article">
     <div class="post-meta">
-      <time class="post-time" title="2018-08-03 14:51:27" datetime="2018-08-03T06:51:27.000Z"  itemprop="datePublished">2018-08-03</time>
+      <time class="post-time" title="2018-08-03 23:47:03" datetime="2018-08-03T15:47:03.000Z"  itemprop="datePublished">2018-08-03</time>
 
       
 
@@ -405,7 +405,7 @@
 
   
     <h3 class="post-title" itemprop="name">
-      <a class="post-title-link" href="/2018/08/03/select实现细节分析/">select实现细节分析</a>
+      <a class="post-title-link" href="/2018/08/03/内核空间与用户空间/">内核空间与用户空间</a>
     </h3>
   
 
@@ -573,6 +573,23 @@ var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
 
 
 
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '死鬼去哪里了！';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '(つェ⊂)咦!又好了!';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
 
 
 

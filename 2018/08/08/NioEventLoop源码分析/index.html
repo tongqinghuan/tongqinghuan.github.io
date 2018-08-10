@@ -21,25 +21,25 @@
     
     
     <meta name="keywords" content="Netty源码分析">
-    <meta name="description" content="NioEventLoop组件整体思维导图：                                                                                                            NioEventLoopGroup创建NioEventLoopGroup创建流程源码分析 NioEventLoop在服务器端启动的时候通过ne">
+    <meta name="description" content="NioEventLoop组件整体思维导图：  NioEventLoopGroup创建NioEventLoopGroup创建流程源码分析 NioEventLoop在服务器端启动的时候通过newNioEventLoopGroup（）创建。 1EventLoopGroup bossGroup = new NioEventLoopGroup(1); 最终通过调用MultithreadEventExecut">
 <meta name="keywords" content="Netty源码分析">
 <meta property="og:type" content="article">
 <meta property="og:title" content="NioEventLoop源码分析">
 <meta property="og:url" content="//litten.me/2018/08/08/NioEventLoop源码分析/index.html">
 <meta property="og:site_name" content="Tongtong&#39;s Blog">
-<meta property="og:description" content="NioEventLoop组件整体思维导图：                                                                                                            NioEventLoopGroup创建NioEventLoopGroup创建流程源码分析 NioEventLoop在服务器端启动的时候通过ne">
+<meta property="og:description" content="NioEventLoop组件整体思维导图：  NioEventLoopGroup创建NioEventLoopGroup创建流程源码分析 NioEventLoop在服务器端启动的时候通过newNioEventLoopGroup（）创建。 1EventLoopGroup bossGroup = new NioEventLoopGroup(1); 最终通过调用MultithreadEventExecut">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="https://i.imgur.com/MVchtxO.png">
 <meta property="og:image" content="https://i.imgur.com/PbKdTrd.png">
 <meta property="og:updated_time" content="2018-08-10T01:50:37.753Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="NioEventLoop源码分析">
-<meta name="twitter:description" content="NioEventLoop组件整体思维导图：                                                                                                            NioEventLoopGroup创建NioEventLoopGroup创建流程源码分析 NioEventLoop在服务器端启动的时候通过ne">
+<meta name="twitter:description" content="NioEventLoop组件整体思维导图：  NioEventLoopGroup创建NioEventLoopGroup创建流程源码分析 NioEventLoop在服务器端启动的时候通过newNioEventLoopGroup（）创建。 1EventLoopGroup bossGroup = new NioEventLoopGroup(1); 最终通过调用MultithreadEventExecut">
 <meta name="twitter:image" content="https://i.imgur.com/MVchtxO.png">
     
         <link rel="alternate" type="application/atom+xml" title="Tongtong&#39;s Blog" href="/atom.xml">
     
-    <link rel="shortcut icon" href="/img/brand.jpg">
+    <link rel="shortcut icon" href="/favicon.ico">
     <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
     <script>window.lazyScripts=[]</script>
 
@@ -56,7 +56,7 @@
     <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
         <i class="icon icon-lg icon-close"></i>
     </a>
-    <div class="brand-wrap" style="background-image:url(/img/backgroud.jpg)">
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
       <div class="brand">
         <a href="/" class="avatar waves-effect waves-circle waves-light">
           <img src="/img/tongtong.jpg">
@@ -189,13 +189,7 @@
         </div>
         <div class="post-content" id="post-content" itemprop="postContent">
             <p>NioEventLoop组件整体思维导图：</p>
-<figure class="image-bubble">
-                <div class="img-lightbox">
-                    <div class="overlay"></div>
-                    <img src="https://i.imgur.com/MVchtxO.png" alt="" title="">
-                </div>
-                <div class="image-caption"></div>
-            </figure>
+<p><img src="https://i.imgur.com/MVchtxO.png" alt=""></p>
 <h2 id="NioEventLoopGroup创建"><a href="#NioEventLoopGroup创建" class="headerlink" title="NioEventLoopGroup创建"></a>NioEventLoopGroup创建</h2><p>NioEventLoopGroup创建流程源码分析</p>
 <p>NioEventLoop在服务器端启动的时候通过newNioEventLoopGroup（）创建。</p>
 <figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">EventLoopGroup bossGroup</span> = new NioEventLoopGroup(1);</span><br></pre></td></tr></table></figure>
@@ -225,13 +219,7 @@
 <figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">&lt;V&gt; ScheduledFuture&lt;V&gt; schedule(<span class="keyword">final</span> ScheduledFutureTask&lt;V&gt; <span class="keyword">task</span>) &#123;</span><br><span class="line">       </span><br><span class="line">       <span class="keyword">if</span> (inEventLoop()) &#123;</span><br><span class="line">        <span class="comment">//判断如果是当前线程，就直接将任务添加到定时任务队列</span></span><br><span class="line">           scheduledTaskQueue().add(<span class="keyword">task</span>);</span><br><span class="line">       <span class="comment">/*</span></span><br><span class="line"><span class="comment">        创建定时任务队列</span></span><br><span class="line"><span class="comment">        Queue&lt;ScheduledFutureTask&lt;?&gt;&gt; scheduledTaskQueue() &#123;</span></span><br><span class="line"><span class="comment">       if (scheduledTaskQueue == null) &#123;</span></span><br><span class="line"><span class="comment">           scheduledTaskQueue = new PriorityQueue&lt;ScheduledFutureTask&lt;?&gt;&gt;();</span></span><br><span class="line"><span class="comment">       &#125;</span></span><br><span class="line"><span class="comment">       return scheduledTaskQueue;</span></span><br><span class="line"><span class="comment">       &#125;</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">       */</span></span><br><span class="line">       &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">           execute(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">               @Override</span><br><span class="line">               <span class="keyword">public</span> <span class="keyword">void</span> run() &#123;</span><br><span class="line">                   <span class="comment">//如果不在当前线程，则将添加定时任务封装成task，交给NioEventLoop，从而保证线程安全，因为scheduledTaskQueue是非线程安全的。</span></span><br><span class="line">                   scheduledTaskQueue().add(<span class="keyword">task</span>);</span><br><span class="line">               &#125;</span><br><span class="line">           &#125;);</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       <span class="keyword">return</span> <span class="keyword">task</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//在这里有一个问题，当启动NioEventLoop时，只需要将当前要做的事情封装成Task，交给NioEventLoop就可以了,即NioEventLoop.excute()。NioEventLoop会判断当前线程是否是外部线程，如果是则直接将任务添加到mpscQueue,否则创建NioEventLoop线程实体，并启动NIoEventLoop，在将任务添加到MpscQueue。为什么在schedule中还要在判断当前线程是否是外部线程呢？</span></span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
 <p>2、分析RunAllTasks（）</p>
 <figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> boolean runAllTasks(long timeoutNanos) &#123;</span><br><span class="line"></span><br><span class="line">        fetchFromScheduledTaskQueue();</span><br><span class="line">        <span class="comment">/*</span></span><br><span class="line"><span class="comment">         private boolean fetchFromScheduledTaskQueue() &#123;</span></span><br><span class="line"><span class="comment">        //获取当前系统的时间</span></span><br><span class="line"><span class="comment">        long nanoTime = AbstractScheduledEventExecutor.nanoTime();</span></span><br><span class="line"><span class="comment">        //从定时任务队列拉取第一个任务</span></span><br><span class="line"><span class="comment">        Runnable scheduledTask  = pollScheduledTask(nanoTime);</span></span><br><span class="line"><span class="comment">        /*</span></span><br><span class="line"><span class="comment">        protected final Runnable pollScheduledTask(long nanoTime) &#123;</span></span><br><span class="line"><span class="comment">        assert inEventLoop();</span></span><br><span class="line"><span class="comment">        //获取定时任务队列</span></span><br><span class="line"><span class="comment">        Queue&lt;ScheduledFutureTask&lt;?&gt;&gt; scheduledTaskQueue = this.scheduledTaskQueue;</span></span><br><span class="line"><span class="comment">        //获取任务队列中的第一个定时任务</span></span><br><span class="line"><span class="comment">        ScheduledFutureTask&lt;?&gt; scheduledTask = scheduledTaskQueue == null ? null : scheduledTaskQueue.peek();</span></span><br><span class="line"><span class="comment">        if (scheduledTask == null) &#123;</span></span><br><span class="line"><span class="comment">            return null;</span></span><br><span class="line"><span class="comment">        &#125;</span></span><br><span class="line"><span class="comment">        //如果定时任务已经到截止时间，则从定时任务队列中移除并返回</span></span><br><span class="line"><span class="comment">        if (scheduledTask.deadlineNanos() &lt;= nanoTime) &#123;</span></span><br><span class="line"><span class="comment">            scheduledTaskQueue.remove();</span></span><br><span class="line"><span class="comment">            return scheduledTask;</span></span><br><span class="line"><span class="comment">        &#125;</span></span><br><span class="line"><span class="comment">        //定时任务还没有到定时时间则返回空值</span></span><br><span class="line"><span class="comment">        return null;</span></span><br><span class="line"><span class="comment">        &#125;*/</span></span><br><span class="line">        <span class="comment">//循环将定时任务队列中已经到deadline的任务聚合到普通队列</span></span><br><span class="line">        <span class="keyword">while</span> (scheduledTask != <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="comment">//将定时任务聚合到普通任务队列mpscQueue</span></span><br><span class="line">            <span class="keyword">if</span> (!taskQueue.offer(scheduledTask)) &#123;</span><br><span class="line">                <span class="comment">// 如果聚合失败，需要重新将定时任务添加到定时任务队列</span></span><br><span class="line">                scheduledTaskQueue().add((ScheduledFutureTask&lt;?&gt;) scheduledTask);</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            scheduledTask  = pollScheduledTask(nanoTime);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">         */</span><br><span class="line">       </span><br><span class="line">        <span class="comment">//从队列里取出任务执行</span></span><br><span class="line">        Runnable task = pollTask();</span><br><span class="line">        <span class="keyword">if</span> (task == <span class="literal">null</span>) &#123;</span><br><span class="line">            afterRunningAllTasks();</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//获取执行任务的截止时间</span></span><br><span class="line">        <span class="keyword">final</span> long deadline = ScheduledFutureTask.nanoTime() + timeoutNanos;</span><br><span class="line">        long runTasks = <span class="number">0</span>;</span><br><span class="line">        long lastExecutionTime;</span><br><span class="line">        <span class="comment">//循环执行任务</span></span><br><span class="line">        <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">            safeExecute(task);</span><br><span class="line"></span><br><span class="line">            runTasks ++;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// Check timeout every 64 tasks because nanoTime() is relatively expensive.</span></span><br><span class="line">            <span class="comment">// <span class="doctag">XXX:</span> Hard-coded value - will make it configurable if it is really a problem.</span></span><br><span class="line">            <span class="comment">//每次执行64个任务的时候判断执行任务的时间有没有到截止时间，在这里为什么没有每次执行一次任务都判断有没有到截止时间呢？主要是因为nanoTime()执行比较耗时间</span></span><br><span class="line">            <span class="keyword">if</span> ((runTasks &amp; <span class="number">0x3F</span>) == <span class="number">0</span>) &#123;</span><br><span class="line">                lastExecutionTime = ScheduledFutureTask.nanoTime();</span><br><span class="line">                <span class="keyword">if</span> (lastExecutionTime &gt;= deadline) &#123;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            task = pollTask();</span><br><span class="line">            <span class="keyword">if</span> (task == <span class="literal">null</span>) &#123;</span><br><span class="line">                lastExecutionTime = ScheduledFutureTask.nanoTime();</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        afterRunningAllTasks();</span><br><span class="line">        <span class="keyword">this</span>.lastExecutionTime = lastExecutionTime;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-<p>综上的分析，抽取NioEventLoop的主干：<br><figure class="image-bubble">
-                <div class="img-lightbox">
-                    <div class="overlay"></div>
-                    <img src="https://i.imgur.com/PbKdTrd.png" alt="" title="">
-                </div>
-                <div class="image-caption"></div>
-            </figure></p>
+<p>综上的分析，抽取NioEventLoop的主干：<br><img src="https://i.imgur.com/PbKdTrd.png" alt=""></p>
 <p>NIoEventLoop主要做三件事：</p>
 <ul>
 <li>Select 检测IO事件</li>
@@ -257,6 +245,8 @@
 
 
         
+        这里可以写作者留言，标签和 hexo 中所有变量及辅助函数等均可调用，示例：<a href="/2018/08/08/NioEventLoop源码分析/" target="_blank" rel="external">//litten.me/2018/08/08/NioEventLoop源码分析/</a>
+        
     </div>
     
     <footer>
@@ -268,6 +258,10 @@
 </blockquote>
 
         
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
 
 
         <div class="post-footer">
@@ -362,6 +356,32 @@
 
 </article>
 
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        谢谢大爷~
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
 
 
 </div>
@@ -440,7 +460,7 @@
 
     <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
 <script>
-var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
 
 
 </script>
@@ -473,6 +493,23 @@ var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
 
 
 
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '死鬼去哪里了！';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '(つェ⊂)咦!又好了!';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
 
 
 
