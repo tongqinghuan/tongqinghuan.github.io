@@ -35,7 +35,16 @@
 <meta property="og:image" content="https://i.imgur.com/gASiQFh.png">
 <meta property="og:image" content="https://i.imgur.com/epfEaMK.png">
 <meta property="og:image" content="https://i.imgur.com/ph4IbPG.png">
-<meta property="og:updated_time" content="2018-08-10T16:05:40.522Z">
+<meta property="og:image" content="https://i.imgur.com/lhoHcM1.png">
+<meta property="og:image" content="https://i.imgur.com/EyS0LPR.png">
+<meta property="og:image" content="https://i.imgur.com/zj4eA0V.png">
+<meta property="og:image" content="https://i.imgur.com/GGrraoU.png">
+<meta property="og:image" content="https://i.imgur.com/qHW0zw9.png">
+<meta property="og:image" content="https://i.imgur.com/YCDH9wQ.png">
+<meta property="og:image" content="https://i.imgur.com/XZoiRQp.png">
+<meta property="og:image" content="https://i.imgur.com/sWk3sVL.png">
+<meta property="og:image" content="https://i.imgur.com/WhRXRtS.png">
+<meta property="og:updated_time" content="2018-08-11T04:25:37.468Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="channelPipeline源码分析">
 <meta name="twitter:description" content="ChannelPipeline作为上层业务处理逻辑的载体，是Netty中的第二大核心组件，下面将从三个方面来分析ChannelPipeline：  服务器和客户端Channel是如何初始化ChannelPipeline的？  ChannelPipeline是如何实现上层业务逻辑处理的ChannelHandler的动态编制的？  Inbound事件、Outbound事件以及异常事件在ChannelP">
@@ -278,6 +287,80 @@
 <p>handlerAdded（）方法是ChannelHandler在被添加到ChannelPipeline的一个事件回调</p>
 <p>handlerRemoved（）方法是ChannelHandler在被从ChannelPipeline移除的一个事件回调</p>
 <p>exceptionCaught（）是用来处理ChannelHandler抛出的一些异常。</p>
+<font color="#7FFF00">  在此基础上，看ChannelInboundHandler增加了哪些功能，以及Inbound事件是如何传播的？ </font> 
+
+
+<p><img src="https://i.imgur.com/lhoHcM1.png" alt=""></p>
+<p>从图中可以看出，ChannelInboundHandler主要是一些事件触发的回调，是被动的。</p>
+<p>综上分析总结出inbound事件主要是read事件（对客户端Channel来讲读一些数据，对服务器端Channel来讲，读的是新接入的连接） Channel注册的事件 注销的事件  激活与失效的事件</p>
+<p>上面分析了ChannelInboundHandler记忆inbound事件，下面分析inbound事件是如何传播的。</p>
+<p>以服务器端的read事件为例：假设有用户自定义的三个ChannelInboundHandler，分别为A,B,C，并配置到ChannelPipeline中。</p>
+<figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">void</span> <span class="title">initChannel</span><span class="params">(SocketChannel ch)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line"></span><br><span class="line">      ch.pipeline().addLast(<span class="keyword">new</span> InBoundHandlerA()); </span><br><span class="line">      ch.pipeline().addLast(<span class="keyword">new</span> InBoundHandlerC()); </span><br><span class="line">	  ch.pipeline().addLast(<span class="keyword">new</span> InBoundHandlerB());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当有新连接接入时，read事件会从ChannelPipeline的HeadContext开始传播</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://i.imgur.com/EyS0LPR.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://i.imgur.com/zj4eA0V.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://i.imgur.com/GGrraoU.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>最终的传播顺序如下图所示：<br><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://i.imgur.com/qHW0zw9.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure></p>
+<font color="#7FFF00">  在此基础上，看ChannelOutboundHandler增加了哪些功能，以及OUtbound事件是如何传播的？ </font> 
+
+<p><img src="https://i.imgur.com/YCDH9wQ.png" alt=""></p>
+<p>从图中可以看出，ChannelOutboundHandler主要是一些与Channel的数据读写相关的操作，可以看做是channel的协议的实现，是有用户主动发起的。</p>
+<p>综上分析总结出Outbound事件主要是写事件，连接等于channel读写相关的事件。</p>
+<p>上面分析了ChannelOutboundHandler以及Outbound事件，下面分析Outbound事件是如何传播的。</p>
+<p>以write事件为例：假设有用户自定义的三个ChannelOutboundHandler，分别为A,B,C，并配置到ChannelPipeline中。</p>
+<figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">void</span> <span class="title">initChannel</span><span class="params">(SocketChannel ch)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line"></span><br><span class="line">      ch.pipeline().addLast(<span class="keyword">new</span> OutBoundHandlerA()); </span><br><span class="line">      ch.pipeline().addLast(<span class="keyword">new</span> OutBoundHandlerC()); </span><br><span class="line">	  ch.pipeline().addLast(<span class="keyword">new</span> OutBoundHandlerB());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">OutBoundHandlerB</span> <span class="keyword">extends</span> <span class="title">ChannelOutboundHandlerAdapter</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">write</span><span class="params">(ChannelHandlerContext ctx, Object msg, ChannelPromise promise)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">		System.out.println(<span class="string">"OutBoundHandlerB: "</span> + msg);</span><br><span class="line">		ctx.write(msg, promise);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">read</span><span class="params">(ChannelHandlerContext ctx)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">		<span class="keyword">throw</span> <span class="keyword">new</span> Exception(<span class="string">"from OutBoundHandlerC"</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handlerAdded</span><span class="params">(<span class="keyword">final</span> ChannelHandlerContext ctx)</span> </span>&#123;</span><br><span class="line">		ctx.executor().schedule(() -&gt; &#123;</span><br><span class="line">			ctx.channel().write(<span class="string">"hello world"</span>);</span><br><span class="line">			<span class="comment">//ctx.write("hello world");</span></span><br><span class="line">		&#125;, <span class="number">3</span>, TimeUnit.SECONDS);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当OutBoundHandlerB被成功配置到ChannelPipeline中时会触发OutBoundHandlerB的handlerAdded（）方法，从而主动向当前的连接中写入”hello world”。</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">ctx</span><span class="selector-class">.channel</span>()<span class="selector-class">.write</span>(<span class="string">"hello world"</span>);</span><br></pre></td></tr></table></figure>
+<p>会从ChannelPipeline的TailContext节点开始传播</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://i.imgur.com/XZoiRQp.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>最终会传播到HeadContext节点，并调用HeadContext节点的unsafe将数据写到连接</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://i.imgur.com/sWk3sVL.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>那么Outbound的整个传播过程如下图所示：</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://i.imgur.com/WhRXRtS.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>ctx.write(“hello world”);这种方式下，write事件会从当前的ChannelHandlerContext开始传播。</p>
 
         </div>
 
@@ -286,7 +369,7 @@
     <div class="content">
         
 <span class="post-time">
-    Last updated: <time datetime="2018-08-10T16:05:40.522Z" itemprop="dateUpdated">2018-08-11 00:05:40</time>
+    Last updated: <time datetime="2018-08-11T04:25:37.468Z" itemprop="dateUpdated">2018-08-11 12:25:37</time>
 </span><br>
 
 
@@ -527,23 +610,6 @@ var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
 <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
 
-
-<script>
-(function() {
-    var OriginTitile = document.title, titleTime;
-    document.addEventListener('visibilitychange', function() {
-        if (document.hidden) {
-            document.title = '死鬼去哪里了！';
-            clearTimeout(titleTime);
-        } else {
-            document.title = '(つェ⊂)咦!又好了!';
-            titleTime = setTimeout(function() {
-                document.title = OriginTitile;
-            },2000);
-        }
-    });
-})();
-</script>
 
 
 
