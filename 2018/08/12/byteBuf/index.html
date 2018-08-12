@@ -38,7 +38,7 @@
 <meta property="og:image" content="https://i.imgur.com/oSyfGbE.png">
 <meta property="og:image" content="https://i.imgur.com/cNVJZO8.png">
 <meta property="og:image" content="https://i.imgur.com/WKaiCN9.png">
-<meta property="og:updated_time" content="2018-08-12T07:38:47.650Z">
+<meta property="og:updated_time" content="2018-08-12T08:35:21.577Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ByteBuf">
 <meta name="twitter:description" content="ByteBuf是什么？ ByteBuf是Netty对内存的一个抽象，负责从底层IO将数据读入到Bytebuf，然后传递给上层应用程序。应用程序处理完数据，在将数据封装成Bytebuf，写回到IO。因此IO是Netty最底层的一部分，直接与底层IO打交道。 ByteBuf的结构">
@@ -70,7 +70,7 @@
         </a>
         <hgroup class="introduce">
           <h5 class="nickname">浵通</h5>
-          <a href="mailto:634206017@qq.com" title="634206017@qq.com" class="mail">634206017@qq.com</a>
+          <a href="mailto:2809629360@qq.com" title="2809629360@qq.com" class="mail">2809629360@qq.com</a>
         </hgroup>
       </div>
     </div>
@@ -168,7 +168,7 @@
     <aside class="post-widget">
         <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
             <h4>TOC</h4>
-            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#ByteBuf的结构"><span class="post-toc-number">1.</span> <span class="post-toc-text">ByteBuf的结构</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Bytebuf提供的重要的API"><span class="post-toc-number">2.</span> <span class="post-toc-text">Bytebuf提供的重要的API</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Bytebuf的分类"><span class="post-toc-number">3.</span> <span class="post-toc-text">Bytebuf的分类</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#分析Netty是如何基于上述三个维度来实现ByteBuf的？"><span class="post-toc-number">4.</span> <span class="post-toc-text">分析Netty是如何基于上述三个维度来实现ByteBuf的？</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#顶层的ByteBufAllocator的设计。"><span class="post-toc-number">4.1.</span> <span class="post-toc-text">顶层的ByteBufAllocator的设计。</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#UnPooledByteBufAllocator是如何实现Unpool类型的Heap和direct-ByteBuf的？（源码分析）"><span class="post-toc-number">4.2.</span> <span class="post-toc-text">UnPooledByteBufAllocator是如何实现Unpool类型的Heap和direct ByteBuf的？（源码分析）</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#UnpooledUnsafeHeapByteBuf-UnpooledHeapByteBuf"><span class="post-toc-number">4.2.1.</span> <span class="post-toc-text">UnpooledUnsafeHeapByteBuf UnpooledHeapByteBuf</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#UnpooledUnsafeDirectByteBuf-UnpooledDirectByteBuf"><span class="post-toc-number">4.2.2.</span> <span class="post-toc-text">UnpooledUnsafeDirectByteBuf UnpooledDirectByteBuf</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#PooledByteBufAllocator是如何实现pool类型的Heap和direct-ByteBuf的？（源码分析）"><span class="post-toc-number">4.3.</span> <span class="post-toc-text">PooledByteBufAllocator是如何实现pool类型的Heap和direct ByteBuf的？（源码分析）</span></a></li></ol></li></ol>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#ByteBuf的结构"><span class="post-toc-number">1.</span> <span class="post-toc-text">ByteBuf的结构</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Bytebuf提供的重要的API"><span class="post-toc-number">2.</span> <span class="post-toc-text">Bytebuf提供的重要的API</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Bytebuf的分类"><span class="post-toc-number">3.</span> <span class="post-toc-text">Bytebuf的分类</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#分析Netty是如何基于三个维度来实现ByteBuf的？"><span class="post-toc-number">4.</span> <span class="post-toc-text">分析Netty是如何基于三个维度来实现ByteBuf的？</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#顶层的ByteBufAllocator的设计。"><span class="post-toc-number">4.1.</span> <span class="post-toc-text">顶层的ByteBufAllocator的设计。</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#UnPooledByteBufAllocator是如何实现Unpool类型的Heap和direct-ByteBuf的？（源码分析）"><span class="post-toc-number">4.2.</span> <span class="post-toc-text">UnPooledByteBufAllocator是如何实现Unpool类型的Heap和direct ByteBuf的？（源码分析）</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#UnpooledUnsafeHeapByteBuf-UnpooledHeapByteBuf"><span class="post-toc-number">4.2.1.</span> <span class="post-toc-text">UnpooledUnsafeHeapByteBuf UnpooledHeapByteBuf</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#UnpooledUnsafeDirectByteBuf-UnpooledDirectByteBuf"><span class="post-toc-number">4.2.2.</span> <span class="post-toc-text">UnpooledUnsafeDirectByteBuf UnpooledDirectByteBuf</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#PooledByteBufAllocator是如何实现pool类型的Heap和direct-ByteBuf的？（源码分析）"><span class="post-toc-number">4.3.</span> <span class="post-toc-text">PooledByteBufAllocator是如何实现pool类型的Heap和direct ByteBuf的？（源码分析）</span></a></li></ol></li></ol>
         </nav>
     </aside>
 
@@ -278,7 +278,7 @@
 </ul>
 <p>heap:在堆上进行内存分配，会被JVM的GC进行管理</p>
 <p>direct：调用JDK的API分配内存，不受JVM的GC管理，需要自动手动释放，否则会造成内存泄露  </p>
-<h2 id="分析Netty是如何基于上述三个维度来实现ByteBuf的？"><a href="#分析Netty是如何基于上述三个维度来实现ByteBuf的？" class="headerlink" title="分析Netty是如何基于上述三个维度来实现ByteBuf的？"></a>分析Netty是如何基于上述三个维度来实现ByteBuf的？</h2><p>首先明确一点，ByteBuf的实现一定和内存分配管理器有关，而具体类型的ByteBuf的实现也相应的和对应的内存分配器相关。</p>
+<h2 id="分析Netty是如何基于三个维度来实现ByteBuf的？"><a href="#分析Netty是如何基于三个维度来实现ByteBuf的？" class="headerlink" title="分析Netty是如何基于三个维度来实现ByteBuf的？"></a>分析Netty是如何基于三个维度来实现ByteBuf的？</h2><p>首先明确一点，ByteBuf的实现一定和内存分配管理器有关，而具体类型的ByteBuf的实现也相应的和对应的内存分配器相关。</p>
 <h3 id="顶层的ByteBufAllocator的设计。"><a href="#顶层的ByteBufAllocator的设计。" class="headerlink" title="顶层的ByteBufAllocator的设计。"></a>顶层的ByteBufAllocator的设计。</h3><figure class="image-bubble">
                 <div class="img-lightbox">
                     <div class="overlay"></div>
@@ -333,7 +333,7 @@
     <div class="content">
         
 <span class="post-time">
-    Last updated: <time datetime="2018-08-12T07:38:47.650Z" itemprop="dateUpdated">2018-08-12 15:38:47</time>
+    Last updated: <time datetime="2018-08-12T08:35:21.577Z" itemprop="dateUpdated">2018-08-12 16:35:21</time>
 </span><br>
 
 

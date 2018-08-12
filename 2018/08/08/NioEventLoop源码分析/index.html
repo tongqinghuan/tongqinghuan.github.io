@@ -31,7 +31,7 @@
 <meta property="og:locale" content="default">
 <meta property="og:image" content="https://i.imgur.com/MVchtxO.png">
 <meta property="og:image" content="https://i.imgur.com/PbKdTrd.png">
-<meta property="og:updated_time" content="2018-08-12T07:34:01.830Z">
+<meta property="og:updated_time" content="2018-08-12T08:36:05.968Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="NioEventLoop源码分析">
 <meta name="twitter:description" content="NioEventLoop组件整体思维导图：                                                                                                           NioEventLoopGroup创建NioEventLoopGroup创建流程源码分析 NioEventLoop在服务器端启动的时候通过new">
@@ -63,7 +63,7 @@
         </a>
         <hgroup class="introduce">
           <h5 class="nickname">浵通</h5>
-          <a href="mailto:634206017@qq.com" title="634206017@qq.com" class="mail">634206017@qq.com</a>
+          <a href="mailto:2809629360@qq.com" title="2809629360@qq.com" class="mail">2809629360@qq.com</a>
         </hgroup>
       </div>
     </div>
@@ -161,7 +161,7 @@
     <aside class="post-widget">
         <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
             <h4>TOC</h4>
-            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#NioEventLoop组件整体思维导图："><span class="post-toc-number">1.</span> <span class="post-toc-text">NioEventLoop组件整体思维导图：</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#NioEventLoopGroup创建"><span class="post-toc-number">2.</span> <span class="post-toc-text">NioEventLoopGroup创建</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#线程创建器的生成分析："><span class="post-toc-number">2.1.</span> <span class="post-toc-text">线程创建器的生成分析：</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#NIoEventLoop线程实体的创建"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">NIoEventLoop线程实体的创建</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#NioEventLoop的执行-SingleThreadEventExecutor-this-run"><span class="post-toc-number">3.</span> <span class="post-toc-text">NioEventLoop的执行 SingleThreadEventExecutor.this.run()</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#select-IO事件检测分析"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">select IO事件检测分析</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#处理IO任务"><span class="post-toc-number">3.2.</span> <span class="post-toc-text">处理IO任务</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Reactor线程的执行：runAllTasks（）方法"><span class="post-toc-number">3.3.</span> <span class="post-toc-text">Reactor线程的执行：runAllTasks（）方法</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#分析NioEventLoop是如何保证异步串行无锁化的"><span class="post-toc-number">4.</span> <span class="post-toc-text">分析NioEventLoop是如何保证异步串行无锁化的</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#最后分析NioEventLoop是如何保证异步串行无锁化的？"><span class="post-toc-number">5.</span> <span class="post-toc-text">最后分析NioEventLoop是如何保证异步串行无锁化的？</span></a></li></ol>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#NioEventLoop组件整体思维导图："><span class="post-toc-number">1.</span> <span class="post-toc-text">NioEventLoop组件整体思维导图：</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#NioEventLoopGroup创建"><span class="post-toc-number">2.</span> <span class="post-toc-text">NioEventLoopGroup创建</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#线程创建器的生成分析："><span class="post-toc-number">2.1.</span> <span class="post-toc-text">线程创建器的生成分析：</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#NIoEventLoop线程实体的创建"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">NIoEventLoop线程实体的创建</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#NioEventLoop的执行-SingleThreadEventExecutor-this-run"><span class="post-toc-number">3.</span> <span class="post-toc-text">NioEventLoop的执行 SingleThreadEventExecutor.this.run()</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#select-IO事件检测分析"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">select IO事件检测分析</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#处理IO任务"><span class="post-toc-number">3.2.</span> <span class="post-toc-text">处理IO任务</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Reactor线程的执行：runAllTasks（）方法"><span class="post-toc-number">3.3.</span> <span class="post-toc-text">Reactor线程的执行：runAllTasks（）方法</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#分析NioEventLoop是如何保证异步串行无锁化的"><span class="post-toc-number">4.</span> <span class="post-toc-text">分析NioEventLoop是如何保证异步串行无锁化的</span></a></li></ol>
         </nav>
     </aside>
 
@@ -234,7 +234,8 @@
 <ul>
 <li>循环执行MpscQueue队列中的任务</li>
 </ul>
-<h2 id="最后分析NioEventLoop是如何保证异步串行无锁化的？"><a href="#最后分析NioEventLoop是如何保证异步串行无锁化的？" class="headerlink" title="最后分析NioEventLoop是如何保证异步串行无锁化的？"></a>最后分析NioEventLoop是如何保证异步串行无锁化的？</h2><p>当外部线程调用NioEventLoop时，会通过InEventLoop（）方法判断当前线程是否是外部线程，如果是外部线程，则将当前要执行的操作封装成Task扔进mpscQueue，在NioEventLoop执行任务阶段，会依次从任务队列中取出任务执行。</p>
+<p>最后分析NioEventLoop是如何保证异步串行无锁化的？</p>
+<p>当外部线程调用NioEventLoop时，会通过InEventLoop（）方法判断当前线程是否是外部线程，如果是外部线程，则将当前要执行的操作封装成Task扔进mpscQueue，在NioEventLoop执行任务阶段，会依次从任务队列中取出任务执行。</p>
 <p>上述分析基于闪电侠Netty-4.1.6.Final系列视频</p>
 
         </div>
@@ -244,7 +245,7 @@
     <div class="content">
         
 <span class="post-time">
-    Last updated: <time datetime="2018-08-12T07:34:01.830Z" itemprop="dateUpdated">2018-08-12 15:34:01</time>
+    Last updated: <time datetime="2018-08-12T08:36:05.968Z" itemprop="dateUpdated">2018-08-12 16:36:05</time>
 </span><br>
 
 
