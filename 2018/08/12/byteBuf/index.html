@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>byteBuf | Tongtong&#39;s Blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Netty-4.1.6.Final源码分析">
+    <meta name="description" content="ByteBuf是什么？ ByteBuf是Netty对内存的一个抽象，负责从底层IO将数据读入到Bytebuf，然后传递给上层应用程序。应用程序处理完数据，在将数据封装成Bytebuf，写回到IO。因此IO是Netty最底层的一部分，直接与底层IO打交道。 ##ByteBuf的结构">
+<meta name="keywords" content="Netty-4.1.6.Final源码分析">
+<meta property="og:type" content="article">
+<meta property="og:title" content="byteBuf">
+<meta property="og:url" content="//litten.me/2018/08/12/byteBuf/index.html">
+<meta property="og:site_name" content="Tongtong&#39;s Blog">
+<meta property="og:description" content="ByteBuf是什么？ ByteBuf是Netty对内存的一个抽象，负责从底层IO将数据读入到Bytebuf，然后传递给上层应用程序。应用程序处理完数据，在将数据封装成Bytebuf，写回到IO。因此IO是Netty最底层的一部分，直接与底层IO打交道。 ##ByteBuf的结构">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://i.imgur.com/UheG8uU.png">
+<meta property="og:image" content="https://i.imgur.com/UZ6lYdD.png">
+<meta property="og:image" content="https://i.imgur.com/QBuW0Af.png">
+<meta property="og:image" content="https://i.imgur.com/YDDkTy7.png">
+<meta property="og:image" content="https://i.imgur.com/OXJk59Z.png">
+<meta property="og:image" content="https://i.imgur.com/BkcTVWt.png">
+<meta property="og:image" content="https://i.imgur.com/oSyfGbE.png">
+<meta property="og:image" content="https://i.imgur.com/cNVJZO8.png">
+<meta property="og:image" content="https://i.imgur.com/WKaiCN9.png">
+<meta property="og:updated_time" content="2018-08-12T07:13:36.519Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="byteBuf">
+<meta name="twitter:description" content="ByteBuf是什么？ ByteBuf是Netty对内存的一个抽象，负责从底层IO将数据读入到Bytebuf，然后传递给上层应用程序。应用程序处理完数据，在将数据封装成Bytebuf，写回到IO。因此IO是Netty最底层的一部分，直接与底层IO打交道。 ##ByteBuf的结构">
+<meta name="twitter:image" content="https://i.imgur.com/UheG8uU.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="Tongtong&#39;s Blog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/tongtong.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">浵通</h5>
+          <a href="mailto:634206017@qq.com" title="634206017@qq.com" class="mail">634206017@qq.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/tongqinghuan.github.io" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="http://www.weibo.com/tongqinghuan" target="_blank" >
+                <i class="icon icon-lg icon-weibo"></i>
+                Weibo
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">byteBuf</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="検索">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">byteBuf</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-08-12T01:27:48.000Z" itemprop="datePublished" class="page-time">
+  2018-08-12
+</time>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Bytebuf提供的重要的API"><span class="post-toc-number">1.</span> <span class="post-toc-text">Bytebuf提供的重要的API</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Bytebuf的分类"><span class="post-toc-number">2.</span> <span class="post-toc-text">Bytebuf的分类</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#UnpooledUnsafeHeapByteBuf-UnpooledHeapByteBuf"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">UnpooledUnsafeHeapByteBuf UnpooledHeapByteBuf</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#UnpooledUnsafeDirectByteBuf-UnpooledDirectByteBuf"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">UnpooledUnsafeDirectByteBuf UnpooledDirectByteBuf</span></a></li></ol></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-byteBuf"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">byteBuf</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-08-12 09:27:48" datetime="2018-08-12T01:27:48.000Z"  itemprop="datePublished">2018-08-12</time>
+
+            
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>ByteBuf是什么？</p>
+<p>ByteBuf是Netty对内存的一个抽象，负责从底层IO将数据读入到Bytebuf，然后传递给上层应用程序。应用程序处理完数据，在将数据封装成Bytebuf，写回到IO。因此IO是Netty最底层的一部分，直接与底层IO打交道。</p>
+<p>##ByteBuf的结构</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://i.imgur.com/UheG8uU.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>ByteBuf的核心是数据读写指针：</p>
+<p>readerIndex：指向当前可读的数据的位置，当读某一种类型的数据data，指针会向前移动（sizeof(data)）</p>
+<p>writerIndex:指向当前可写的数据的位置，当写某一种类型的数据data，指针会向前移动（sizeof（data））</p>
+<p>capacity：Bytebuf的容量，当前可写入的最大位置</p>
+<h3 id="Bytebuf提供的重要的API"><a href="#Bytebuf提供的重要的API" class="headerlink" title="Bytebuf提供的重要的API"></a>Bytebuf提供的重要的API</h3><p>read（）</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://i.imgur.com/UZ6lYdD.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>write（）</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://i.imgur.com/QBuW0Af.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>set（）不会移动写指针</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://i.imgur.com/YDDkTy7.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>mark（）reset（）读写数据不改变当前读写指针</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://i.imgur.com/OXJk59Z.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<h3 id="Bytebuf的分类"><a href="#Bytebuf的分类" class="headerlink" title="Bytebuf的分类"></a>Bytebuf的分类</h3><p>ByteBuf对外暴露了一些读写数据的接口，而abstractByteBuf是对Bytebuf的一个骨架的实现，至于具体的不同类型的ByteBuf读写是不一样的，由具体的子类去实现。</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://i.imgur.com/BkcTVWt.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>实例源码</p>
+<p>abstractByteBuf</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://i.imgur.com/oSyfGbE.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">byte</span> <span class="title">readByte</span><span class="params">()</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        checkReadableBytes0(<span class="number">1</span>);</span><br><span class="line">        <span class="keyword">int</span> i = readerIndex;</span><br><span class="line">        <span class="comment">//让具体的子类实现底层的读操作</span></span><br><span class="line">        <span class="keyword">byte</span> b = _getByte(i);</span><br><span class="line">        readerIndex = i + <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">return</span> b;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="function"><span class="keyword">byte</span> <span class="title">_getByte</span><span class="params">(<span class="keyword">int</span> index)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>分类：从ByteBuf的接口继承层次图可以看到，可以从三个维度来对ByteBuf进行分类：</p>
+<ul>
+<li>pooled unpooled分类</li>
+</ul>
+<p>pooled：从预先分配好的内存里取出一段连续的内存扔给应用程序</p>
+<p>unpooled：调用系统API向操作系统申请内存</p>
+<ul>
+<li>unsafe 非unsafe</li>
+</ul>
+<p>unsafe：拿到jvm的具体的内存地址，并且调用jvm的unsafe对象进行读写</p>
+<p>非unsafe：读写没有依赖底层Unsafe对象</p>
+<p>  以pooledHeapByteBuf pooledUnsafeHeapByteBuf为例分析 </p>
+<p>  pooledHeapByteBuf</p>
+<figure class="highlight axapta"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> <span class="keyword">byte</span> _getByte(<span class="keyword">int</span> <span class="keyword">index</span>) &#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> HeapByteBufUtil.getByte(memory, idx(<span class="keyword">index</span>));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">byte</span> getByte(<span class="keyword">byte</span>[] memory, <span class="keyword">int</span> <span class="keyword">index</span>) &#123;</span><br><span class="line">        <span class="comment">//直接从数组中读数据</span></span><br><span class="line">        <span class="keyword">return</span> memory[<span class="keyword">index</span>];</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>  pooledUnsafeHeapByteBuf</p>
+<figure class="highlight axapta"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> <span class="keyword">byte</span> _getByte(<span class="keyword">int</span> <span class="keyword">index</span>) &#123;</span><br><span class="line"></span><br><span class="line">       <span class="keyword">return</span> UnsafeByteBufUtil.getByte(memory, idx(<span class="keyword">index</span>));</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="function"><span class="keyword">byte</span> <span class="title">getByte</span><span class="params">(<span class="keyword">byte</span>[] data, <span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//最终调用JVM的unsafe对象进行读</span></span><br><span class="line">        <span class="function"><span class="keyword">return</span> UNSAFE.<span class="title">getByte</span><span class="params">(data, BYTE_ARRAY_BASE_OFFSET + index)</span></span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>heap direct</li>
+</ul>
+<p>heap:在堆上进行内存分配，会被JVM的GC进行管理</p>
+<p>direct：调用JDK的API分配内存，不受JVM的GC管理，需要自动手动释放，否则会造成内存泄露  </p>
+<p>##分析Netty是如何基于上述三个维度来实现ByteBuf的？</p>
+<p>首先明确一点，ByteBuf的实现一定和内存分配管理器有关，而具体类型的ByteBuf的实现也相应的和对应的内存分配器相关。</p>
+<p>###顶层的ByteBufAllocator的设计。</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://i.imgur.com/cNVJZO8.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>1、提供一个分配ByteBuf的接口，既可以是heap类型的，也可以是direct类型的，取决于具体的实现<br>2、提供一个分配Iobuffer的接口，更期望分配的是direct类型的内存（这里其实不太明白为什么）<br>3、提供一个分配heap内存的接口<br>4、提供一个分配direct内存的接口</p>
+<p>从ByteBufAllocator接口的功能设计来看，只提供了分配heap和direct内存的接口，那么另外两个维度的Bytebuf是在哪里实现的呢？</p>
+<p>接下来看ByteAllocator的一个实现AbstractByteBufAllocator，它完成了大部分ByteAllocator的功能，并且对外暴露了两个抽象方法：</p>
+<figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="function">ByteBuf <span class="title">newHeapBuffer</span><span class="params">(<span class="keyword">int</span> initialCapacity, <span class="keyword">int</span> maxCapacity)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="function">ByteBuf <span class="title">newDirectBuffer</span><span class="params">(<span class="keyword">int</span> initialCapacity, <span class="keyword">int</span> maxCapacity)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>因此pooled和unpooled维度的Bytebuf由AbstractByteBufAllocator的子类去实现。而unsafe和非unsafe维度的Bytebuf由Netty自己判断当前是否有JDK的unsafe对象，如果有就分配unsafe类型的Bytebuf，反之，分配非unsafe类型的Bytebuf。</p>
+<p>ByteBufAllocator接口继承关系层次图：</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://i.imgur.com/WKaiCN9.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>##UnPooledByteBufAllocator是如何实现Unpool类型的Heap和direct ByteBuf的？（源码分析）</p>
+<h4 id="UnpooledUnsafeHeapByteBuf-UnpooledHeapByteBuf"><a href="#UnpooledUnsafeHeapByteBuf-UnpooledHeapByteBuf" class="headerlink" title="UnpooledUnsafeHeapByteBuf UnpooledHeapByteBuf"></a>UnpooledUnsafeHeapByteBuf UnpooledHeapByteBuf</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> ByteBuf <span class="title">newHeapBuffer</span><span class="params">(<span class="keyword">int</span> initialCapacity, <span class="keyword">int</span> maxCapacity)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//Netty会判断当前是否持有JDK的Unsafe对象，如果有，则创建UnpooledUnsafeHeapByteBuf，否则创建UnpooledHeapByteBuf</span></span><br><span class="line">        <span class="keyword">return</span> PlatformDependent.hasUnsafe() ? <span class="keyword">new</span> UnpooledUnsafeHeapByteBuf(<span class="keyword">this</span>, initialCapacity, maxCapacity)</span><br><span class="line">                : <span class="keyword">new</span> UnpooledHeapByteBuf(<span class="keyword">this</span>, initialCapacity, maxCapacity);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>UnpooledHeapByteBuf的ByteBuf的创建</p>
+<figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> UnpooledHeapByteBuf(</span><br><span class="line"></span><br><span class="line">        <span class="comment">//传进来一个内存分配器（this UnPooledByteBufAllocator ）</span></span><br><span class="line">        ByteBufAllocator alloc, <span class="keyword">int</span> initialCapacity, <span class="keyword">int</span> maxCapacity) &#123;</span><br><span class="line">        <span class="comment">//创建一个Byte数组</span></span><br><span class="line">        <span class="keyword">this</span>(alloc, <span class="keyword">new</span> <span class="keyword">byte</span>[initialCapacity], <span class="number">0</span>, <span class="number">0</span>, maxCapacity);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> UnpooledHeapByteBuf(</span><br><span class="line">            </span><br><span class="line">            ByteBufAllocator alloc, <span class="keyword">byte</span>[] initialArray, <span class="keyword">int</span> readerIndex, <span class="keyword">int</span> writerIndex, <span class="keyword">int</span> maxCapacity) &#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">super</span>(maxCapacity);</span><br><span class="line">        <span class="comment">//保存内存分配器</span></span><br><span class="line">        <span class="keyword">this</span>.alloc = alloc;</span><br><span class="line">        <span class="comment">//保存Byte数组</span></span><br><span class="line">        setArray(initialArray);</span><br><span class="line">        <span class="comment">//初始化读写指针</span></span><br><span class="line">        setIndex(readerIndex, writerIndex);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>UnpooledUnsafeHeapByteBuf的ByteBuf的创建</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">UnpooledUnsafeHeapByteBuf</span> <span class="keyword">extends</span> <span class="title">UnpooledHeapByteBuf</span></span>&#123;&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight hsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">UnpooledUnsafeHeapByteBuf(ByteBufAllocator <span class="keyword">alloc</span>, <span class="keyword">int</span> initialCapacity, <span class="keyword">int</span> maxCapacity) &#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//同上述分析的UnpooledHeapByteBuf的创建过程</span></span><br><span class="line">        super(<span class="keyword">alloc</span>, initialCapacity, maxCapacity)<span class="comment">;</span></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>通过上述分析发现UnPooledByteBufAllocator创建UnpooledUnsafeHeapByteBuf UnpooledHeapByteBuf对象的过程是一样的，那么Unsafe和safe类型的heap ByteBuf有什么区别呢？这点主要体现在读写上。</p>
+<p>以_getByte（）为例分析</p>
+<p>UnpooledHeapByteBuf的_getByte()方法</p>
+<figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">byte</span> <span class="title">_getByte</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//byte[] array;</span></span><br><span class="line">        <span class="function"><span class="keyword">return</span> HeapByteBufUtil.<span class="title">getByte</span><span class="params">(array, index)</span></span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight axapta"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">byte</span> getByte(<span class="keyword">byte</span>[] memory, <span class="keyword">int</span> <span class="keyword">index</span>) &#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//通过数组加index的方式实现数据的读操作        </span></span><br><span class="line">        <span class="keyword">return</span> memory[<span class="keyword">index</span>];</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>UnpooledUnsafeHeapByteBuf的_getByte()方法</p>
+<figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">byte</span> <span class="title">_getByte</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">return</span> UnsafeByteBufUtil.<span class="title">getByte</span><span class="params">(array, index)</span></span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>…</p>
+<figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="function"><span class="keyword">byte</span> <span class="title">getByte</span><span class="params">(<span class="keyword">byte</span>[] data, <span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//最终通过获取数组在JVM的内存地址，即数组的基地址BYTE_ARRAY_BASE_OFFSET加数组下标来实现数据的读操作</span></span><br><span class="line">        <span class="function"><span class="keyword">return</span> UNSAFE.<span class="title">getByte</span><span class="params">(data, BYTE_ARRAY_BASE_OFFSET + index)</span></span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h4 id="UnpooledUnsafeDirectByteBuf-UnpooledDirectByteBuf"><a href="#UnpooledUnsafeDirectByteBuf-UnpooledDirectByteBuf" class="headerlink" title="UnpooledUnsafeDirectByteBuf UnpooledDirectByteBuf"></a>UnpooledUnsafeDirectByteBuf UnpooledDirectByteBuf</h4><figure class="highlight haxe"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">protected ByteBuf <span class="keyword">new</span><span class="type">DirectBuffer</span>(int initialCapacity, int maxCapacity) &#123;</span><br><span class="line"></span><br><span class="line">        ByteBuf buf = PlatformDependent.hasUnsafe() ?</span><br><span class="line">                UnsafeByteBufUtil.<span class="keyword">new</span><span class="type">UnsafeDirectByteBuf</span>(<span class="built_in">this</span>, initialCapacity, maxCapacity) :<span class="type"></span></span><br><span class="line"><span class="type">                new UnpooledDirectByteBuf</span>(<span class="built_in">this</span>, initialCapacity, maxCapacity);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> disableLeakDetector ? buf : <span class="type">toLeakAwareBuffer</span>(buf);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>pooledUnsafeDirectByteBuf的创建</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="title">UnpooledUnsafeDirectByteBuf</span><span class="params">(ByteBufAllocator alloc, <span class="keyword">int</span> initialCapacity, <span class="keyword">int</span> maxCapacity)</span> </span>&#123;</span><br><span class="line">       </span><br><span class="line">        ...</span><br><span class="line">        <span class="keyword">this</span>.alloc = alloc;</span><br><span class="line">        setByteBuffer(allocateDirect(initialCapacity), <span class="literal">false</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>通过JDK ByteBuffer创建一个DirectByteBuffer对象</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> ByteBuffer <span class="title">allocateDirect</span><span class="params">(<span class="keyword">int</span> capacity)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> DirectByteBuffer(capacity);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">final <span class="keyword">void</span> setByteBuffer(ByteBuffer <span class="built_in">buffer</span>, <span class="keyword">boolean</span> tryFree) &#123;</span><br><span class="line"></span><br><span class="line">        ...</span><br><span class="line">        <span class="comment">//保存DirectByteBuffer对象</span></span><br><span class="line">        <span class="keyword">this</span>.<span class="built_in">buffer</span> = <span class="built_in">buffer</span>;</span><br><span class="line">        <span class="comment">//计算DirectByteBuffer在JVM中的内存地址</span></span><br><span class="line">        memoryAddress = PlatformDependent.directBufferAddress(<span class="built_in">buffer</span>);</span><br><span class="line">        tmpNioBuf = null;</span><br><span class="line">        capacity = <span class="built_in">buffer</span>.remaining();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>pooledDirectByteBuf的创建</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="title">UnpooledDirectByteBuf</span><span class="params">(ByteBufAllocator alloc, <span class="keyword">int</span> initialCapacity, <span class="keyword">int</span> maxCapacity)</span> </span>&#123;</span><br><span class="line">       </span><br><span class="line">        ...</span><br><span class="line">        <span class="comment">//保存内存分配器</span></span><br><span class="line">        <span class="keyword">this</span>.alloc = alloc;</span><br><span class="line">        <span class="comment">//利用ByteBuffer创建一个DirectByteBuffer对象，并且设置pooledDirectByteBuf的buffer对象。</span></span><br><span class="line">        setByteBuffer(ByteBuffer.allocateDirect(initialCapacity));</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>同Heap的Unsafe和非Unsafe，Direct的Unsafe是基于memoryAddress，即DirectByteBuffer对象在内存中的位置，和偏移量，利用Unsafe对象来读数据的。safe则是通过buffer.get（index）的方式来读数据的。</p>
+<p>##PooledByteBufAllocator是如何实现pool类型的Heap和direct ByteBuf的？（源码分析）</p>
+<p>PooledByteBufAllocator相比UnPooledByteBufAllocator会复杂很多，后面的文章会继续分析PooledByteBufAllocator是如何实现Pool类型的Heap和direct ByteBuf的。</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    最終更新：<time datetime="2018-08-12T07:13:36.519Z" itemprop="dateUpdated">2018-08-12 15:13:36</time>
+</span><br>
+
+
+        
+    </div>
+    
+    <footer>
+        <a href="//litten.me">
+            <img src="/img/tongtong.jpg" alt="浵通">
+            浵通
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Netty-4-1-6-Final源码分析/">Netty-4.1.6.Final源码分析</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=//litten.me/2018/08/12/byteBuf/&title=《byteBuf》 — Tongtong's Blog&pic=//litten.me/img/tongtong.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=//litten.me/2018/08/12/byteBuf/&title=《byteBuf》 — Tongtong's Blog&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=//litten.me/2018/08/12/byteBuf/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《byteBuf》 — Tongtong's Blog&url=//litten.me/2018/08/12/byteBuf/&via=//litten.me" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=//litten.me/2018/08/12/byteBuf/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2018/08/11/newChannel/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">newChannel</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+<section class="comments" id="comments">
+    <div id="disqus_thread"></div>
+    <script>
+    var disqus_shortname = 'true';
+    lazyScripts.push('//' + disqus_shortname + '.disqus.com/embed.js')
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>このブログの内容物は<a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja">クリエイティブ・コモンズ 表示 - 非営利 - 継承 4.0 国際ライセンスの下に提供されています</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>浵通 &copy; 2018</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=//litten.me/2018/08/12/byteBuf/&title=《byteBuf》 — Tongtong's Blog&pic=//litten.me/img/tongtong.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=//litten.me/2018/08/12/byteBuf/&title=《byteBuf》 — Tongtong's Blog&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=//litten.me/2018/08/12/byteBuf/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《byteBuf》 — Tongtong's Blog&url=//litten.me/2018/08/12/byteBuf/&via=//litten.me" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=//litten.me/2018/08/12/byteBuf/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="//api.qrserver.com/v1/create-qr-code/?data=//litten.me/2018/08/12/byteBuf/" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+</body>
+</html>

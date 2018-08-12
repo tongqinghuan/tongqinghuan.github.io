@@ -14,25 +14,22 @@
     
     
     
-    <title>内核空间与用户空间 | Tongtong&#39;s Blog</title>
+    <title>newChannel | Tongtong&#39;s Blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     
     <meta name="theme-color" content="#3F51B5">
     
     
-    <meta name="keywords" content="Linux">
-    <meta name="description" content="内核空间与用户空间的概念：内核空间与用户空间是操作系统对物理内存在逻辑上的划分。 内核空间：存放内核代码和数据，独立于普通应用程序空间。运行在较高的特权级别上，拥有访问所有硬件设备的权限。 用户空间：存放用户进程代码和数据，只能访问到部分系统资源，不能直接访问内核空间以及硬件设备。 内核态和用户态的概念：描述的是操作系统运行的两个不同级别。 内核态：当一个进程因为触发软中断陷入内核空间执行时，那么">
-<meta name="keywords" content="Linux">
+    <meta name="keywords" content="Netty源码分析">
+    <meta name="keywords" content="Netty源码分析">
 <meta property="og:type" content="article">
-<meta property="og:title" content="内核空间与用户空间">
-<meta property="og:url" content="//litten.me/2018/08/03/内核空间与用户空间/index.html">
+<meta property="og:title" content="newChannel">
+<meta property="og:url" content="//litten.me/2018/08/11/newChannel/index.html">
 <meta property="og:site_name" content="Tongtong&#39;s Blog">
-<meta property="og:description" content="内核空间与用户空间的概念：内核空间与用户空间是操作系统对物理内存在逻辑上的划分。 内核空间：存放内核代码和数据，独立于普通应用程序空间。运行在较高的特权级别上，拥有访问所有硬件设备的权限。 用户空间：存放用户进程代码和数据，只能访问到部分系统资源，不能直接访问内核空间以及硬件设备。 内核态和用户态的概念：描述的是操作系统运行的两个不同级别。 内核态：当一个进程因为触发软中断陷入内核空间执行时，那么">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-08-10T01:52:02.271Z">
+<meta property="og:updated_time" content="2018-08-11T14:26:09.698Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="内核空间与用户空间">
-<meta name="twitter:description" content="内核空间与用户空间的概念：内核空间与用户空间是操作系统对物理内存在逻辑上的划分。 内核空间：存放内核代码和数据，独立于普通应用程序空间。运行在较高的特权级别上，拥有访问所有硬件设备的权限。 用户空间：存放用户进程代码和数据，只能访问到部分系统资源，不能直接访问内核空间以及硬件设备。 内核态和用户态的概念：描述的是操作系统运行的两个不同级别。 内核态：当一个进程因为触发软中断陷入内核空间执行时，那么">
+<meta name="twitter:title" content="newChannel">
     
         <link rel="alternate" type="application/atom+xml" title="Tongtong&#39;s Blog" href="/atom.xml">
     
@@ -113,7 +110,7 @@
         <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
           <i class="icon icon-lg icon-navicon"></i>
         </a>
-        <div class="flex-col header-title ellipsis">内核空间与用户空间</div>
+        <div class="flex-col header-title ellipsis">newChannel</div>
         
         <div class="search-wrap" id="search-wrap">
             <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
@@ -135,11 +132,11 @@
 <header class="content-header post-header">
 
     <div class="container fade-scale">
-        <h1 class="title">内核空间与用户空间</h1>
+        <h1 class="title">newChannel</h1>
         <h5 class="subtitle">
             
-                <time datetime="2018-08-03T15:47:03.000Z" itemprop="datePublished" class="page-time">
-  2018-08-03
+                <time datetime="2018-08-11T13:54:02.000Z" itemprop="datePublished" class="page-time">
+  2018-08-11
 </time>
 
 
@@ -155,21 +152,14 @@
 
 <div class="container body-wrap">
     
-    <aside class="post-widget">
-        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
-            <h4>TOC</h4>
-            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#内核空间与用户空间的概念："><span class="post-toc-number">1.</span> <span class="post-toc-text">内核空间与用户空间的概念：</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#内核态和用户态的概念："><span class="post-toc-number">2.</span> <span class="post-toc-text">内核态和用户态的概念：</span></a></li></ol>
-        </nav>
-    </aside>
 
-
-<article id="post-内核空间与用户空间"
+<article id="post-newChannel"
   class="post-article article-type-post fade" itemprop="blogPost">
 
     <div class="post-card">
-        <h1 class="post-card-title">内核空间与用户空间</h1>
+        <h1 class="post-card-title">newChannel</h1>
         <div class="post-meta">
-            <time class="post-time" title="2018-08-03 23:47:03" datetime="2018-08-03T15:47:03.000Z"  itemprop="datePublished">2018-08-03</time>
+            <time class="post-time" title="2018-08-11 21:54:02" datetime="2018-08-11T13:54:02.000Z"  itemprop="datePublished">2018-08-11</time>
 
             
 
@@ -182,13 +172,7 @@
 
         </div>
         <div class="post-content" id="post-content" itemprop="postContent">
-            <h2 id="内核空间与用户空间的概念："><a href="#内核空间与用户空间的概念：" class="headerlink" title="内核空间与用户空间的概念："></a>内核空间与用户空间的概念：</h2><p>内核空间与用户空间是操作系统对物理内存在逻辑上的划分。</p>
-<p>内核空间：存放内核代码和数据，独立于普通应用程序空间。运行在较高的特权级别上，拥有访问所有硬件设备的权限。</p>
-<p>用户空间：存放用户进程代码和数据，只能访问到部分系统资源，不能直接访问内核空间以及硬件设备。</p>
-<h2 id="内核态和用户态的概念："><a href="#内核态和用户态的概念：" class="headerlink" title="内核态和用户态的概念："></a>内核态和用户态的概念：</h2><p>描述的是操作系统运行的两个不同级别。</p>
-<p>内核态：当一个进程因为触发软中断陷入内核空间执行时，那么此时进程处于内核态；（内核栈）</p>
-<p>用户态：当一个进程在执行自己的代码时，称之处于用户态。（用户栈）</p>
-
+            
         </div>
 
         <blockquote class="post-copyright">
@@ -196,7 +180,7 @@
     <div class="content">
         
 <span class="post-time">
-    最終更新：<time datetime="2018-08-10T01:52:02.271Z" itemprop="dateUpdated">2018-08-10 09:52:02</time>
+    最終更新：<time datetime="2018-08-11T14:26:09.698Z" itemprop="dateUpdated">2018-08-11 22:26:09</time>
 </span><br>
 
 
@@ -216,7 +200,7 @@
 
         <div class="post-footer">
             
-	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li></ul>
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Netty源码分析/">Netty源码分析</a></li></ul>
 
 
             
@@ -226,7 +210,7 @@
 <div class="page-share" id="pageShare">
     <ul class="reset share-icons">
       <li>
-        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=//litten.me/2018/08/03/内核空间与用户空间/&title=《内核空间与用户空间》 — Tongtong's Blog&pic=//litten.me/img/tongtong.jpg" data-title="微博">
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=//litten.me/2018/08/11/newChannel/&title=《newChannel》 — Tongtong's Blog&pic=//litten.me/img/tongtong.jpg" data-title="微博">
           <i class="icon icon-weibo"></i>
         </a>
       </li>
@@ -236,22 +220,22 @@
         </a>
       </li>
       <li>
-        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=//litten.me/2018/08/03/内核空间与用户空间/&title=《内核空间与用户空间》 — Tongtong's Blog&source=" data-title=" QQ">
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=//litten.me/2018/08/11/newChannel/&title=《newChannel》 — Tongtong's Blog&source=" data-title=" QQ">
           <i class="icon icon-qq"></i>
         </a>
       </li>
       <li>
-        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=//litten.me/2018/08/03/内核空间与用户空间/" data-title=" Facebook">
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=//litten.me/2018/08/11/newChannel/" data-title=" Facebook">
           <i class="icon icon-facebook"></i>
         </a>
       </li>
       <li>
-        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《内核空间与用户空间》 — Tongtong's Blog&url=//litten.me/2018/08/03/内核空间与用户空间/&via=//litten.me" data-title=" Twitter">
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《newChannel》 — Tongtong's Blog&url=//litten.me/2018/08/11/newChannel/&via=//litten.me" data-title=" Twitter">
           <i class="icon icon-twitter"></i>
         </a>
       </li>
       <li>
-        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=//litten.me/2018/08/03/内核空间与用户空间/" data-title=" Google+">
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=//litten.me/2018/08/11/newChannel/" data-title=" Google+">
           <i class="icon icon-google-plus"></i>
         </a>
       </li>
@@ -274,18 +258,18 @@
 <nav class="post-nav flex-row flex-justify-between">
   
     <div class="waves-block waves-effect prev">
-      <a href="/2018/08/05/同步异步阻塞非阻塞/" id="post-prev" class="post-nav-link">
+      <a href="/2018/08/12/byteBuf/" id="post-prev" class="post-nav-link">
         <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
-        <h4 class="title">同步异步阻塞非阻塞</h4>
+        <h4 class="title">byteBuf</h4>
       </a>
     </div>
   
 
   
     <div class="waves-block waves-effect next">
-      <a href="/2018/08/03/select实现细节分析/" id="post-next" class="post-nav-link">
+      <a href="/2018/08/10/channelPipeline源码分析/" id="post-next" class="post-nav-link">
         <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
-        <h4 class="title">select实现细节分析</h4>
+        <h4 class="title">channelPipeline源码分析</h4>
       </a>
     </div>
   
@@ -365,7 +349,7 @@
 <div class="global-share" id="globalShare">
     <ul class="reset share-icons">
       <li>
-        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=//litten.me/2018/08/03/内核空间与用户空间/&title=《内核空间与用户空间》 — Tongtong's Blog&pic=//litten.me/img/tongtong.jpg" data-title="微博">
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=//litten.me/2018/08/11/newChannel/&title=《newChannel》 — Tongtong's Blog&pic=//litten.me/img/tongtong.jpg" data-title="微博">
           <i class="icon icon-weibo"></i>
         </a>
       </li>
@@ -375,22 +359,22 @@
         </a>
       </li>
       <li>
-        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=//litten.me/2018/08/03/内核空间与用户空间/&title=《内核空间与用户空间》 — Tongtong's Blog&source=" data-title=" QQ">
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=//litten.me/2018/08/11/newChannel/&title=《newChannel》 — Tongtong's Blog&source=" data-title=" QQ">
           <i class="icon icon-qq"></i>
         </a>
       </li>
       <li>
-        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=//litten.me/2018/08/03/内核空间与用户空间/" data-title=" Facebook">
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=//litten.me/2018/08/11/newChannel/" data-title=" Facebook">
           <i class="icon icon-facebook"></i>
         </a>
       </li>
       <li>
-        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《内核空间与用户空间》 — Tongtong's Blog&url=//litten.me/2018/08/03/内核空间与用户空间/&via=//litten.me" data-title=" Twitter">
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《newChannel》 — Tongtong's Blog&url=//litten.me/2018/08/11/newChannel/&via=//litten.me" data-title=" Twitter">
           <i class="icon icon-twitter"></i>
         </a>
       </li>
       <li>
-        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=//litten.me/2018/08/03/内核空间与用户空间/" data-title=" Google+">
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=//litten.me/2018/08/11/newChannel/" data-title=" Google+">
           <i class="icon icon-google-plus"></i>
         </a>
       </li>
@@ -401,7 +385,7 @@
 <div class="page-modal wx-share" id="wxShare">
     <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
-    <img src="//api.qrserver.com/v1/create-qr-code/?data=//litten.me/2018/08/03/内核空间与用户空间/" alt="微信分享二维码">
+    <img src="//api.qrserver.com/v1/create-qr-code/?data=//litten.me/2018/08/11/newChannel/" alt="微信分享二维码">
 </div>
 
 
