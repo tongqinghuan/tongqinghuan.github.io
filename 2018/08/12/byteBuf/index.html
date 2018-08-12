@@ -38,7 +38,7 @@
 <meta property="og:image" content="https://i.imgur.com/oSyfGbE.png">
 <meta property="og:image" content="https://i.imgur.com/cNVJZO8.png">
 <meta property="og:image" content="https://i.imgur.com/WKaiCN9.png">
-<meta property="og:updated_time" content="2018-08-12T07:13:36.519Z">
+<meta property="og:updated_time" content="2018-08-12T07:20:20.827Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="byteBuf">
 <meta name="twitter:description" content="ByteBuf是什么？ ByteBuf是Netty对内存的一个抽象，负责从底层IO将数据读入到Bytebuf，然后传递给上层应用程序。应用程序处理完数据，在将数据封装成Bytebuf，写回到IO。因此IO是Netty最底层的一部分，直接与底层IO打交道。 ##ByteBuf的结构">
@@ -129,7 +129,7 @@
             <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
                 <i class="icon icon-lg icon-chevron-left"></i>
             </a>
-            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="検索">
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="Search">
             <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
                 <i class="icon icon-lg icon-search"></i>
             </a>
@@ -168,7 +168,7 @@
     <aside class="post-widget">
         <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
             <h4>TOC</h4>
-            <ol class="post-toc"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Bytebuf提供的重要的API"><span class="post-toc-number">1.</span> <span class="post-toc-text">Bytebuf提供的重要的API</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Bytebuf的分类"><span class="post-toc-number">2.</span> <span class="post-toc-text">Bytebuf的分类</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#UnpooledUnsafeHeapByteBuf-UnpooledHeapByteBuf"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">UnpooledUnsafeHeapByteBuf UnpooledHeapByteBuf</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#UnpooledUnsafeDirectByteBuf-UnpooledDirectByteBuf"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">UnpooledUnsafeDirectByteBuf UnpooledDirectByteBuf</span></a></li></ol></li></ol>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Bytebuf提供的重要的API"><span class="post-toc-number">1.</span> <span class="post-toc-text">Bytebuf提供的重要的API</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Bytebuf的分类"><span class="post-toc-number">2.</span> <span class="post-toc-text">Bytebuf的分类</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#分析Netty是如何基于上述三个维度来实现ByteBuf的？"><span class="post-toc-number"></span> <span class="post-toc-text">分析Netty是如何基于上述三个维度来实现ByteBuf的？</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#顶层的ByteBufAllocator的设计。"><span class="post-toc-number">1.</span> <span class="post-toc-text">顶层的ByteBufAllocator的设计。</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#UnPooledByteBufAllocator是如何实现Unpool类型的Heap和direct-ByteBuf的？（源码分析）"><span class="post-toc-number">2.</span> <span class="post-toc-text">UnPooledByteBufAllocator是如何实现Unpool类型的Heap和direct ByteBuf的？（源码分析）</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#UnpooledUnsafeHeapByteBuf-UnpooledHeapByteBuf"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">UnpooledUnsafeHeapByteBuf UnpooledHeapByteBuf</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#UnpooledUnsafeDirectByteBuf-UnpooledDirectByteBuf"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">UnpooledUnsafeDirectByteBuf UnpooledDirectByteBuf</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#PooledByteBufAllocator是如何实现pool类型的Heap和direct-ByteBuf的？（源码分析）"><span class="post-toc-number">3.</span> <span class="post-toc-text">PooledByteBufAllocator是如何实现pool类型的Heap和direct ByteBuf的？（源码分析）</span></a></li></ol>
         </nav>
     </aside>
 
@@ -279,10 +279,8 @@
 </ul>
 <p>heap:在堆上进行内存分配，会被JVM的GC进行管理</p>
 <p>direct：调用JDK的API分配内存，不受JVM的GC管理，需要自动手动释放，否则会造成内存泄露  </p>
-<p>##分析Netty是如何基于上述三个维度来实现ByteBuf的？</p>
-<p>首先明确一点，ByteBuf的实现一定和内存分配管理器有关，而具体类型的ByteBuf的实现也相应的和对应的内存分配器相关。</p>
-<p>###顶层的ByteBufAllocator的设计。</p>
-<figure class="image-bubble">
+<h2 id="分析Netty是如何基于上述三个维度来实现ByteBuf的？"><a href="#分析Netty是如何基于上述三个维度来实现ByteBuf的？" class="headerlink" title="分析Netty是如何基于上述三个维度来实现ByteBuf的？"></a>分析Netty是如何基于上述三个维度来实现ByteBuf的？</h2><p>首先明确一点，ByteBuf的实现一定和内存分配管理器有关，而具体类型的ByteBuf的实现也相应的和对应的内存分配器相关。</p>
+<h3 id="顶层的ByteBufAllocator的设计。"><a href="#顶层的ByteBufAllocator的设计。" class="headerlink" title="顶层的ByteBufAllocator的设计。"></a>顶层的ByteBufAllocator的设计。</h3><figure class="image-bubble">
                 <div class="img-lightbox">
                     <div class="overlay"></div>
                     <img src="https://i.imgur.com/cNVJZO8.png" alt="" title="">
@@ -302,8 +300,7 @@
                 </div>
                 <div class="image-caption"></div>
             </figure>
-<p>##UnPooledByteBufAllocator是如何实现Unpool类型的Heap和direct ByteBuf的？（源码分析）</p>
-<h4 id="UnpooledUnsafeHeapByteBuf-UnpooledHeapByteBuf"><a href="#UnpooledUnsafeHeapByteBuf-UnpooledHeapByteBuf" class="headerlink" title="UnpooledUnsafeHeapByteBuf UnpooledHeapByteBuf"></a>UnpooledUnsafeHeapByteBuf UnpooledHeapByteBuf</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> ByteBuf <span class="title">newHeapBuffer</span><span class="params">(<span class="keyword">int</span> initialCapacity, <span class="keyword">int</span> maxCapacity)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//Netty会判断当前是否持有JDK的Unsafe对象，如果有，则创建UnpooledUnsafeHeapByteBuf，否则创建UnpooledHeapByteBuf</span></span><br><span class="line">        <span class="keyword">return</span> PlatformDependent.hasUnsafe() ? <span class="keyword">new</span> UnpooledUnsafeHeapByteBuf(<span class="keyword">this</span>, initialCapacity, maxCapacity)</span><br><span class="line">                : <span class="keyword">new</span> UnpooledHeapByteBuf(<span class="keyword">this</span>, initialCapacity, maxCapacity);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="UnPooledByteBufAllocator是如何实现Unpool类型的Heap和direct-ByteBuf的？（源码分析）"><a href="#UnPooledByteBufAllocator是如何实现Unpool类型的Heap和direct-ByteBuf的？（源码分析）" class="headerlink" title="UnPooledByteBufAllocator是如何实现Unpool类型的Heap和direct ByteBuf的？（源码分析）"></a>UnPooledByteBufAllocator是如何实现Unpool类型的Heap和direct ByteBuf的？（源码分析）</h3><h4 id="UnpooledUnsafeHeapByteBuf-UnpooledHeapByteBuf"><a href="#UnpooledUnsafeHeapByteBuf-UnpooledHeapByteBuf" class="headerlink" title="UnpooledUnsafeHeapByteBuf UnpooledHeapByteBuf"></a>UnpooledUnsafeHeapByteBuf UnpooledHeapByteBuf</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> ByteBuf <span class="title">newHeapBuffer</span><span class="params">(<span class="keyword">int</span> initialCapacity, <span class="keyword">int</span> maxCapacity)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//Netty会判断当前是否持有JDK的Unsafe对象，如果有，则创建UnpooledUnsafeHeapByteBuf，否则创建UnpooledHeapByteBuf</span></span><br><span class="line">        <span class="keyword">return</span> PlatformDependent.hasUnsafe() ? <span class="keyword">new</span> UnpooledUnsafeHeapByteBuf(<span class="keyword">this</span>, initialCapacity, maxCapacity)</span><br><span class="line">                : <span class="keyword">new</span> UnpooledHeapByteBuf(<span class="keyword">this</span>, initialCapacity, maxCapacity);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
 <p>UnpooledHeapByteBuf的ByteBuf的创建</p>
 <figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> UnpooledHeapByteBuf(</span><br><span class="line"></span><br><span class="line">        <span class="comment">//传进来一个内存分配器（this UnPooledByteBufAllocator ）</span></span><br><span class="line">        ByteBufAllocator alloc, <span class="keyword">int</span> initialCapacity, <span class="keyword">int</span> maxCapacity) &#123;</span><br><span class="line">        <span class="comment">//创建一个Byte数组</span></span><br><span class="line">        <span class="keyword">this</span>(alloc, <span class="keyword">new</span> <span class="keyword">byte</span>[initialCapacity], <span class="number">0</span>, <span class="number">0</span>, maxCapacity);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
 <figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> UnpooledHeapByteBuf(</span><br><span class="line">            </span><br><span class="line">            ByteBufAllocator alloc, <span class="keyword">byte</span>[] initialArray, <span class="keyword">int</span> readerIndex, <span class="keyword">int</span> writerIndex, <span class="keyword">int</span> maxCapacity) &#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">super</span>(maxCapacity);</span><br><span class="line">        <span class="comment">//保存内存分配器</span></span><br><span class="line">        <span class="keyword">this</span>.alloc = alloc;</span><br><span class="line">        <span class="comment">//保存Byte数组</span></span><br><span class="line">        setArray(initialArray);</span><br><span class="line">        <span class="comment">//初始化读写指针</span></span><br><span class="line">        setIndex(readerIndex, writerIndex);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
@@ -328,8 +325,7 @@
 <p>pooledDirectByteBuf的创建</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="title">UnpooledDirectByteBuf</span><span class="params">(ByteBufAllocator alloc, <span class="keyword">int</span> initialCapacity, <span class="keyword">int</span> maxCapacity)</span> </span>&#123;</span><br><span class="line">       </span><br><span class="line">        ...</span><br><span class="line">        <span class="comment">//保存内存分配器</span></span><br><span class="line">        <span class="keyword">this</span>.alloc = alloc;</span><br><span class="line">        <span class="comment">//利用ByteBuffer创建一个DirectByteBuffer对象，并且设置pooledDirectByteBuf的buffer对象。</span></span><br><span class="line">        setByteBuffer(ByteBuffer.allocateDirect(initialCapacity));</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
 <p>同Heap的Unsafe和非Unsafe，Direct的Unsafe是基于memoryAddress，即DirectByteBuffer对象在内存中的位置，和偏移量，利用Unsafe对象来读数据的。safe则是通过buffer.get（index）的方式来读数据的。</p>
-<p>##PooledByteBufAllocator是如何实现pool类型的Heap和direct ByteBuf的？（源码分析）</p>
-<p>PooledByteBufAllocator相比UnPooledByteBufAllocator会复杂很多，后面的文章会继续分析PooledByteBufAllocator是如何实现Pool类型的Heap和direct ByteBuf的。</p>
+<h3 id="PooledByteBufAllocator是如何实现pool类型的Heap和direct-ByteBuf的？（源码分析）"><a href="#PooledByteBufAllocator是如何实现pool类型的Heap和direct-ByteBuf的？（源码分析）" class="headerlink" title="PooledByteBufAllocator是如何实现pool类型的Heap和direct ByteBuf的？（源码分析）"></a>PooledByteBufAllocator是如何实现pool类型的Heap和direct ByteBuf的？（源码分析）</h3><p>PooledByteBufAllocator相比UnPooledByteBufAllocator会复杂很多，后面的文章会继续分析PooledByteBufAllocator是如何实现Pool类型的Heap和direct ByteBuf的。</p>
 
         </div>
 
@@ -338,7 +334,7 @@
     <div class="content">
         
 <span class="post-time">
-    最終更新：<time datetime="2018-08-12T07:13:36.519Z" itemprop="dateUpdated">2018-08-12 15:13:36</time>
+    Last updated: <time datetime="2018-08-12T07:20:20.827Z" itemprop="dateUpdated">2018-08-12 15:20:20</time>
 </span><br>
 
 
@@ -418,9 +414,9 @@
 
   
     <div class="waves-block waves-effect next">
-      <a href="/2018/08/11/newChannel/" id="post-next" class="post-nav-link">
+      <a href="/2018/08/10/channelPipeline源码分析/" id="post-next" class="post-nav-link">
         <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
-        <h4 class="title">newChannel</h4>
+        <h4 class="title">channelPipeline源码分析</h4>
       </a>
     </div>
   
@@ -478,7 +474,7 @@
             
                 <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
             
-            <span>このブログの内容物は<a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja">クリエイティブ・コモンズ 表示 - 非営利 - 継承 4.0 国際ライセンスの下に提供されています</a></span>
+            <span>This blog is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.</span>
         </p>
     </div>
     <div class="bottom">
