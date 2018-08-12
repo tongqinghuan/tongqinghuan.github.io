@@ -14,7 +14,7 @@
     
     
     
-    <title>channelPipeline源码分析 | Tongtong&#39;s Blog</title>
+    <title>ChannelPipeline源码分析 | Tongtong&#39;s Blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     
     <meta name="theme-color" content="#3F51B5">
@@ -24,7 +24,7 @@
     <meta name="description" content="ChannelPipeline作为上层业务处理逻辑的载体，是Netty中的第二大核心组件，下面将从三个方面来分析ChannelPipeline：  服务器和客户端Channel是如何初始化ChannelPipeline的？  ChannelPipeline是如何实现上层业务逻辑处理的ChannelHandler的动态编制的？  Inbound事件、Outbound事件以及异常事件在ChannelP">
 <meta name="keywords" content="Netty-4.1.6.Final源码分析">
 <meta property="og:type" content="article">
-<meta property="og:title" content="channelPipeline源码分析">
+<meta property="og:title" content="ChannelPipeline源码分析">
 <meta property="og:url" content="//litten.me/2018/08/10/channelPipeline源码分析/index.html">
 <meta property="og:site_name" content="Tongtong&#39;s Blog">
 <meta property="og:description" content="ChannelPipeline作为上层业务处理逻辑的载体，是Netty中的第二大核心组件，下面将从三个方面来分析ChannelPipeline：  服务器和客户端Channel是如何初始化ChannelPipeline的？  ChannelPipeline是如何实现上层业务逻辑处理的ChannelHandler的动态编制的？  Inbound事件、Outbound事件以及异常事件在ChannelP">
@@ -44,9 +44,9 @@
 <meta property="og:image" content="https://i.imgur.com/XZoiRQp.png">
 <meta property="og:image" content="https://i.imgur.com/sWk3sVL.png">
 <meta property="og:image" content="https://i.imgur.com/WhRXRtS.png">
-<meta property="og:updated_time" content="2018-08-12T07:25:12.970Z">
+<meta property="og:updated_time" content="2018-08-12T07:38:50.136Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="channelPipeline源码分析">
+<meta name="twitter:title" content="ChannelPipeline源码分析">
 <meta name="twitter:description" content="ChannelPipeline作为上层业务处理逻辑的载体，是Netty中的第二大核心组件，下面将从三个方面来分析ChannelPipeline：  服务器和客户端Channel是如何初始化ChannelPipeline的？  ChannelPipeline是如何实现上层业务逻辑处理的ChannelHandler的动态编制的？  Inbound事件、Outbound事件以及异常事件在ChannelP">
 <meta name="twitter:image" content="https://i.imgur.com/ReHHhCI.png">
     
@@ -129,7 +129,7 @@
         <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
           <i class="icon icon-lg icon-navicon"></i>
         </a>
-        <div class="flex-col header-title ellipsis">channelPipeline源码分析</div>
+        <div class="flex-col header-title ellipsis">ChannelPipeline源码分析</div>
         
         <div class="search-wrap" id="search-wrap">
             <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
@@ -151,7 +151,7 @@
 <header class="content-header post-header">
 
     <div class="container fade-scale">
-        <h1 class="title">channelPipeline源码分析</h1>
+        <h1 class="title">ChannelPipeline源码分析</h1>
         <h5 class="subtitle">
             
                 <time datetime="2018-08-10T08:09:20.000Z" itemprop="datePublished" class="page-time">
@@ -174,7 +174,7 @@
     <aside class="post-widget">
         <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
             <h4>TOC</h4>
-            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#ChannelPipeline的初始化"><span class="post-toc-number">1.</span> <span class="post-toc-text">ChannelPipeline的初始化</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#首先要定位ChannelPipeline是什么？"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">首先要定位ChannelPipeline是什么？</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#ChannelPipeline的ChannelHandler的添加和删除"><span class="post-toc-number">2.</span> <span class="post-toc-text">ChannelPipeline的ChannelHandler的添加和删除</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#添加"><span class="post-toc-number">3.</span> <span class="post-toc-text">添加</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#删除"><span class="post-toc-number">4.</span> <span class="post-toc-text">删除</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#ChannelPipeline的事件传播"><span class="post-toc-number">5.</span> <span class="post-toc-text">ChannelPipeline的事件传播</span></a></li></ol>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#ChannelPipeline的初始化"><span class="post-toc-number">1.</span> <span class="post-toc-text">ChannelPipeline的初始化</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#定位ChannelPipeline是什么？"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">定位ChannelPipeline是什么？</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#ChannelPipeline的初始化-1"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">ChannelPipeline的初始化</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#ChannelPipeline的ChannelHandler的添加和删除"><span class="post-toc-number">2.</span> <span class="post-toc-text">ChannelPipeline的ChannelHandler的添加和删除</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#添加"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">添加</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#删除"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">删除</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#ChannelPipeline的事件传播"><span class="post-toc-number">3.</span> <span class="post-toc-text">ChannelPipeline的事件传播</span></a></li></ol>
         </nav>
     </aside>
 
@@ -183,7 +183,7 @@
   class="post-article article-type-post fade" itemprop="blogPost">
 
     <div class="post-card">
-        <h1 class="post-card-title">channelPipeline源码分析</h1>
+        <h1 class="post-card-title">ChannelPipeline源码分析</h1>
         <div class="post-meta">
             <time class="post-time" title="2018-08-10 16:09:20" datetime="2018-08-10T08:09:20.000Z"  itemprop="datePublished">2018-08-10</time>
 
@@ -207,7 +207,7 @@
 <li><p>Inbound事件、Outbound事件以及异常事件在ChannelPipeline中是如何进行传播的？</p>
 </li>
 </ul>
-<h2 id="ChannelPipeline的初始化"><a href="#ChannelPipeline的初始化" class="headerlink" title="ChannelPipeline的初始化"></a>ChannelPipeline的初始化</h2><h3 id="首先要定位ChannelPipeline是什么？"><a href="#首先要定位ChannelPipeline是什么？" class="headerlink" title="首先要定位ChannelPipeline是什么？"></a>首先要定位ChannelPipeline是什么？</h3><p>ChannelPipeLine是以ChannelHandlerContext为节点的双向链表。 </p>
+<h2 id="ChannelPipeline的初始化"><a href="#ChannelPipeline的初始化" class="headerlink" title="ChannelPipeline的初始化"></a>ChannelPipeline的初始化</h2><h3 id="定位ChannelPipeline是什么？"><a href="#定位ChannelPipeline是什么？" class="headerlink" title="定位ChannelPipeline是什么？"></a>定位ChannelPipeline是什么？</h3><p>ChannelPipeLine是以ChannelHandlerContext为节点的双向链表。 </p>
 <p>ChannelHandlerContext用来封装上层业务处理逻辑ChannelHandler以及执行这个ChannelHandler的上下文。表明当前ChannelHandlerContext是在哪个连接上的哪个NioEventLoop上执行pipeline中的哪个上层业务逻辑，以及当前ChannelHandler是Inbound还是Outbound。如图所示。下面从ChannelHandlerContext的接口继承关系图进一步分析。</p>
 <figure class="image-bubble">
                 <div class="img-lightbox">
@@ -244,16 +244,15 @@
                 <div class="image-caption"></div>
             </figure>
 <p>从上图分析，发现TailContext其实仅仅是做一些收尾的工作，当ChannelPipeline上的Handler抛出异常，并且没有得到处理，最终会传播到TailContext进行处理。</p>
-<font color="#FF0000">  ChannelPipeline的初始化 </font>  
-
-<p>服务器和客户端Channel都是在创建对应Channel的过程中初始化ChannelPipeline的。下面以服务器端Channel为例进行分析。</p>
+<h3 id="ChannelPipeline的初始化-1"><a href="#ChannelPipeline的初始化-1" class="headerlink" title="ChannelPipeline的初始化"></a>ChannelPipeline的初始化</h3><p>服务器和客户端Channel都是在创建对应Channel的过程中初始化ChannelPipeline的。下面以服务器端Channel为例进行分析。</p>
 <figure class="highlight haxe"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">protected AbstractChannel(Channel parent) &#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//在NioServerSocketChannel的父类构造器中，初始化了ChannelPipeline</span></span><br><span class="line">        <span class="built_in">this</span>.parent = parent;</span><br><span class="line">        id = <span class="keyword">new</span><span class="type">Id</span>();</span><br><span class="line">        unsafe = <span class="keyword">new</span><span class="type">Unsafe</span>();</span><br><span class="line">        pipeline = <span class="keyword">new</span><span class="type">ChannelPipeline</span>();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
 <figure class="highlight haxe"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">protected DefaultChannelPipeline <span class="keyword">new</span><span class="type">ChannelPipeline</span>() &#123;</span><br><span class="line">       <span class="comment">//创建一个默认的DefaultChannelPipeline</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="type">DefaultChannelPipeline</span>(<span class="built_in">this</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
 <figure class="highlight haxe"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">protected DefaultChannelPipeline(Channel channel) &#123;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">this</span>.channel = ObjectUtil.checkNotNull(channel, <span class="string">"channel"</span>);</span><br><span class="line">        succeededFuture = <span class="keyword">new</span> <span class="type">SucceededChannelFuture</span>(channel, <span class="literal">null</span>);</span><br><span class="line">        voidPromise =  <span class="keyword">new</span> <span class="type">VoidChannelPromise</span>(channel, <span class="literal">true</span>);</span><br><span class="line">        <span class="comment">//创建HeadContext和TailContext</span></span><br><span class="line">        tail = <span class="keyword">new</span> <span class="type">TailContext</span>(<span class="built_in">this</span>);</span><br><span class="line">        head = <span class="keyword">new</span> <span class="type">HeadContext</span>(<span class="built_in">this</span>);</span><br><span class="line"></span><br><span class="line">        head.next = tail;</span><br><span class="line">        tail.prev = head;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
 <p>ChannelPipeline初始化后，是一个首尾相连的双向循环链表。</p>
-<h2 id="ChannelPipeline的ChannelHandler的添加和删除"><a href="#ChannelPipeline的ChannelHandler的添加和删除" class="headerlink" title="ChannelPipeline的ChannelHandler的添加和删除"></a>ChannelPipeline的ChannelHandler的添加和删除</h2><h2 id="添加"><a href="#添加" class="headerlink" title="添加"></a>添加</h2><p>使用场景：添加用户自定义的业务逻辑处理的ChannelHandler</p>
+<h2 id="ChannelPipeline的ChannelHandler的添加和删除"><a href="#ChannelPipeline的ChannelHandler的添加和删除" class="headerlink" title="ChannelPipeline的ChannelHandler的添加和删除"></a>ChannelPipeline的ChannelHandler的添加和删除</h2><hr>
+<h3 id="添加"><a href="#添加" class="headerlink" title="添加"></a>添加</h3><p>使用场景：添加用户自定义的业务逻辑处理的ChannelHandler</p>
 <figure class="highlight haxe"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> final ChannelPipeline addLast(EventExecutorGroup group, <span class="keyword">String</span> name, ChannelHandler handler) &#123;</span><br><span class="line"></span><br><span class="line">        final AbstractChannelHandlerContext <span class="keyword">new</span><span class="type">Ctx</span>;</span><br><span class="line">        synchronized (<span class="built_in">this</span>) &#123;</span><br><span class="line">            <span class="comment">//去重，避免重复的ChannelHandler添加到ChannelPipeline上</span></span><br><span class="line">            checkMultiplicity(handler);</span><br><span class="line">            <span class="comment">/*</span></span><br><span class="line"><span class="comment">            private static void checkMultiplicity(ChannelHandler handler) &#123;</span></span><br><span class="line"><span class="comment">                   if (handler instanceof ChannelHandlerAdapter) &#123;</span></span><br><span class="line"><span class="comment">                      ChannelHandlerAdapter h = (ChannelHandlerAdapter) handler;</span></span><br><span class="line"><span class="comment">                      if (!h.isSharable() &amp;&amp; h.added) &#123;</span></span><br><span class="line"><span class="comment">                          throw new ChannelPipelineException(</span></span><br><span class="line"><span class="comment">                          h.getClass().getName() +</span></span><br><span class="line"><span class="comment">                         " is not a @Sharable handler, so can't be added or removed multiple times.");</span></span><br><span class="line"><span class="comment">                     &#125;</span></span><br><span class="line"><span class="comment">                   h.added = true;</span></span><br><span class="line"><span class="comment">                &#125;</span></span><br><span class="line"><span class="comment">           &#125;</span></span><br><span class="line"><span class="comment">            */</span></span><br><span class="line">            <span class="comment">//将ChannelHandler封装成ChannelHandlerContext</span></span><br><span class="line">            <span class="keyword">new</span><span class="type">Ctx</span> = <span class="keyword">new</span><span class="type">Context</span>(group, filterName(name, handler), handler);</span><br><span class="line">            <span class="comment">//在双向循环链表中插入newCtx，这里不用判断空，因为初始状态的ChannelPipeline不为空，存在两大哨兵</span></span><br><span class="line">            addLast0(<span class="keyword">new</span><span class="type">Ctx</span>);</span><br><span class="line"></span><br><span class="line">            <span class="comment">//ChannelHandler的添加事件处理方法回调</span></span><br><span class="line"> </span><br><span class="line">            <span class="comment">//如果当前ChannelHandlerContex所属的Channel还没有完成注册，则将newCtx封装成PendingHandlerAddedTask，保存到ChannelPipeline中的pendingHandlerCallbackHead的链表中，待完成注册，回调Handler添加事件处理方法。</span></span><br><span class="line">            <span class="keyword">if</span> (!registered) &#123;</span><br><span class="line">                <span class="keyword">new</span><span class="type">Ctx</span>.setAddPending();</span><br><span class="line">                callHandlerCallbackLater(<span class="keyword">new</span><span class="type">Ctx</span>, <span class="literal">true</span>);</span><br><span class="line">                <span class="keyword">return</span> <span class="built_in">this</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//获取当前的要添加的newCtx所属的NIoEventLoop，判断当前线程是否是NioEventLoop线程，如果不是则将事件处理回调封装成一个task，扔到NioEventLoop的MpscQueue中，否则直接进行回调。</span></span><br><span class="line">            EventExecutor executor = <span class="keyword">new</span><span class="type">Ctx</span>.executor();</span><br><span class="line">            <span class="keyword">if</span> (!executor.inEventLoop()) &#123;</span><br><span class="line">                <span class="keyword">new</span><span class="type">Ctx</span>.setAddPending();</span><br><span class="line">                executor.execute(<span class="keyword">new</span> <span class="type">Runnable</span>() &#123;</span><br><span class="line">                    @Override</span><br><span class="line">                    <span class="keyword">public</span> void run() &#123;</span><br><span class="line">                        callHandlerAdded0(<span class="keyword">new</span><span class="type">Ctx</span>);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;);</span><br><span class="line">                <span class="keyword">return</span> <span class="built_in">this</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        callHandlerAdded0(<span class="keyword">new</span><span class="type">Ctx</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">this</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-<h2 id="删除"><a href="#删除" class="headerlink" title="删除"></a>删除</h2><p>删除的场景：</p>
+<h3 id="删除"><a href="#删除" class="headerlink" title="删除"></a>删除</h3><p>删除的场景：</p>
 <p>ChannelInitializer的使用：ChannelInitializer继承ChannelInboundHandlerAdapter，并且提供了一个initChannel（）抽象方法由用户自已实现。当ChannelInitializer被添加成功，会触发ChannelHandlerAdded()方法的执行，而这个方法中会回调用户重写的initChannel（）方法。</p>
 <p>initChannel（）方法主要用来为对应的ChannelPipeline配置用户自定义的上层业务处理器。需要特别强调的是会为服务器端ChannelPipeline添加一个特殊的Handler ServerBootstrapAcceptor，用来初始化新接入的连接，并进行注册到具体的NioEventLoop上。完成上述工作后，ChannelInitializer的使命就结束了，此时应该将其从对应的ChannelPipeline上删除。</p>
 <figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">boolean</span> initChannel(ChannelHandlerContext ctx) <span class="keyword">throws</span> Exception &#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (initMap.putIfAbsent(ctx, <span class="keyword">Boolean</span>.<span class="keyword">TRUE</span>) == <span class="keyword">null</span>) &#123; </span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="comment">//执行用户重写的initChannel()方法，完成对新接入的连接的初始化工作</span></span><br><span class="line">                initChannel((C) ctx.channel());</span><br><span class="line">            &#125; <span class="keyword">catch</span> (Throwable cause) &#123;</span><br><span class="line">                exceptionCaught(ctx, cause);</span><br><span class="line">            &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">                <span class="comment">//将ChannelInitializer从pip</span></span><br><span class="line">                remove(ctx);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
@@ -364,7 +363,7 @@
     <div class="content">
         
 <span class="post-time">
-    Last updated: <time datetime="2018-08-12T07:25:12.970Z" itemprop="dateUpdated">2018-08-12 15:25:12</time>
+    Last updated: <time datetime="2018-08-12T07:38:50.136Z" itemprop="dateUpdated">2018-08-12 15:38:50</time>
 </span><br>
 
 
@@ -394,7 +393,7 @@
 <div class="page-share" id="pageShare">
     <ul class="reset share-icons">
       <li>
-        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=//litten.me/2018/08/10/channelPipeline源码分析/&title=《channelPipeline源码分析》 — Tongtong's Blog&pic=//litten.me/img/tongtong.jpg" data-title="微博">
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=//litten.me/2018/08/10/channelPipeline源码分析/&title=《ChannelPipeline源码分析》 — Tongtong's Blog&pic=//litten.me/img/tongtong.jpg" data-title="微博">
           <i class="icon icon-weibo"></i>
         </a>
       </li>
@@ -404,7 +403,7 @@
         </a>
       </li>
       <li>
-        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=//litten.me/2018/08/10/channelPipeline源码分析/&title=《channelPipeline源码分析》 — Tongtong's Blog&source=" data-title=" QQ">
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=//litten.me/2018/08/10/channelPipeline源码分析/&title=《ChannelPipeline源码分析》 — Tongtong's Blog&source=" data-title=" QQ">
           <i class="icon icon-qq"></i>
         </a>
       </li>
@@ -414,7 +413,7 @@
         </a>
       </li>
       <li>
-        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《channelPipeline源码分析》 — Tongtong's Blog&url=//litten.me/2018/08/10/channelPipeline源码分析/&via=//litten.me" data-title=" Twitter">
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《ChannelPipeline源码分析》 — Tongtong's Blog&url=//litten.me/2018/08/10/channelPipeline源码分析/&via=//litten.me" data-title=" Twitter">
           <i class="icon icon-twitter"></i>
         </a>
       </li>
@@ -444,7 +443,7 @@
     <div class="waves-block waves-effect prev">
       <a href="/2018/08/12/byteBuf/" id="post-prev" class="post-nav-link">
         <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
-        <h4 class="title">byteBuf</h4>
+        <h4 class="title">ByteBuf</h4>
       </a>
     </div>
   
@@ -533,7 +532,7 @@
 <div class="global-share" id="globalShare">
     <ul class="reset share-icons">
       <li>
-        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=//litten.me/2018/08/10/channelPipeline源码分析/&title=《channelPipeline源码分析》 — Tongtong's Blog&pic=//litten.me/img/tongtong.jpg" data-title="微博">
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=//litten.me/2018/08/10/channelPipeline源码分析/&title=《ChannelPipeline源码分析》 — Tongtong's Blog&pic=//litten.me/img/tongtong.jpg" data-title="微博">
           <i class="icon icon-weibo"></i>
         </a>
       </li>
@@ -543,7 +542,7 @@
         </a>
       </li>
       <li>
-        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=//litten.me/2018/08/10/channelPipeline源码分析/&title=《channelPipeline源码分析》 — Tongtong's Blog&source=" data-title=" QQ">
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=//litten.me/2018/08/10/channelPipeline源码分析/&title=《ChannelPipeline源码分析》 — Tongtong's Blog&source=" data-title=" QQ">
           <i class="icon icon-qq"></i>
         </a>
       </li>
@@ -553,7 +552,7 @@
         </a>
       </li>
       <li>
-        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《channelPipeline源码分析》 — Tongtong's Blog&url=//litten.me/2018/08/10/channelPipeline源码分析/&via=//litten.me" data-title=" Twitter">
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《ChannelPipeline源码分析》 — Tongtong's Blog&url=//litten.me/2018/08/10/channelPipeline源码分析/&via=//litten.me" data-title=" Twitter">
           <i class="icon icon-twitter"></i>
         </a>
       </li>
