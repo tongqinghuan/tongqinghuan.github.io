@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>Netty-解码器的分析 | Tongtong&#39;s Blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Netty-4.1.6.Final源码分析">
+    <meta name="description" content="什么是解码？解码就是将二进制字节流按照协议解析成特定格式的数据包的过程。 那么在Netty中，服务器端接收到的是一串二进制字节流，解码的过程就是将接收到的二进制字节流按照一定的规则解码生成一个个的ByteBuf对象，然后经过Netty的pipeline传播到上层业务逻辑处理的Handler中进行处理。可以用下面的图表示：">
+<meta name="keywords" content="Netty-4.1.6.Final源码分析">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Netty-解码器的分析">
+<meta property="og:url" content="//litten.me/2018/08/13/Netty-解码器的分析/index.html">
+<meta property="og:site_name" content="Tongtong&#39;s Blog">
+<meta property="og:description" content="什么是解码？解码就是将二进制字节流按照协议解析成特定格式的数据包的过程。 那么在Netty中，服务器端接收到的是一串二进制字节流，解码的过程就是将接收到的二进制字节流按照一定的规则解码生成一个个的ByteBuf对象，然后经过Netty的pipeline传播到上层业务逻辑处理的Handler中进行处理。可以用下面的图表示：">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://i.imgur.com/OyLciaA.png">
+<meta property="og:image" content="https://i.imgur.com/TpHNu3e.png">
+<meta property="og:image" content="https://i.imgur.com/OnfsI2Z.png">
+<meta property="og:image" content="https://i.imgur.com/wvMsuBE.png">
+<meta property="og:image" content="https://i.imgur.com/Cn4yb0Z.png">
+<meta property="og:image" content="https://i.imgur.com/f0nRDdE.png">
+<meta property="og:image" content="https://i.imgur.com/B72nTju.png">
+<meta property="og:updated_time" content="2018-08-13T11:46:31.606Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Netty-解码器的分析">
+<meta name="twitter:description" content="什么是解码？解码就是将二进制字节流按照协议解析成特定格式的数据包的过程。 那么在Netty中，服务器端接收到的是一串二进制字节流，解码的过程就是将接收到的二进制字节流按照一定的规则解码生成一个个的ByteBuf对象，然后经过Netty的pipeline传播到上层业务逻辑处理的Handler中进行处理。可以用下面的图表示：">
+<meta name="twitter:image" content="https://i.imgur.com/OyLciaA.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="Tongtong&#39;s Blog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/tongtong.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">浵通</h5>
+          <a href="mailto:2809629360@qq.com" title="2809629360@qq.com" class="mail">2809629360@qq.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/tongqinghuan.github.io" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="http://www.weibo.com/tongqinghuan" target="_blank" >
+                <i class="icon icon-lg icon-weibo"></i>
+                Weibo
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Netty-解码器的分析</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="Search">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Netty-解码器的分析</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-08-13T01:50:47.000Z" itemprop="datePublished" class="page-time">
+  2018-08-13
+</time>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#什么是解码？"><span class="post-toc-number">1.</span> <span class="post-toc-text">什么是解码？</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#解码过程的抽象"><span class="post-toc-number">2.</span> <span class="post-toc-text">解码过程的抽象</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Netty顶层解码器的抽象（从源码的角度来分析）"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">Netty顶层解码器的抽象（从源码的角度来分析）</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Netty-中已经实现的五种解码器"><span class="post-toc-number">3.</span> <span class="post-toc-text">Netty 中已经实现的五种解码器</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#基于固定长度的解码器-FixedLengthFrameDecoder"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">基于固定长度的解码器-FixedLengthFrameDecoder</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#行解码器分析-LineBasedFrameDecoder"><span class="post-toc-number">3.2.</span> <span class="post-toc-text">行解码器分析-LineBasedFrameDecoder</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#基于分隔符的解码器分析-DelimiterBasedFrameDecoder"><span class="post-toc-number">3.3.</span> <span class="post-toc-text">基于分隔符的解码器分析-DelimiterBasedFrameDecoder</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#基于长度域的解码器-LengthFieldBasedFrameDecoder"><span class="post-toc-number">3.4.</span> <span class="post-toc-text">基于长度域的解码器-LengthFieldBasedFrameDecoder</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#基于长度域的解码器的参数分析"><span class="post-toc-number">3.4.1.</span> <span class="post-toc-text">基于长度域的解码器的参数分析</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#基于长度解码器解码的过程分析"><span class="post-toc-number">3.4.2.</span> <span class="post-toc-text">基于长度解码器解码的过程分析</span></a></li></ol></li></ol></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-Netty-解码器的分析"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Netty-解码器的分析</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-08-13 09:50:47" datetime="2018-08-13T01:50:47.000Z"  itemprop="datePublished">2018-08-13</time>
+
+            
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="什么是解码？"><a href="#什么是解码？" class="headerlink" title="什么是解码？"></a>什么是解码？</h2><p>解码就是将二进制字节流按照协议解析成特定格式的数据包的过程。</p>
+<p>那么在Netty中，服务器端接收到的是一串二进制字节流，解码的过程就是将接收到的二进制字节流按照一定的规则解码生成一个个的ByteBuf对象，然后经过Netty的pipeline传播到上层业务逻辑处理的Handler中进行处理。可以用下面的图表示：</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://i.imgur.com/OyLciaA.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<h2 id="解码过程的抽象"><a href="#解码过程的抽象" class="headerlink" title="解码过程的抽象"></a>解码过程的抽象</h2><p>无论什么类型的解码器，解码的过程可以抽象成如下三个子过程：</p>
+<ul>
+<li>字节流的累加</li>
+<li>调用实现具体协议或者规则的解码器对二进制流进行解码，生成协议数据包</li>
+<li>将协议数据包传递给上层业务逻辑处理</li>
+</ul>
+<p>那么，接下来看看Netty是如何做解码器的抽象的？</p>
+<h3 id="Netty顶层解码器的抽象（从源码的角度来分析）"><a href="#Netty顶层解码器的抽象（从源码的角度来分析）" class="headerlink" title="Netty顶层解码器的抽象（从源码的角度来分析）"></a>Netty顶层解码器的抽象（从源码的角度来分析）</h3><p>Netty对顶层解码器的抽象是ByteToMessageDecoder</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">public <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">ByteToMessageDecoder</span> <span class="keyword">extends</span> <span class="title">ChannelInboundHandlerAdapter</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//ByteToMessageDecoder继承了ChannelInboundHandlerAdapter，说明是和Inbound事件处理相关的，即读事件</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>分析ByteToMessageDecoder是如何抽象解码过程的？</p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">channelRead</span>(<span class="params">ChannelHandlerContext ctx, Object msg</span>) throws Exception </span>&#123;</span><br><span class="line"> </span><br><span class="line"></span><br><span class="line"> <span class="comment">//如果当前读到的是Bytebuf对象，则进行解码，否则直接沿着Pipeline向下传播    </span></span><br><span class="line"> <span class="keyword">if</span> (msg instanceof ByteBuf) &#123;</span><br><span class="line"></span><br><span class="line">           </span><br><span class="line">            <span class="comment">//CodecOutputList可以看成是一个ArrayList容器，用来存储解码后生成的对象</span></span><br><span class="line">            CodecOutputList <span class="keyword">out</span> = CodecOutputList.newInstance();</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">             </span><br><span class="line">                <span class="comment">//字节流累加过程</span></span><br><span class="line">               </span><br><span class="line">                ByteBuf data = (ByteBuf) msg;</span><br><span class="line">                first = cumulation == <span class="literal">null</span>;</span><br><span class="line">                <span class="comment">//如果是首次进行解码操作，那么此时的二进制字节流累加器必然是空的，直接将接受到的ByteBuf赋给字节流累加器cumulation</span></span><br><span class="line">                <span class="keyword">if</span> (first) &#123;</span><br><span class="line">                    cumulation = data;</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="comment">//如果非首次解码，则将读入到的ByteBuf追加到字节流累加器的后面</span></span><br><span class="line">                    cumulation = cumulator.cumulate(ctx.alloc(), cumulation, data);</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">               </span><br><span class="line">                <span class="comment">//调用具体的子类解码器实现特定协议的解码</span></span><br><span class="line">                callDecode(ctx, cumulation, <span class="keyword">out</span>);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">            &#125; <span class="keyword">catch</span> (DecoderException e) &#123;</span><br><span class="line">                <span class="keyword">throw</span> e;</span><br><span class="line">            &#125; <span class="keyword">catch</span> (Throwable t) &#123;</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> DecoderException(t);</span><br><span class="line">            &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">               </span><br><span class="line">                ...</span><br><span class="line">                <span class="comment">//将解码后生成的对象经过Pipeline向下传播</span></span><br><span class="line">                <span class="keyword">int</span> size = <span class="keyword">out</span>.size();</span><br><span class="line">                decodeWasNull = !<span class="keyword">out</span>.insertSinceRecycled();</span><br><span class="line">                fireChannelRead(ctx, <span class="keyword">out</span>, size);</span><br><span class="line">                <span class="keyword">out</span>.recycle();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            ctx.fireChannelRead(msg);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>分析callDecode（）的过程抽象</p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">callDecode</span>(<span class="params">ChannelHandlerContext ctx, ByteBuf <span class="keyword">in</span>, List&lt;Object&gt; <span class="keyword">out</span></span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line"></span><br><span class="line">            <span class="comment">//代码的整体结构是一个循环</span></span><br><span class="line"></span><br><span class="line">            <span class="keyword">while</span> (<span class="keyword">in</span>.isReadable()) &#123;</span><br><span class="line">                <span class="comment">//mark一下当前list容器中解码生成的对象的数目</span></span><br><span class="line">                <span class="keyword">int</span> outSize = <span class="keyword">out</span>.size();</span><br><span class="line">                <span class="comment">//已经解码出对象，将对象沿着pipeline进行传播，交给上层业务处理器进行处理</span></span><br><span class="line">                <span class="keyword">if</span> (outSize &gt; <span class="number">0</span>) &#123;</span><br><span class="line">                    fireChannelRead(ctx, <span class="keyword">out</span>, outSize);</span><br><span class="line">                    <span class="keyword">out</span>.clear();</span><br><span class="line"></span><br><span class="line">                    <span class="keyword">if</span> (ctx.isRemoved()) &#123;</span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                    outSize = <span class="number">0</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="comment">//mark一下当前的字节流累加器中的可读字节的长度</span></span><br><span class="line">                <span class="keyword">int</span> oldInputLength = <span class="keyword">in</span>.readableBytes();</span><br><span class="line">                <span class="comment">//这里调用具体的子类解码器实现特定协议解码，并将解码后的对象存储到out容器中</span></span><br><span class="line">                decode(ctx, <span class="keyword">in</span>, <span class="keyword">out</span>);</span><br><span class="line"></span><br><span class="line">                ...</span><br><span class="line"></span><br><span class="line">                <span class="comment">//outSize == out.size()说明decode过程并没有解码出任何对象</span></span><br><span class="line">                <span class="keyword">if</span> (outSize == <span class="keyword">out</span>.size()) &#123;</span><br><span class="line">                    <span class="comment">//oldInputLength == in.readableBytes()说明decode过程并没有读取in中的字节数据，可能是因为当前的数据不够解析成一个完成的数据包，或者说对象，所以终止循环，等待读入新的字节流</span></span><br><span class="line">                    <span class="keyword">if</span> (oldInputLength == <span class="keyword">in</span>.readableBytes()) &#123;</span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">                    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="comment">//否则说明虽然此次解码虽然没有解码出任何对象，但是从In中读取了一部分字节流，但是这部分字节流还不够解码成一个完成的包，所以继续循环，从in中读入字节流</span></span><br><span class="line">                        <span class="keyword">continue</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="comment">//没有从in中读取字节流，但是却解码出了对象，抛出异常</span></span><br><span class="line">                <span class="keyword">if</span> (oldInputLength == <span class="keyword">in</span>.readableBytes()) &#123;</span><br><span class="line">                    <span class="keyword">throw</span> <span class="keyword">new</span> DecoderException(</span><br><span class="line">                            StringUtil.simpleClassName(getClass()) +</span><br><span class="line">                            <span class="string">".decode() did not read anything but decoded a message."</span>);</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (isSingleDecode()) &#123;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (DecoderException e) &#123;</span><br><span class="line">            <span class="keyword">throw</span> e;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Throwable cause) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> DecoderException(cause);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Netty-中已经实现的五种解码器"><a href="#Netty-中已经实现的五种解码器" class="headerlink" title="Netty 中已经实现的五种解码器"></a>Netty 中已经实现的五种解码器</h2><h3 id="基于固定长度的解码器-FixedLengthFrameDecoder"><a href="#基于固定长度的解码器-FixedLengthFrameDecoder" class="headerlink" title="基于固定长度的解码器-FixedLengthFrameDecoder"></a>基于固定长度的解码器-FixedLengthFrameDecoder</h3><p>解码前后数据的变化如图所示：</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://i.imgur.com/TpHNu3e.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>FixedLengthFrameDecoder的核心成员变量</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://i.imgur.com/OnfsI2Z.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>这个frameLength保存的是固定长度解码器是以多大的固定长度为分割进行解码的。</p>
+<p>FixedLengthFrameDecoder的核心方法就是decode方法。</p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> final <span class="keyword">void</span> <span class="title">decode</span>(<span class="params">ChannelHandlerContext ctx, ByteBuf <span class="keyword">in</span>, List&lt;Object&gt; <span class="keyword">out</span></span>) throws Exception </span>&#123;</span><br><span class="line">        <span class="comment">//经过解码后生成的对象不为空，则放入容器里</span></span><br><span class="line">        Object decoded = decode(ctx, <span class="keyword">in</span>);</span><br><span class="line">        <span class="keyword">if</span> (decoded != <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="keyword">out</span>.<span class="keyword">add</span>(decoded);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>分析解码过程</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> Object decode(</span><br><span class="line"></span><br><span class="line">            <span class="meta">@SuppressWarnings(<span class="meta-string">"UnusedParameters"</span>)</span> ChannelHandlerContext ctx, ByteBuf <span class="keyword">in</span>) throws Exception &#123;</span><br><span class="line">         <span class="comment">//如果累加器中的字节流长度小于frameLength，说明不够解码成一个完整的对象，则返回空</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">in</span>.readableBytes() &lt; frameLength) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          <span class="comment">//否则从累加器中截取一段长度为frameLength的Bytebuf</span></span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">in</span>.readRetainedSlice(frameLength);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="行解码器分析-LineBasedFrameDecoder"><a href="#行解码器分析-LineBasedFrameDecoder" class="headerlink" title="行解码器分析-LineBasedFrameDecoder"></a>行解码器分析-LineBasedFrameDecoder</h3><p>主要用在发过来的字节流最终是以\r \n或者\n结尾的字节流，通过LineBasedFrameDecoder解码的过程即时以换行符为分割，将字节流解码成完整的数据包。</p>
+<figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">LineBasedFrameDecoder中的核心成员变量</span><br><span class="line"></span><br><span class="line"> <span class="comment">//解码后的数据包的最大长度，如果超过了这个长度，那么当前串的字节流就会被丢弃</span></span><br><span class="line"> <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">int</span> maxLength;</span><br><span class="line"> <span class="comment">//如果分割后的这串字节流长度超过maxLength，failFast设置为true，会立即抛出异常</span></span><br><span class="line"> <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">boolean</span> failFast;</span><br><span class="line"> <span class="comment">//解码后的数据包是否包含分隔符</span></span><br><span class="line"> <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">boolean</span> stripDelimiter;</span><br><span class="line"> <span class="comment">//当前是否处于丢弃模式</span></span><br><span class="line"> <span class="keyword">private</span> <span class="keyword">boolean</span> discarding;</span><br><span class="line"> <span class="comment">//解码到现在一共丢弃了多少字节流</span></span><br><span class="line"> <span class="keyword">private</span> <span class="keyword">int</span> discardedBytes;</span><br></pre></td></tr></table></figure>
+<p> LineBasedFrameDecoder中的核心方法decode（）</p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> final <span class="keyword">void</span> <span class="title">decode</span>(<span class="params">ChannelHandlerContext ctx, ByteBuf <span class="keyword">in</span>, List&lt;Object&gt; <span class="keyword">out</span></span>) throws Exception </span>&#123;</span><br><span class="line"></span><br><span class="line">        Object decoded = decode(ctx, <span class="keyword">in</span>);</span><br><span class="line">        <span class="keyword">if</span> (decoded != <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="keyword">out</span>.<span class="keyword">add</span>(decoded);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>分析decode方法：</p>
+<p>decode的过程拆分成五个个阶段：</p>
+<figure class="highlight smali"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword"> final</span><span class="built_in"> int </span>eol = findEndOfLine(buffer);</span><br><span class="line"></span><br><span class="line"> /*</span><br><span class="line">private<span class="keyword"> static</span><span class="built_in"> int </span>findEndOfLine(final ByteBuf buffer) &#123;</span><br><span class="line"></span><br><span class="line">        //定位字节流累加器中的换行符</span><br><span class="line">        </span><br><span class="line">        //返回'\n'在字节流累加器中的index</span><br><span class="line">       <span class="built_in"> int </span>i = buffer.forEachByte(ByteProcessor.FIND_<span class="class">LF);</span></span><br><span class="line">        //判断index前一个元素如果是'\r'，则index-1</span><br><span class="line">       <span class="built_in"> if </span>(i &gt; 0 &amp;&amp; buffer.getByte(i - 1) == '\r') &#123;</span><br><span class="line">            i--;</span><br><span class="line">        &#125;</span><br><span class="line">       <span class="built_in"> return </span>i;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">*/</span><br></pre></td></tr></table></figure>
+<p>非丢弃模式下：</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//在字节流累加器中找到了换行符</span></span><br><span class="line"><span class="keyword">if</span> (eol &gt;= <span class="number">0</span>) &#123;</span><br><span class="line"></span><br><span class="line">                final ByteBuf frame;</span><br><span class="line">                <span class="comment">//计算出待被解码的对象的长度</span></span><br><span class="line">                final <span class="type">int</span> <span class="built_in">length</span> = eol - <span class="keyword">buffer</span>.readerIndex();</span><br><span class="line">                <span class="comment">//计算换行符的长度</span></span><br><span class="line">                final <span class="type">int</span> delimLength = <span class="keyword">buffer</span>.getByte(eol) == '\r'? <span class="number">2</span> : <span class="number">1</span>;</span><br><span class="line">                <span class="comment">//如果对象长度大于允许的最大长度，则直接丢弃，并重置累加器的readerIndex，立即传播异常，返回空对象</span></span><br><span class="line">                <span class="keyword">if</span> (<span class="built_in">length</span> &gt; maxLength) &#123;</span><br><span class="line">                    <span class="keyword">buffer</span>.readerIndex(eol + delimLength);</span><br><span class="line">                    fail(ctx, <span class="built_in">length</span>);</span><br><span class="line">                    <span class="keyword">return</span> null;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="comment">//否则，对象长度在允许的长度范围内</span></span><br><span class="line">                <span class="comment">//对象中不包含换行符</span></span><br><span class="line">                <span class="keyword">if</span> (stripDelimiter) &#123;</span><br><span class="line">                    <span class="comment">//从字节流累加器中截取长度为length的Bytebuf</span></span><br><span class="line">                    frame = <span class="keyword">buffer</span>.readRetainedSlice(<span class="built_in">length</span>);</span><br><span class="line">                    <span class="comment">//重置累加器的readIndex，即length+delimLength</span></span><br><span class="line">                    <span class="keyword">buffer</span>.skipBytes(delimLength);</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="comment">//从字节流累加器中截取length+delimmaLength长度的Bytebuf</span></span><br><span class="line">                    frame = <span class="keyword">buffer</span>.readRetainedSlice(<span class="built_in">length</span> + delimLength);</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">return</span> frame;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//没有找到换行符</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">else</span> &#123;</span><br><span class="line"></span><br><span class="line">                final <span class="keyword">int</span> length = <span class="built_in">buffer</span>.readableBytes();</span><br><span class="line">                <span class="comment">//从累加器中读取的数据的长度超过了maxLength，则直接丢弃，并重置累加器的readIndex到writerIndex</span></span><br><span class="line">                <span class="built_in">if</span> (length &gt; maxLength) &#123;</span><br><span class="line">                    discardedBytes = length;</span><br><span class="line">                    <span class="built_in">buffer</span>.readerIndex(<span class="built_in">buffer</span>.writerIndex());</span><br><span class="line">                    <span class="comment">//设置当前模式为可丢弃模式</span></span><br><span class="line">                    discarding = true;</span><br><span class="line">                    <span class="comment">//立即传播异常</span></span><br><span class="line">                    <span class="built_in">if</span> (failFast) &#123;</span><br><span class="line">                        fail(ctx, <span class="string">"over "</span> + discardedBytes);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="built_in">return</span> null;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+<p>丢弃模式下：</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (eol &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">       </span><br><span class="line">               <span class="comment">//找到换行符</span></span><br><span class="line"></span><br><span class="line">                <span class="comment">//计算当前总共丢弃的字节数</span></span><br><span class="line">                final <span class="type">int</span> <span class="built_in">length</span> = discardedBytes + eol - <span class="keyword">buffer</span>.readerIndex();</span><br><span class="line">                <span class="comment">//换行符的长度</span></span><br><span class="line">                final <span class="type">int</span> delimLength = <span class="keyword">buffer</span>.getByte(eol) == '\r'? <span class="number">2</span> : <span class="number">1</span>;</span><br><span class="line">                <span class="comment">//重置字节累加器的readerIndex</span></span><br><span class="line">                <span class="keyword">buffer</span>.readerIndex(eol + delimLength);</span><br><span class="line">                <span class="comment">//重置已经丢弃的字节数和当前的模式为非丢弃模式</span></span><br><span class="line">                discardedBytes = <span class="number">0</span>;</span><br><span class="line">                discarding = <span class="literal">false</span>;</span><br><span class="line">                <span class="keyword">if</span> (!failFast) &#123;</span><br><span class="line">                    fail(ctx, <span class="built_in">length</span>);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">else</span> &#123;</span><br><span class="line">                <span class="comment">//如果没有找到换行符，则累加课丢弃的字节数，并且重置累加器的readerIndex</span></span><br><span class="line">                discardedBytes += <span class="built_in">buffer</span>.readableBytes();</span><br><span class="line">                <span class="built_in">buffer</span>.readerIndex(<span class="built_in">buffer</span>.writerIndex());</span><br><span class="line">            &#125;</span><br></pre></td></tr></table></figure>
+<p>总结：在丢弃模式下，不解码对象，只更新可丢弃的字节数，重置累加器的readerIndex和当前的模式。</p>
+<h3 id="基于分隔符的解码器分析-DelimiterBasedFrameDecoder"><a href="#基于分隔符的解码器分析-DelimiterBasedFrameDecoder" class="headerlink" title="基于分隔符的解码器分析-DelimiterBasedFrameDecoder"></a>基于分隔符的解码器分析-DelimiterBasedFrameDecoder</h3><p>基于分隔符的解码器可以实现多个分隔符的解码</p>
+<p>分析decode方法：</p>
+<p>decode（）方法拆分成三个步骤：</p>
+<p>判断是否是LineBasedFrameDecoder，如果是，则按照LineBasedFrameDecoder的解码过程做解码操作</p>
+<figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (lineBasedDecoder != <span class="keyword">null</span>) &#123;</span><br><span class="line"></span><br><span class="line">            <span class="function"><span class="keyword">return</span> lineBasedDecoder.<span class="title">decode</span><span class="params">(ctx, buffer)</span></span>;</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+<p>找到最小分隔符</p>
+<figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">int</span> minFrameLength = <span class="keyword">Integer</span>.MAX_VALUE;</span><br><span class="line"></span><br><span class="line">        ByteBuf minDelim = null;</span><br><span class="line">        //遍历所有的分隔符，计算被分隔符分割后的数据的长度，取最小长度的分隔符</span><br><span class="line">        for (ByteBuf <span class="keyword">delim</span>: delimiters) &#123;</span><br><span class="line">            <span class="built_in">int</span> frameLength = indexOf(buffer, <span class="keyword">delim</span>);</span><br><span class="line">            <span class="keyword">if</span> (frameLength &gt;= <span class="number">0</span> &amp;&amp; frameLength &lt; minFrameLength) &#123;</span><br><span class="line">                minFrameLength = frameLength;</span><br><span class="line">                minDelim = <span class="keyword">delim</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+<p>解码(分析同LineBasedFrameDecoder的解码过程)</p>
+<h3 id="基于长度域的解码器-LengthFieldBasedFrameDecoder"><a href="#基于长度域的解码器-LengthFieldBasedFrameDecoder" class="headerlink" title="基于长度域的解码器-LengthFieldBasedFrameDecoder"></a>基于长度域的解码器-LengthFieldBasedFrameDecoder</h3><h4 id="基于长度域的解码器的参数分析"><a href="#基于长度域的解码器的参数分析" class="headerlink" title="基于长度域的解码器的参数分析"></a>基于长度域的解码器的参数分析</h4><p>基于长度域的解码器有两个基本的参数：</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://i.imgur.com/wvMsuBE.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>如图所示，第一个参数表示数据包长度域在字节流中的偏移量，第二个则表示这个数据包长度域所占的字节数，通过这个参数我们可以知道，从长度域后面需要在读入多少个字节就可以组成一个完整的数据包。可以看到基于长度域的解码器通过这两个核心的参数完全实现二进制流的分割。</p>
+<p>此外Netty还提供了其他的参数，满足了各种情况下基于长度域的解码。</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://i.imgur.com/Cn4yb0Z.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>例子：</p>
+<p>lengthFieldOffset   =  1</p>
+<p>lengthFieldLength   =  2</p>
+<p>lengthAdjustment    = -3   </p>
+<p>initialBytesToStrip =  3</p>
+<p>解码前：</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://i.imgur.com/f0nRDdE.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>解码后：</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://i.imgur.com/B72nTju.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>lengthAdjustment一般会用在这样的场景下，在Netty中，长度域表示的是从长度域后面开始截取这么长的字节和前面的域组合起来才算是一个完整的数据包，但是在有的业务场景中，可能长度包含的是整个数据包的长度，那么要用Netty的解码器进行解码，就需要设置这个lengthAdjustment。</p>
+<p>initialBytesToStrip一般会用在这样的场景下：将数据包传递给后台业务时希望后台业务不用再剔除业务无关的域，只对数据进行处理，这时候可以通过这个字段来设置。</p>
+<h4 id="基于长度解码器解码的过程分析"><a href="#基于长度解码器解码的过程分析" class="headerlink" title="基于长度解码器解码的过程分析"></a>基于长度解码器解码的过程分析</h4><p>解码过程可以拆分成三个部分：</p>
+<p>计算需要抽取的数据包的长度：</p>
+<p>如果当前累加器中可读的字节流的长度小于lengthFieldEndOffset，则说明当前的字节流还不够组装成一个完整的数据包，直接返回<br>lengthFieldEndOffset=lengthFieldOffset+lengthFieldLength在基于长度的解码器被创建的时候初始化</p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (<span class="keyword">in</span>.readableBytes() &lt; lengthFieldEndOffset) &#123;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//计算绝对的长度域的偏移量</span></span><br><span class="line">        <span class="keyword">int</span> actualLengthFieldOffset = <span class="keyword">in</span>.readerIndex() + lengthFieldOffset;</span><br><span class="line">        <span class="comment">//获取长度域的值</span></span><br><span class="line">        <span class="keyword">long</span> frameLength = getUnadjustedFrameLength(<span class="keyword">in</span>, actualLengthFieldOffset, lengthFieldLength, byteOrder);</span><br></pre></td></tr></table></figure>
+<p>截取计算的实际数据包长度的Bytebuf</p>
+<figure class="highlight haxe"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//异常处理</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (frameLength &lt; <span class="number">0</span>) &#123;</span><br><span class="line"></span><br><span class="line">            <span class="comment">//取出的数据包的长度小于0，直接抛出异常</span></span><br><span class="line">            <span class="keyword">in</span>.skipBytes(lengthFieldEndOffset);</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="type">CorruptedFrameException</span>(</span><br><span class="line">                    <span class="string">"negative pre-adjustment length field: "</span> + frameLength);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//计算整个数据包的长度</span></span><br><span class="line"> frameLength += lengthAdjustment + lengthFieldEndOffset;</span><br><span class="line"><span class="comment">//经过调整后，数据包的长度小于lengthFieldEndOffset，说明调整出现了异常，直接抛出</span></span><br><span class="line"></span><br><span class="line"> <span class="keyword">if</span> (frameLength &lt; lengthFieldEndOffset) &#123;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">in</span>.skipBytes(lengthFieldEndOffset);</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="type">CorruptedFrameException</span>(</span><br><span class="line">                    <span class="string">"Adjusted frame length ("</span> + frameLength + <span class="string">") is less "</span> +</span><br><span class="line">                    <span class="string">"than lengthFieldEndOffset: "</span> + lengthFieldEndOffset);</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//正常解码的过程</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> frameLengthInt = (<span class="keyword">int</span>) frameLength;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//如果当前可读的字节流不够组装成一个完整的数据包，则直接返回</span></span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">in</span>.readableBytes() &lt; frameLengthInt) &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">		&#125;</span><br><span class="line">        <span class="comment">//如果当前需要跳过的字节数大于数据包的长度，首先累加器跳过数据包长度的字节，然后抛出异常</span></span><br><span class="line">		<span class="keyword">if</span> (initialBytesToStrip &gt; frameLengthInt) &#123;</span><br><span class="line">			<span class="keyword">in</span>.skipBytes(frameLengthInt);</span><br><span class="line"></span><br><span class="line">			<span class="keyword">throw</span> <span class="keyword">new</span> CorruptedFrameException(</span><br><span class="line">					<span class="string">"Adjusted frame length ("</span> + frameLength + <span class="string">") is less "</span> +</span><br><span class="line">							<span class="string">"than initialBytesToStrip: "</span> + initialBytesToStrip);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">//否则跳过initialBytesToStrip的字节数</span></span><br><span class="line">		<span class="keyword">in</span>.skipBytes(initialBytesToStrip);</span><br><span class="line">     <span class="comment">//从当前的readerIndex截取</span></span><br><span class="line">		<span class="keyword">int</span> readerIndex = <span class="keyword">in</span>.readerIndex();</span><br><span class="line">     <span class="comment">//计算实际的数据包的长度</span></span><br><span class="line"></span><br><span class="line">		<span class="keyword">int</span> actualFrameLength = frameLengthInt - initialBytesToStrip;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//从当前累加器的readerIndex位置开始，截取长度为实际算出的数据包长度的Bytebuf</span></span><br><span class="line">		ByteBuf frame = extractFrame(ctx, <span class="keyword">in</span>, readerIndex, actualFrameLength);</span><br><span class="line">    <span class="comment">//更新readerIndex</span></span><br><span class="line">		<span class="keyword">in</span>.readerIndex(readerIndex + actualFrameLength);</span><br><span class="line"></span><br><span class="line">		<span class="keyword">return</span> frame;</span><br><span class="line"></span><br><span class="line"><span class="comment">//如果数据包的实际长度超过设置的数据包最大长度</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (frameLength &gt; maxFrameLength) &#123;</span><br><span class="line"></span><br><span class="line">           <span class="comment">//mark一下还需要丢弃的数据的长度</span></span><br><span class="line">            <span class="keyword">long</span> discard = frameLength - <span class="keyword">in</span>.readableBytes();</span><br><span class="line">            tooLongFrameLength = frameLength;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (discard &lt; <span class="number">0</span>) &#123;</span><br><span class="line">                <span class="comment">//如果discard&lt;0说明，数据包的实际长度小于当前累加器可读的数据，直接跳过frameLength长度的字节数</span></span><br><span class="line">                <span class="keyword">in</span>.skipBytes((<span class="keyword">int</span>) frameLength);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="comment">//否则说明当前累加器中的字节流还不是一个完整的数据包，因此要更新当前的模式为丢弃模式，同时记录还需要丢弃的字节数，并跳过frameLength长度的字节</span></span><br><span class="line">                discardingTooLongFrame = <span class="literal">true</span>;</span><br><span class="line">                bytesToDiscard = discard;</span><br><span class="line">                <span class="keyword">in</span>.skipBytes(<span class="keyword">in</span>.readableBytes());</span><br><span class="line">            &#125;</span><br><span class="line">            failIfNecessary(<span class="literal">true</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+<p>丢弃模式下的处理</p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (discardingTooLongFrame) &#123;</span><br><span class="line">            <span class="comment">//保存还需要丢弃的数据的长度</span></span><br><span class="line">            <span class="keyword">long</span> bytesToDiscard = <span class="keyword">this</span>.bytesToDiscard;</span><br><span class="line">            <span class="comment">//保存当前可以丢弃的数据的长度</span></span><br><span class="line">            <span class="keyword">int</span> localBytesToDiscard = (<span class="keyword">int</span>) Math.min(bytesToDiscard, <span class="keyword">in</span>.readableBytes());</span><br><span class="line">            <span class="comment">//累加器跳过可以丢弃的数据的长度</span></span><br><span class="line">            <span class="keyword">in</span>.skipBytes(localBytesToDiscard);</span><br><span class="line">            <span class="comment">//计算待丢弃的数据</span></span><br><span class="line">            bytesToDiscard -= localBytesToDiscard;</span><br><span class="line">            <span class="comment">//保存待丢弃的数据</span></span><br><span class="line">            <span class="keyword">this</span>.bytesToDiscard = bytesToDiscard;</span><br><span class="line">            <span class="comment">//如果bytesToDiscard等于0 ，则更新当前的模式为非丢弃模式，并进行异常处理</span></span><br><span class="line">            failIfNecessary(<span class="literal">false</span>);</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+<p>以上的分析基于闪电侠的Netty系列视频</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    Last updated: <time datetime="2018-08-13T11:46:31.606Z" itemprop="dateUpdated">2018-08-13 19:46:31</time>
+</span><br>
+
+
+        
+    </div>
+    
+    <footer>
+        <a href="//litten.me">
+            <img src="/img/tongtong.jpg" alt="浵通">
+            浵通
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Netty-4-1-6-Final源码分析/">Netty-4.1.6.Final源码分析</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=//litten.me/2018/08/13/Netty-解码器的分析/&title=《Netty-解码器的分析》 — Tongtong's Blog&pic=//litten.me/img/tongtong.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=//litten.me/2018/08/13/Netty-解码器的分析/&title=《Netty-解码器的分析》 — Tongtong's Blog&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=//litten.me/2018/08/13/Netty-解码器的分析/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Netty-解码器的分析》 — Tongtong's Blog&url=//litten.me/2018/08/13/Netty-解码器的分析/&via=//litten.me" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=//litten.me/2018/08/13/Netty-解码器的分析/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2018/08/12/byteBuf/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">ByteBuf</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+<section class="comments" id="comments">
+    <!-- UY BEGIN -->
+    <div id="uyan_frame"></div>
+    <script src="http://v2.uyan.cc/code/uyan.js?uid=true"></script>
+    <!-- UY END -->
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>This blog is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.</span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>浵通 &copy; 2018</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=//litten.me/2018/08/13/Netty-解码器的分析/&title=《Netty-解码器的分析》 — Tongtong's Blog&pic=//litten.me/img/tongtong.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=//litten.me/2018/08/13/Netty-解码器的分析/&title=《Netty-解码器的分析》 — Tongtong's Blog&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=//litten.me/2018/08/13/Netty-解码器的分析/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Netty-解码器的分析》 — Tongtong's Blog&url=//litten.me/2018/08/13/Netty-解码器的分析/&via=//litten.me" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=//litten.me/2018/08/13/Netty-解码器的分析/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="//api.qrserver.com/v1/create-qr-code/?data=//litten.me/2018/08/13/Netty-解码器的分析/" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+</body>
+</html>

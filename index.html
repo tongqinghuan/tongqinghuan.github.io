@@ -148,6 +148,55 @@
     <ul class="post-list">
     
         <li class="post-list-item fade">
+            <article id="post-Netty-解码器的分析"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-08-13 09:50:47" datetime="2018-08-13T01:50:47.000Z"  itemprop="datePublished">2018-08-13</time>
+
+        
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2018/08/13/Netty-解码器的分析/">Netty-解码器的分析</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        什么是解码？解码就是将二进制字节流按照协议解析成特定格式的数据包的过程。
+那么在Netty中，服务器端接收到的是一串二进制字节流，解码的过程就是将接收到的二进制字节流按照一定的规则解码生成一个个的ByteBuf对象，然后经过Netty的pipeline传播到上层业务逻辑处理的Handler中进行处理。可以用下面的图表示：
+
+                
+                 ...
+    
+
+        <a href="/2018/08/13/Netty-解码器的分析/" class="post-more waves-effect waves-button">
+            Continue reading...
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Netty-4-1-6-Final源码分析/">Netty-4.1.6.Final源码分析</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
             <article id="post-byteBuf"
   class="article-card article-type-post" itemprop="blogPost">
 
@@ -487,53 +536,6 @@ https://blog.csdn.net/shuxiaogd/article/details/50366039
     <div class="post-footer">
         
 	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li></ul>
-
-    </div>
-    
-</article>
-
-        </li>
-    
-        <li class="post-list-item fade">
-            <article id="post-java反射机制-动态代理"
-  class="article-card article-type-post" itemprop="blogPost">
-
-    <div class="post-meta">
-        <time class="post-time" title="2018-08-02 19:46:19" datetime="2018-08-02T11:46:19.000Z"  itemprop="datePublished">2018-08-02</time>
-
-        
-
-
-    </div>
-
-    
-
-
-  
-    <h3 class="post-title" itemprop="name">
-      <a class="post-title-link" href="/2018/08/02/java反射机制-动态代理/">java反射机制-动态代理</a>
-    </h3>
-  
-
-
-
-
-    <div class="post-content" id="post-content" itemprop="postContent">
-
-    
-        java的设计模式-代理模式代理模式中存在两种对象：代理类 和委托类
-代理模式的特点：代理类和委托类都实现相同的接口，委托类委托代理类实现一些与核心业务无关的通用业务逻辑，而自己专注处理核心的业务逻辑。例如演艺圈，艺人们都需要经纪人去代替他们和第三方洽谈档期等等事宜，而他们则专注做好表演的工作。那么经纪人就起着代理的作用。代理模式结构如图（图片来自大话设计模式）：
-             ...
-    
-
-        <a href="/2018/08/02/java反射机制-动态代理/" class="post-more waves-effect waves-button">
-            Continue reading...
-        </a>
-    </div>
-    
-    <div class="post-footer">
-        
-	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li></ul>
 
     </div>
     
