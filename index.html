@@ -148,6 +148,51 @@
     <ul class="post-list">
     
         <li class="post-list-item fade">
+            <article id="post-Java-NIO入门学习"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-08-15 11:59:58" datetime="2018-08-15T03:59:58.000Z"  itemprop="datePublished">2018-08-15</time>
+
+        
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2018/08/15/Java-NIO入门学习/">Java-NIO入门学习</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        Java-NIO是什么javaIO操作实际是对Scoket的操作，而Socket在操作系统中被抽象为流。因此IO操作是直接对stream对象，以字节为单位进行读写。（读写是同步阻塞的）而Java-NIO与IO最大的不同是，Java-NIO直接读写的是缓冲区ByteBuffer，以块的方式进行传输。（读写是异步非阻塞的）此外Java-NIO中还有两个核心的概念：IO多路复用器Selector，...
+    
+
+        <a href="/2018/08/15/Java-NIO入门学习/" class="post-more waves-effect waves-button">
+            Continue reading...
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
             <article id="post-Netty-解码器的分析"
   class="article-card article-type-post" itemprop="blogPost">
 
@@ -475,60 +520,11 @@ NioEventLoop在服务器端启动的时候通过...
 
     
         内核空间与用户空间的概念：内核空间与用户空间是操作系统对物理内存在逻辑上的划分。
-内核空间：存放内核代码和数据，独立于普通应用程序空间。运行在较高的特权级别上，拥有访问所有硬件设备的权限。
-用户空间：存放用户进程代码和数据，只能访问到部分系统资源，不能直接访问内核空间以及硬件设备。
-内核态和用户态的概念：描述的是操作系统运行的两个不同级别。
-内核态：当一个进程因为触发软中断陷入内核空间执行时...
+内核空间：存放内核代码和数据，独立于普通应用程序空间。运行在较高的特权级别上，拥有访问所有硬件设备的权限，并提供上层应用程序运行的环境。
+用户空间：存放用户进程代码和数据，只能访问到部分系统资源，不能直接访问内核空间以及硬件设备。必须通过系统调用，完成用户态到内核态的切换，然后在完成相关操作，再由内核态切换回用...
     
 
         <a href="/2018/08/03/内核空间与用户空间/" class="post-more waves-effect waves-button">
-            Continue reading...
-        </a>
-    </div>
-    
-    <div class="post-footer">
-        
-	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li></ul>
-
-    </div>
-    
-</article>
-
-        </li>
-    
-        <li class="post-list-item fade">
-            <article id="post-select实现细节分析"
-  class="article-card article-type-post" itemprop="blogPost">
-
-    <div class="post-meta">
-        <time class="post-time" title="2018-08-03 14:51:27" datetime="2018-08-03T06:51:27.000Z"  itemprop="datePublished">2018-08-03</time>
-
-        
-
-
-    </div>
-
-    
-
-
-  
-    <h3 class="post-title" itemprop="name">
-      <a class="post-title-link" href="/2018/08/03/select实现细节分析/">select实现细节分析</a>
-    </h3>
-  
-
-
-
-
-    <div class="post-content" id="post-content" itemprop="postContent">
-
-    
-        我觉的下面这篇文章对select内核的实现分析的很透彻，希望能帮助更多的人去理解selcet的底层实现细节。
-https://blog.csdn.net/shuxiaogd/article/details/50366039
-
-    
-
-        <a href="/2018/08/03/select实现细节分析/" class="post-more waves-effect waves-button">
             Continue reading...
         </a>
     </div>

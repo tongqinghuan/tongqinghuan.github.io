@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>Java-NIO入门学习 | Tongtong&#39;s Blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Java">
+    <meta name="description" content="Java-NIO是什么javaIO操作实际是对Scoket的操作，而Socket在操作系统中被抽象为流。因此IO操作是直接对stream对象，以字节为单位进行读写。（读写是同步阻塞的）而Java-NIO与IO最大的不同是，Java-NIO直接读写的是缓冲区ByteBuffer，以块的方式进行传输。（读写是异步非阻塞的）此外Java-NIO中还有两个核心的概念：IO多路复用器Selector，相比I">
+<meta name="keywords" content="Java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java-NIO入门学习">
+<meta property="og:url" content="//litten.me/2018/08/15/Java-NIO入门学习/index.html">
+<meta property="og:site_name" content="Tongtong&#39;s Blog">
+<meta property="og:description" content="Java-NIO是什么javaIO操作实际是对Scoket的操作，而Socket在操作系统中被抽象为流。因此IO操作是直接对stream对象，以字节为单位进行读写。（读写是同步阻塞的）而Java-NIO与IO最大的不同是，Java-NIO直接读写的是缓冲区ByteBuffer，以块的方式进行传输。（读写是异步非阻塞的）此外Java-NIO中还有两个核心的概念：IO多路复用器Selector，相比I">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://i.imgur.com/w6Av8E8.png">
+<meta property="og:image" content="https://i.imgur.com/a8gezxr.png">
+<meta property="og:image" content="https://i.imgur.com/8UBmkDK.png">
+<meta property="og:image" content="https://i.imgur.com/3vlupQ1.png">
+<meta property="og:image" content="https://i.imgur.com/oB1Nn3Z.png">
+<meta property="og:image" content="https://i.imgur.com/nrKO2OR.png">
+<meta property="og:image" content="https://i.imgur.com/t36TwQv.png">
+<meta property="og:image" content="https://i.imgur.com/o7KxKHd.png">
+<meta property="og:image" content="https://i.imgur.com/D3U0Slp.png">
+<meta property="og:updated_time" content="2018-08-15T06:50:34.013Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java-NIO入门学习">
+<meta name="twitter:description" content="Java-NIO是什么javaIO操作实际是对Scoket的操作，而Socket在操作系统中被抽象为流。因此IO操作是直接对stream对象，以字节为单位进行读写。（读写是同步阻塞的）而Java-NIO与IO最大的不同是，Java-NIO直接读写的是缓冲区ByteBuffer，以块的方式进行传输。（读写是异步非阻塞的）此外Java-NIO中还有两个核心的概念：IO多路复用器Selector，相比I">
+<meta name="twitter:image" content="https://i.imgur.com/w6Av8E8.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="Tongtong&#39;s Blog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/tongtong.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">浵通</h5>
+          <a href="mailto:2809629360@qq.com" title="2809629360@qq.com" class="mail">2809629360@qq.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/tongqinghuan.github.io" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="http://www.weibo.com/tongqinghuan" target="_blank" >
+                <i class="icon icon-lg icon-weibo"></i>
+                Weibo
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Java-NIO入门学习</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="Search">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Java-NIO入门学习</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-08-15T03:59:58.000Z" itemprop="datePublished" class="page-time">
+  2018-08-15
+</time>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Java-NIO是什么"><span class="post-toc-number">1.</span> <span class="post-toc-text">Java-NIO是什么</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#介绍ByteBuffer"><span class="post-toc-number">2.</span> <span class="post-toc-text">介绍ByteBuffer</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#IO多路复用器selector-和通道Channel"><span class="post-toc-number">3.</span> <span class="post-toc-text">IO多路复用器selector 和通道Channel</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-Java-NIO入门学习"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Java-NIO入门学习</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-08-15 11:59:58" datetime="2018-08-15T03:59:58.000Z"  itemprop="datePublished">2018-08-15</time>
+
+            
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="Java-NIO是什么"><a href="#Java-NIO是什么" class="headerlink" title="Java-NIO是什么"></a>Java-NIO是什么</h2><p>javaIO操作实际是对Scoket的操作，而Socket在操作系统中被抽象为流。因此IO操作是直接对stream对象，以字节为单位进行读写。（读写是同步阻塞的）而Java-NIO与IO最大的不同是，Java-NIO直接读写的是缓冲区ByteBuffer，以块的方式进行传输。（读写是异步非阻塞的）此外Java-NIO中还有两个核心的概念：IO多路复用器Selector，相比IO，Selector可以实现在一个线程中管理多个连接，不用每个为每个新的连接都创建一个线程，可以节省开销；通道Channel，Channel可以类比IO中的Stream，是对底层Socket的封装，相比IO，在Channel上进行读写操作是非阻塞的。因此通过java——NIO库可以快速实现高速的IO。jdk1.4引入了Java_NIO库。</p>
+<p>下面分别介绍Java-NIO的三大核心组件</p>
+<h2 id="介绍ByteBuffer"><a href="#介绍ByteBuffer" class="headerlink" title="介绍ByteBuffer"></a>介绍ByteBuffer</h2><p>ByteBuffer中有三个重要的属性：</p>
+<p>position：在读模式下，position指的是当前缓冲区中可以读的第一个字节；在写模式下<br>position指的是当前缓冲区中可以下一个可以写的位置。<br>limit：在读模式下表示最多可以读取的数据的位置；在写模式下表示最多还可以写入的数据的位置。<br>capacity：指的是缓冲区的容量。</p>
+<p>下面通过图来描述ByteBuffer的这几个状态变量</p>
+<p>创建一个容量为8的空缓冲区:</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://i.imgur.com/w6Av8E8.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>初始状态下，缓冲区是空的，准备从通道读取数据，当前缓冲区处于写模式。position指向第一个可以写的位置0，limit=capacity</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://i.imgur.com/a8gezxr.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>第一次从通道读取三个字节的数据，position向前移动三个位置</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://i.imgur.com/8UBmkDK.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>第二次从通道读取另外两个字节的数据，position继续向前移动两个位置</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://i.imgur.com/3vlupQ1.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>现在将缓冲区的数据写入通道，缓冲区需要切换到读模式，通过flip（）方法</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://i.imgur.com/oB1Nn3Z.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>开始将4字节的数据从缓冲区写入通道：</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://i.imgur.com/nrKO2OR.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>第二次写入剩余的一个字节的数据到通道：</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://i.imgur.com/t36TwQv.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>准备读取新的数据，切换缓冲区的状态到写模式：clear（）方法</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://i.imgur.com/o7KxKHd.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>ByteBuffer提供的接口：</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://i.imgur.com/D3U0Slp.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>ByteBuffer有三个子类：DirectByteBuffer   HeapByteBuffer  MappedByteBuffer</p>
+<p>具体的读写操作由其子类实现。</p>
+<p>缓冲区的简单使用：</p>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">while</span>(true)&#123;</span><br><span class="line">  <span class="comment">//切换缓冲区的模式为写模式</span></span><br><span class="line">  <span class="built_in">buffer</span>.<span class="built_in">clear</span>();</span><br><span class="line">  <span class="comment">//从通道读取数据写入缓冲区</span></span><br><span class="line">  <span class="keyword">int</span> res=<span class="built_in">read</span>(<span class="built_in">buffer</span>);</span><br><span class="line">  <span class="comment">//切换缓冲区的模式为读模式</span></span><br><span class="line">  <span class="built_in">buffer</span>.flip()</span><br><span class="line">  channel.<span class="built_in">write</span>（<span class="built_in">buffer</span>）；</span><br><span class="line"></span><br><span class="line">  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="IO多路复用器selector-和通道Channel"><a href="#IO多路复用器selector-和通道Channel" class="headerlink" title="IO多路复用器selector 和通道Channel"></a>IO多路复用器selector 和通道Channel</h2><p>selector是实现异步IO的关键，通过在IO多路复用器上注册感兴趣的IO事件，当对应的IO事件就绪后，Selector会通知线程处理就绪的IO。</p>
+<p>一般通过如下方式获取Selector：</p>
+<figure class="highlight oxygene"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">Selector</span> <span class="keyword">selector</span> = <span class="keyword">Selector</span>.open();(目前还不清楚底层的原理)</span><br></pre></td></tr></table></figure>
+<p>获取Server端的Channel，绑定到特定的端口上</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">ServerSocketChannel ssc = ServerSocketChannel.open();</span><br><span class="line"></span><br><span class="line">ssc.configureBlocking( <span class="literal">false</span> );</span><br><span class="line"></span><br><span class="line">ServerSocket ss = ssc.socket();</span><br><span class="line"></span><br><span class="line">InetSocketAddress<span class="built_in"> address </span>= new InetSocketAddress( ports[i] );</span><br><span class="line"></span><br><span class="line">ss.bind(<span class="built_in"> address </span>);</span><br></pre></td></tr></table></figure>
+<p>将Channel注册到Selector上,并注册感兴趣的IO事件，每一个Channel和一个SelectionKey唯一绑定</p>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SelectionKey </span>key = ssc.register( <span class="keyword">selector, </span><span class="keyword">SelectionKey.OP_ACCEPT </span>)<span class="comment">;</span></span><br></pre></td></tr></table></figure>
+<p>主循环单个线程同时管理多个连接：</p>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">//至少有一个IO事件就绪，<span class="keyword">select返回，否则阻塞</span></span><br><span class="line"><span class="keyword">int </span>num = <span class="keyword">selector.select();</span></span><br><span class="line"><span class="keyword"></span></span><br><span class="line"><span class="keyword">Set </span><span class="keyword">selectedKeys </span>= <span class="keyword">selector.selectedKeys();</span></span><br><span class="line"><span class="keyword"></span></span><br><span class="line"><span class="keyword">Iterator </span><span class="keyword">it </span>= <span class="keyword">selectedKeys.iterator();</span></span><br><span class="line"><span class="keyword"></span></span><br><span class="line"><span class="keyword">while </span>(<span class="keyword">it.hasNext()) </span>&#123;</span><br><span class="line"></span><br><span class="line">     //处理就绪的IO事件</span><br><span class="line">     <span class="keyword">SelectionKey </span>key = (<span class="keyword">SelectionKey)it.next();</span></span><br><span class="line"><span class="keyword"> </span>    // ... deal with I/O event ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    Last updated: <time datetime="2018-08-15T06:50:34.013Z" itemprop="dateUpdated">2018-08-15 14:50:34</time>
+</span><br>
+
+
+        
+    </div>
+    
+    <footer>
+        <a href="//litten.me">
+            <img src="/img/tongtong.jpg" alt="浵通">
+            浵通
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=//litten.me/2018/08/15/Java-NIO入门学习/&title=《Java-NIO入门学习》 — Tongtong's Blog&pic=//litten.me/img/tongtong.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=//litten.me/2018/08/15/Java-NIO入门学习/&title=《Java-NIO入门学习》 — Tongtong's Blog&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=//litten.me/2018/08/15/Java-NIO入门学习/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Java-NIO入门学习》 — Tongtong's Blog&url=//litten.me/2018/08/15/Java-NIO入门学习/&via=//litten.me" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=//litten.me/2018/08/15/Java-NIO入门学习/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2018/08/13/Netty-解码器的分析/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Netty-解码器的分析</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+<section class="comments" id="comments">
+    <!-- UY BEGIN -->
+    <div id="uyan_frame"></div>
+    <script src="http://v2.uyan.cc/code/uyan.js?uid=true"></script>
+    <!-- UY END -->
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>This blog is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.</span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>浵通 &copy; 2018</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=//litten.me/2018/08/15/Java-NIO入门学习/&title=《Java-NIO入门学习》 — Tongtong's Blog&pic=//litten.me/img/tongtong.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=//litten.me/2018/08/15/Java-NIO入门学习/&title=《Java-NIO入门学习》 — Tongtong's Blog&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=//litten.me/2018/08/15/Java-NIO入门学习/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Java-NIO入门学习》 — Tongtong's Blog&url=//litten.me/2018/08/15/Java-NIO入门学习/&via=//litten.me" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=//litten.me/2018/08/15/Java-NIO入门学习/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="//api.qrserver.com/v1/create-qr-code/?data=//litten.me/2018/08/15/Java-NIO入门学习/" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+</body>
+</html>
