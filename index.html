@@ -148,6 +148,56 @@
     <ul class="post-list">
     
         <li class="post-list-item fade">
+            <article id="post-Java-堆外内存"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-08-15 21:50:19" datetime="2018-08-15T13:50:19.000Z"  itemprop="datePublished">2018-08-15</time>
+
+        
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2018/08/15/Java-堆外内存/">Java-堆外内存</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        java堆外内存的创建java堆外内存并不是JVM运行时数据区的一部分，这部分内存不受JVM控制，而由操作系统进行管理。
+为什么要使用堆外内存呢？
+
+可以扩展内存空间
+对于一些生命周期比较长的可变对象，如果在堆上分配空间，很容易发生fullGC，如果这部分对象可以使用堆外内存，会减少垃圾回收的时间
+IO操作最终都需要将堆上内存拷贝到堆外内存，再写入IO设备的缓冲区，如果能直接使用堆外内存，那...
+    
+
+        <a href="/2018/08/15/Java-堆外内存/" class="post-more waves-effect waves-button">
+            Continue reading...
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
             <article id="post-Java-NIO入门学习"
   class="article-card article-type-post" itemprop="blogPost">
 
@@ -485,53 +535,6 @@ NioEventLoop在服务器端启动的时候通过...
     <div class="post-footer">
         
 	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li></ul>
-
-    </div>
-    
-</article>
-
-        </li>
-    
-        <li class="post-list-item fade">
-            <article id="post-内核空间与用户空间"
-  class="article-card article-type-post" itemprop="blogPost">
-
-    <div class="post-meta">
-        <time class="post-time" title="2018-08-03 23:47:03" datetime="2018-08-03T15:47:03.000Z"  itemprop="datePublished">2018-08-03</time>
-
-        
-
-
-    </div>
-
-    
-
-
-  
-    <h3 class="post-title" itemprop="name">
-      <a class="post-title-link" href="/2018/08/03/内核空间与用户空间/">内核空间与用户空间</a>
-    </h3>
-  
-
-
-
-
-    <div class="post-content" id="post-content" itemprop="postContent">
-
-    
-        内核空间与用户空间的概念：内核空间与用户空间是操作系统对物理内存在逻辑上的划分。
-内核空间：存放内核代码和数据，独立于普通应用程序空间。运行在较高的特权级别上，拥有访问所有硬件设备的权限，并提供上层应用程序运行的环境。
-用户空间：存放用户进程代码和数据，只能访问到部分系统资源，不能直接访问内核空间以及硬件设备。必须通过系统调用，完成用户态到内核态的切换，然后在完成相关操作，再由内核态切换回用...
-    
-
-        <a href="/2018/08/03/内核空间与用户空间/" class="post-more waves-effect waves-button">
-            Continue reading...
-        </a>
-    </div>
-    
-    <div class="post-footer">
-        
-	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li></ul>
 
     </div>
     
