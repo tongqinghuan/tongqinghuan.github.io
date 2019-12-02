@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>ioc-annotation | Tongtong&#39;s Blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="spring">
+    <meta name="description" content="方法入口在BeanDefinitionParserDelegate.parseCustomElement:(这里分析的是基于xml启动注解的方式) 12context:annotation-configcontext:component-scan 分析annotation-config//解析命名空间uri,并返回当前element对应的命名空间处理handler">
+<meta name="keywords" content="spring">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ioc-annotation">
+<meta property="og:url" content="//litten.me/2019/12/03/ioc-annotation/index.html">
+<meta property="og:site_name" content="Tongtong&#39;s Blog">
+<meta property="og:description" content="方法入口在BeanDefinitionParserDelegate.parseCustomElement:(这里分析的是基于xml启动注解的方式) 12context:annotation-configcontext:component-scan 分析annotation-config//解析命名空间uri,并返回当前element对应的命名空间处理handler">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="f:/hexo_blog/imag/annotation-config.png">
+<meta property="og:image" content="f:/hexo_blog/imag/namespace.png">
+<meta property="og:image" content="f:/hexo_blog/imag/namespace-init.png">
+<meta property="og:image" content="f:/hexo_blog/imag/annotation-config-parase.png">
+<meta property="og:image" content="f:/hexo_blog/imag/AnnotationAwareOrderComparator.png">
+<meta property="og:image" content="f:/hexo_blog/imag/ContextAnnotationAutowireCandidateResolver.png">
+<meta property="og:image" content="f:/hexo_blog/imag/CompositeComponentDefinition.png">
+<meta property="og:image" content="f:/hexo_blog/imag/doscan.png">
+<meta property="og:updated_time" content="2019-12-02T16:28:57.148Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ioc-annotation">
+<meta name="twitter:description" content="方法入口在BeanDefinitionParserDelegate.parseCustomElement:(这里分析的是基于xml启动注解的方式) 12context:annotation-configcontext:component-scan 分析annotation-config//解析命名空间uri,并返回当前element对应的命名空间处理handler">
+<meta name="twitter:image" content="f:/hexo_blog/imag/annotation-config.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="Tongtong&#39;s Blog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/tongtong.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">浵通</h5>
+          <a href="mailto:2809629360@qq.com" title="2809629360@qq.com" class="mail">2809629360@qq.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/tongqinghuan" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="http://www.weibo.com/tongqinghuan" target="_blank" >
+                <i class="icon icon-lg icon-weibo"></i>
+                Weibo
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">ioc-annotation</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="Search">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">ioc-annotation</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2019-12-02T16:23:37.000Z" itemprop="datePublished" class="page-time">
+  2019-12-03
+</time>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#分析annotation-config"><span class="post-toc-number">1.</span> <span class="post-toc-text">分析annotation-config</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#annotation-config标签处理的逻辑关系整理"><span class="post-toc-number"></span> <span class="post-toc-text">annotation-config标签处理的逻辑关系整理</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Component-scan"><span class="post-toc-number">1.</span> <span class="post-toc-text">Component-scan</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#初始化"><span class="post-toc-number">2.</span> <span class="post-toc-text">初始化</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#扫描的入口"><span class="post-toc-number">3.</span> <span class="post-toc-text">扫描的入口</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-6"><a class="post-toc-link" href="#解析-Scope"><span class="post-toc-number">3.0.1.</span> <span class="post-toc-text">解析@Scope</span></a></li><li class="post-toc-item post-toc-level-6"><a class="post-toc-link" href="#bean的名字生成"><span class="post-toc-number">3.0.2.</span> <span class="post-toc-text">bean的名字生成</span></a></li><li class="post-toc-item post-toc-level-6"><a class="post-toc-link" href="#应用BeanDefinitionDefaults"><span class="post-toc-number">3.0.3.</span> <span class="post-toc-text">应用BeanDefinitionDefaults</span></a></li><li class="post-toc-item post-toc-level-6"><a class="post-toc-link" href="#其它注解解析"><span class="post-toc-number">3.0.4.</span> <span class="post-toc-text">其它注解解析</span></a></li><li class="post-toc-item post-toc-level-6"><a class="post-toc-link" href="#冲突检测"><span class="post-toc-number">3.0.5.</span> <span class="post-toc-text">冲突检测</span></a></li><li class="post-toc-item post-toc-level-6"><a class="post-toc-link" href="#代理生成"><span class="post-toc-number">3.0.6.</span> <span class="post-toc-text">代理生成</span></a></li></ol></li></ol></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-ioc-annotation"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">ioc-annotation</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2019-12-03 00:23:37" datetime="2019-12-02T16:23:37.000Z"  itemprop="datePublished">2019-12-03</time>
+
+            
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>方法入口在BeanDefinitionParserDelegate.parseCustomElement:(这里分析的是基于xml启动注解的方式)</p>
+<figure class="highlight verilog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">context</span>:annotation-<span class="keyword">config</span></span><br><span class="line"><span class="keyword">context</span>:component-scan</span><br></pre></td></tr></table></figure>
+<h4 id="分析annotation-config"><a href="#分析annotation-config" class="headerlink" title="分析annotation-config"></a>分析annotation-config</h4><p>//解析命名空间uri,并返回当前element对应的命名空间处理handler<br><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="F:\hexo_blog\imag\annotation-config.png" alt="annotation-config" title="">
+                </div>
+                <div class="image-caption">annotation-config</div>
+            </figure></p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="F:\hexo_blog\imag\namespace.png" alt="namespace" title="">
+                </div>
+                <div class="image-caption">namespace</div>
+            </figure>
+<p>//namespaceHandler.init方法初始化了该命名空间下所有localName对应的BeanDefinitionPaser<br><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="F:\hexo_blog\imag\namespace-init.png" alt="namespace-init" title="">
+                </div>
+                <div class="image-caption">namespace-init</div>
+            </figure></p>
+<p>//annotation-config真正的解析<br><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="F:\hexo_blog\imag\annotation-config-parase.png" alt="annotation-config-parase" title="">
+                </div>
+                <div class="image-caption">annotation-config-parase</div>
+            </figure><br>AnnotationAwareOrderComparator<br>//其作用是比较标注了@Order或是javax.annotation.Priority @Priority注解的元素的优先级。这两种注解的一个常用功能就是设置配置加载的优先级<br><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="F:\hexo_blog\imag\AnnotationAwareOrderComparator.png" alt="AnnotationAwareOrderComparator" title="">
+                </div>
+                <div class="image-caption">AnnotationAwareOrderComparator</div>
+            </figure><br>//ContextAnnotationAutowireCandidateResolver<br><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="F:\hexo_blog\imag\ContextAnnotationAutowireCandidateResolver.png" alt="ContextAnnotationAutowireCandidateResolver" title="">
+                </div>
+                <div class="image-caption">ContextAnnotationAutowireCandidateResolver</div>
+            </figure></p>
+<h3 id="annotation-config标签处理的逻辑关系整理"><a href="#annotation-config标签处理的逻辑关系整理" class="headerlink" title="annotation-config标签处理的逻辑关系整理"></a>annotation-config标签处理的逻辑关系整理</h3><p>普通的bean元素XML都对应一个BeanDefinition对象,但是对于Context开头的这种特殊的元素,它所对应的一般不再是普通意义上的BeanDefinition,而是配合一起完成某种功能的组件,这种组件spring抽象为ComPonentDefinition接口,组件的集合表示为CompositeComponentDefinition<br>最终的数据结构:<br><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="F:\hexo_blog\imag\CompositeComponentDefinition.png" alt="CompositeComponentDefinition" title="">
+                </div>
+                <div class="image-caption">CompositeComponentDefinition</div>
+            </figure></p>
+<h4 id="Component-scan"><a href="#Component-scan" class="headerlink" title="Component-scan"></a>Component-scan</h4><h4 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h4><p>此部分负责初始化包扫描用到的扫描器,是一个ClassPathBeanDefinitionScanner对象</p>
+<p>use-default-filters</p>
+<p>component-scan注解会默认扫描喜闻乐见的@Component、@Repository、@Service和@Controller四大金刚。如果此属性设为false，那么就不会扫描这几个属性。</p>
+<p>扫描器:创建 &amp; 初始化</p>
+<p>resource-pattern</p>
+<p>用以配置扫描器扫描的路径，默认*<em>/</em>.class。</p>
+<p>name-generator</p>
+<p>可以指定命名策略，这个在前面运行-ConfigurationClassPostProcessor-类解析一节中说过。Spring在parseBeanNameGenerator方法会直接使用反射的方法生成其对象。</p>
+<p>scope-resolver</p>
+<p>指定使用的ScopeMetadataResolver。此接口用于解析bean的scope定义</p>
+<p>scoped-proxy</p>
+<p>此配置的意思应该是是否为检测到的bean生成代理子类，共有三个选项: interfaces, no, targetClasses，默认no。原理应该就像对@Configuration类的处理，Spring自己说是实现proxy style，不知所云。</p>
+<p>exclude-filter/include-filter</p>
+<p>用法示例:</p>
+<figure class="highlight verilog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;<span class="keyword">context</span>:component-scan </span><br><span class="line">        base-<span class="keyword">package</span>=<span class="string">""</span> </span><br><span class="line">　　 resource-pattern=<span class="string">"**/*.class"</span></span><br><span class="line">        name-generator=<span class="string">"org.springframework.context.annotation.AnnotationBeanNameGenerator"</span></span><br><span class="line">        <span class="keyword">use</span>-<span class="keyword">default</span>-filters=<span class="string">"true"</span></span><br><span class="line">　　 annotation-<span class="keyword">config</span>=<span class="string">"true"</span>&gt;</span><br><span class="line">       &lt;<span class="keyword">context</span>:<span class="keyword">include</span>-filter <span class="keyword">type</span>=<span class="string">"aspectj"</span> expression=<span class="string">""</span>/&gt;</span><br><span class="line">       &lt;<span class="keyword">context</span>:exclude-filter <span class="keyword">type</span>=<span class="string">"regex"</span> expression=<span class="string">""</span>/&gt;</span><br><span class="line">&lt;/<span class="keyword">context</span>:component-scan&gt;</span><br></pre></td></tr></table></figure>
+<h4 id="扫描的入口"><a href="#扫描的入口" class="headerlink" title="扫描的入口"></a>扫描的入口</h4><p>ClassPathBeanDefinitionScanner.doScan</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="F:\hexo_blog\imag\doscan.png" alt="doscan" title="">
+                </div>
+                <div class="image-caption">doscan</div>
+            </figure>
+<p>spring中通过ASM字节码操作库老读取整个类信息和注解信息,这里最关键的是metaDataReader的实现类SimpleMetaDataReader类</p>
+<p>扫描结束后,得到metadata,创建ScannedGenericBeanDefinition</p>
+<p>解析该类上的注解,并填充到对应的beanDefinition</p>
+<h6 id="解析-Scope"><a href="#解析-Scope" class="headerlink" title="解析@Scope"></a>解析@Scope</h6><figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">@Scope</span>(value = <span class="string">"singleton"</span>, proxyMode = ScopedProxyMode.<span class="keyword">DEFAULT</span>)</span><br></pre></td></tr></table></figure>
+<h6 id="bean的名字生成"><a href="#bean的名字生成" class="headerlink" title="bean的名字生成"></a>bean的名字生成</h6><p>AnnotationBeanNameGenerator.generateBeanName:<br>//根据注解</p>
+<p>默认会首先尝试根据@Component、@Service、@Controller、@Repository、@ManagedBean、@Named的value属性生成，determineBeanNameFromAnnotation:</p>
+<p>//默认策略</p>
+<p>如果上面提到的条件不满足，那么便会用默认策略生成beanName，buildDefaultBeanName：类名,首字母小写</p>
+<h6 id="应用BeanDefinitionDefaults"><a href="#应用BeanDefinitionDefaults" class="headerlink" title="应用BeanDefinitionDefaults"></a>应用BeanDefinitionDefaults</h6><figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//lazy-init</span></span><br><span class="line"><span class="comment">//autowire-mode</span></span><br><span class="line"><span class="comment">//dependency-check</span></span><br><span class="line"><span class="comment">//init-method</span></span><br><span class="line"><span class="comment">//destroy-method</span></span><br><span class="line"><span class="comment">//autowireCandidatePatterns</span></span><br></pre></td></tr></table></figure>
+<h6 id="其它注解解析"><a href="#其它注解解析" class="headerlink" title="其它注解解析"></a>其它注解解析</h6><p>入口在AnnotationConfigUtils.processCommonDefinitionAnnotations，其它指的是这几个:</p>
+<p>@Lazy<br>@Primary<br>@DependsOn(“student”)<br>@Role(BeanDefinition.ROLE_APPLICATION)<br>@Description(“This is a simple bean.”)<br>public class SimpleBean {}</p>
+<h6 id="冲突检测"><a href="#冲突检测" class="headerlink" title="冲突检测"></a>冲突检测</h6><p>Spring会检测容器中是否已经存在同名的BeanDefinition。ClassPathBeanDefinitionScanner.checkCandidate:</p>
+<p>其中调用isCompatible,用于判断和之前的BeanDefinition是否兼容:(如果已经存在的BeanDefinition不是扫描来的，如果是由同一个class文件解析来的，如果两者equals，Spring都认为是兼容的，即Spring会用新的替换之前的。)</p>
+<h6 id="代理生成"><a href="#代理生成" class="headerlink" title="代理生成"></a>代理生成</h6><p>AnnotationConfigUtils.applyScopedProxyMode:<br>最终调用的是ScopedProxyUtils.createScopedProxy，源码很多，这里说下重点:</p>
+<p>这里所做的是生成了一个新的BeanDefinition对象，作为代理者，其属性拷贝自被代理者，代理者的beanClass为ScopedProxyFactoryBean，代理者的名字设置为被代理者的名字，而被代理者的名字改为scopedTarget.原名字，代理者内部有一个targetBeanName属性，就是被代理者的名字。<br>被代理者的autowireCandidate和primary属性被设为false，不能再当作其它bean的注入候选者。<br>将被代理者以scopedTarget.原名字注册到容器，返回代理者。<br>代理者和被代理者同时存在于容器中。</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    Last updated: <time datetime="2019-12-02T16:28:57.148Z" itemprop="dateUpdated">2019-12-03 00:28:57</time>
+</span><br>
+
+
+        
+    </div>
+    
+    <footer>
+        <a href="//litten.me">
+            <img src="/img/tongtong.jpg" alt="浵通">
+            浵通
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spring/">spring</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=//litten.me/2019/12/03/ioc-annotation/&title=《ioc-annotation》 — Tongtong's Blog&pic=//litten.me/img/tongtong.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=//litten.me/2019/12/03/ioc-annotation/&title=《ioc-annotation》 — Tongtong's Blog&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=//litten.me/2019/12/03/ioc-annotation/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《ioc-annotation》 — Tongtong's Blog&url=//litten.me/2019/12/03/ioc-annotation/&via=//litten.me" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=//litten.me/2019/12/03/ioc-annotation/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2019/01/12/git基础/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">git基础</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+<section class="comments" id="comments">
+    <!-- UY BEGIN -->
+    <div id="uyan_frame"></div>
+    <script src="http://v2.uyan.cc/code/uyan.js?uid=true"></script>
+    <!-- UY END -->
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>This blog is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.</span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>浵通 &copy; 2019</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=//litten.me/2019/12/03/ioc-annotation/&title=《ioc-annotation》 — Tongtong's Blog&pic=//litten.me/img/tongtong.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=//litten.me/2019/12/03/ioc-annotation/&title=《ioc-annotation》 — Tongtong's Blog&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=//litten.me/2019/12/03/ioc-annotation/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《ioc-annotation》 — Tongtong's Blog&url=//litten.me/2019/12/03/ioc-annotation/&via=//litten.me" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=//litten.me/2019/12/03/ioc-annotation/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="//api.qrserver.com/v1/create-qr-code/?data=//litten.me/2019/12/03/ioc-annotation/" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+</body>
+</html>

@@ -148,11 +148,11 @@
     <ul class="post-list">
     
         <li class="post-list-item fade">
-            <article id="post-spring-ioc-xml"
+            <article id="post-ioc-annotation"
   class="article-card article-type-post" itemprop="blogPost">
 
     <div class="post-meta">
-        <time class="post-time" title="2019-12-02 19:40:25" datetime="2019-12-02T11:40:25.000Z"  itemprop="datePublished">2019-12-02</time>
+        <time class="post-time" title="2019-12-03 00:23:37" datetime="2019-12-02T16:23:37.000Z"  itemprop="datePublished">2019-12-03</time>
 
         
 
@@ -164,7 +164,7 @@
 
   
     <h3 class="post-title" itemprop="name">
-      <a class="post-title-link" href="/2019/12/02/spring-ioc-xml/">spring-ioc-xml</a>
+      <a class="post-title-link" href="/2019/12/03/ioc-annotation/">ioc-annotation</a>
     </h3>
   
 
@@ -174,12 +174,21 @@
     <div class="post-content" id="post-content" itemprop="postContent">
 
     
-        
+        方法入口在BeanDefinitionParserDelegate.parseCustomElement:(这里分析的是基于xml启动注解的方式)
+12context:annotation-configcontext:component-scan
+分析annotation-config//解析命名空间uri,并返回当前element对应的命名空间处理handler
+             ...
     
 
-        <a href="/2019/12/02/spring-ioc-xml/" class="post-more waves-effect waves-button">
+        <a href="/2019/12/03/ioc-annotation/" class="post-more waves-effect waves-button">
             Continue reading...
         </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spring/">spring</a></li></ul>
+
     </div>
     
 </article>
