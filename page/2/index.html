@@ -148,6 +148,57 @@
     <ul class="post-list">
     
         <li class="post-list-item fade">
+            <article id="post-应用服务器中对JDK的epoll空转bug的处理"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-08-06 19:45:10" datetime="2018-08-06T11:45:10.000Z"  itemprop="datePublished">2018-08-06</time>
+
+        
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2018/08/06/应用服务器中对JDK的epoll空转bug的处理/">应用服务器中对JDK的epoll空转bug的处理</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        为什么会产生JDK的空轮询bug呢？JDK中NIO空轮询主要是因为select本来应该是阻塞的，然而在程序里select在IO事件没有就绪的时候返回了，导致selectKeys列表是空的，程序变成了死循环。
+                
+                    
+                    
+                
+                
+...
+    
+
+        <a href="/2018/08/06/应用服务器中对JDK的epoll空转bug的处理/" class="post-more waves-effect waves-button">
+            Continue reading...
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
             <article id="post-同步异步阻塞非阻塞"
   class="article-card article-type-post" itemprop="blogPost">
 

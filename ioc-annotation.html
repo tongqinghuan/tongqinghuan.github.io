@@ -37,7 +37,7 @@
 <meta property="og:image" content="f:/hexo_blog/imag/ContextAnnotationAutowireCandidateResolver.png">
 <meta property="og:image" content="f:/hexo_blog/imag/CompositeComponentDefinition.png">
 <meta property="og:image" content="f:/hexo_blog/imag/doscan.png">
-<meta property="og:updated_time" content="2019-12-02T16:28:57.148Z">
+<meta property="og:updated_time" content="2019-12-03T03:45:29.159Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ioc-annotation">
 <meta name="twitter:description" content="方法入口在BeanDefinitionParserDelegate.parseCustomElement:(这里分析的是基于xml启动注解的方式) 12context:annotation-configcontext:component-scan 分析annotation-config//解析命名空间uri,并返回当前element对应的命名空间处理handler">
@@ -168,12 +168,13 @@
                 </div>
                 <div class="image-caption">annotation-config</div>
             </figure></p>
+<p>//分析命名空间解析器是如何解析命名空间得到命名空间处理器的</p>
 <figure class="image-bubble">
                 <div class="img-lightbox">
                     <div class="overlay"></div>
-                    <img src="F:\hexo_blog\imag\namespace.png" alt="namespace" title="">
+                    <img src="F:\hexo_blog\imag\namespace.png" alt="" title="">
                 </div>
-                <div class="image-caption">namespace</div>
+                <div class="image-caption"></div>
             </figure>
 <p>//namespaceHandler.init方法初始化了该命名空间下所有localName对应的BeanDefinitionPaser<br><figure class="image-bubble">
                 <div class="img-lightbox">
@@ -194,13 +195,15 @@
                     <img src="F:\hexo_blog\imag\AnnotationAwareOrderComparator.png" alt="AnnotationAwareOrderComparator" title="">
                 </div>
                 <div class="image-caption">AnnotationAwareOrderComparator</div>
-            </figure><br>//ContextAnnotationAutowireCandidateResolver<br><figure class="image-bubble">
+            </figure><br>//ContextAnnotationAutowireCandidateResolver</p>
+<p>此类用以决定一个bean是否可以当作一个依赖的候选者</p>
+<figure class="image-bubble">
                 <div class="img-lightbox">
                     <div class="overlay"></div>
                     <img src="F:\hexo_blog\imag\ContextAnnotationAutowireCandidateResolver.png" alt="ContextAnnotationAutowireCandidateResolver" title="">
                 </div>
                 <div class="image-caption">ContextAnnotationAutowireCandidateResolver</div>
-            </figure></p>
+            </figure>
 <h3 id="annotation-config标签处理的逻辑关系整理"><a href="#annotation-config标签处理的逻辑关系整理" class="headerlink" title="annotation-config标签处理的逻辑关系整理"></a>annotation-config标签处理的逻辑关系整理</h3><p>普通的bean元素XML都对应一个BeanDefinition对象,但是对于Context开头的这种特殊的元素,它所对应的一般不再是普通意义上的BeanDefinition,而是配合一起完成某种功能的组件,这种组件spring抽象为ComPonentDefinition接口,组件的集合表示为CompositeComponentDefinition<br>最终的数据结构:<br><figure class="image-bubble">
                 <div class="img-lightbox">
                     <div class="overlay"></div>

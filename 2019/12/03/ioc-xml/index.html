@@ -14,27 +14,27 @@
     
     
     
-    <title>git基础 | Tongtong&#39;s Blog</title>
+    <title>ioc-xml | Tongtong&#39;s Blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     
     <meta name="theme-color" content="#3F51B5">
     
     
-    <meta name="keywords" content="git">
-    <meta name="description" content="git基础-记录每次更新到仓库在什么时候需要提交更新到仓库？  当我们获取到某个项目的git仓库后，在此基础上做开发，完成一定阶段的目标后，将更新提交到仓库。 工作目录的文件状态变化周期">
-<meta name="keywords" content="git">
+    <meta name="keywords" content="spring">
+    <meta name="description" content="ClassPathXmlApplicationContext整个类的继承体系：">
+<meta name="keywords" content="spring">
 <meta property="og:type" content="article">
-<meta property="og:title" content="git基础">
-<meta property="og:url" content="//litten.me/2019/01/12/git基础/index.html">
+<meta property="og:title" content="ioc-xml">
+<meta property="og:url" content="//litten.me/2019/12/03/ioc-xml/index.html">
 <meta property="og:site_name" content="Tongtong&#39;s Blog">
-<meta property="og:description" content="git基础-记录每次更新到仓库在什么时候需要提交更新到仓库？  当我们获取到某个项目的git仓库后，在此基础上做开发，完成一定阶段的目标后，将更新提交到仓库。 工作目录的文件状态变化周期">
+<meta property="og:description" content="ClassPathXmlApplicationContext整个类的继承体系：">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="https://i.imgur.com/f5ne0Hj.png">
-<meta property="og:updated_time" content="2019-12-02T15:56:19.095Z">
+<meta property="og:image" content="f:/hexo_blog/imag/ClassPathXmlApplicationContext.png">
+<meta property="og:updated_time" content="2019-12-03T03:51:29.395Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="git基础">
-<meta name="twitter:description" content="git基础-记录每次更新到仓库在什么时候需要提交更新到仓库？  当我们获取到某个项目的git仓库后，在此基础上做开发，完成一定阶段的目标后，将更新提交到仓库。 工作目录的文件状态变化周期">
-<meta name="twitter:image" content="https://i.imgur.com/f5ne0Hj.png">
+<meta name="twitter:title" content="ioc-xml">
+<meta name="twitter:description" content="ClassPathXmlApplicationContext整个类的继承体系：">
+<meta name="twitter:image" content="f:/hexo_blog/imag/ClassPathXmlApplicationContext.png">
     
         <link rel="alternate" type="application/atom+xml" title="Tongtong&#39;s Blog" href="/atom.xml">
     
@@ -115,7 +115,7 @@
         <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
           <i class="icon icon-lg icon-navicon"></i>
         </a>
-        <div class="flex-col header-title ellipsis">git基础</div>
+        <div class="flex-col header-title ellipsis">ioc-xml</div>
         
         <div class="search-wrap" id="search-wrap">
             <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
@@ -137,11 +137,11 @@
 <header class="content-header post-header">
 
     <div class="container fade-scale">
-        <h1 class="title">git基础</h1>
+        <h1 class="title">ioc-xml</h1>
         <h5 class="subtitle">
             
-                <time datetime="2019-01-12T01:27:48.000Z" itemprop="datePublished" class="page-time">
-  2019-01-12
+                <time datetime="2019-12-03T03:49:17.000Z" itemprop="datePublished" class="page-time">
+  2019-12-03
 </time>
 
 
@@ -160,18 +160,18 @@
     <aside class="post-widget">
         <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
             <h4>TOC</h4>
-            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#git基础-记录每次更新到仓库"><span class="post-toc-number">1.</span> <span class="post-toc-text">git基础-记录每次更新到仓库</span></a></li></ol>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#ClassPathXmlApplicationContext"><span class="post-toc-number">1.</span> <span class="post-toc-text">ClassPathXmlApplicationContext</span></a></li></ol>
         </nav>
     </aside>
 
 
-<article id="post-git基础"
+<article id="post-ioc-xml"
   class="post-article article-type-post fade" itemprop="blogPost">
 
     <div class="post-card">
-        <h1 class="post-card-title">git基础</h1>
+        <h1 class="post-card-title">ioc-xml</h1>
         <div class="post-meta">
-            <time class="post-time" title="2019-01-12 09:27:48" datetime="2019-01-12T01:27:48.000Z"  itemprop="datePublished">2019-01-12</time>
+            <time class="post-time" title="2019-12-03 11:49:17" datetime="2019-12-03T03:49:17.000Z"  itemprop="datePublished">2019-12-03</time>
 
             
 
@@ -184,62 +184,14 @@
 
         </div>
         <div class="post-content" id="post-content" itemprop="postContent">
-            <h2 id="git基础-记录每次更新到仓库"><a href="#git基础-记录每次更新到仓库" class="headerlink" title="git基础-记录每次更新到仓库"></a>git基础-记录每次更新到仓库</h2><font color="#FF0000">在什么时候需要提交更新到仓库？</font>
-
-<p>当我们获取到某个项目的git仓库后，在此基础上做开发，完成一定阶段的目标后，将更新提交到仓库。</p>
-<font color="#FF0000">工作目录的文件状态变化周期</font>
-
+            <h3 id="ClassPathXmlApplicationContext"><a href="#ClassPathXmlApplicationContext" class="headerlink" title="ClassPathXmlApplicationContext"></a>ClassPathXmlApplicationContext</h3><p>整个类的继承体系：</p>
 <figure class="image-bubble">
                 <div class="img-lightbox">
                     <div class="overlay"></div>
-                    <img src="https://i.imgur.com/f5ne0Hj.png" alt="" title="">
+                    <img src="F:\hexo_blog\imag\ClassPathXmlApplicationContext.png" alt="" title="">
                 </div>
                 <div class="image-caption"></div>
             </figure>
-<font color="#FF0000">文件状态变化周期相关的命令</font>
-
-<ul>
-<li><p>检查当前文件状态</p>
-<p>   $ git status</p>
-</li>
-<li><p>跟踪新文件</p>
-<p>   $ git add README</p>
-</li>
-<li><p>忽略某些文件</p>
-<p>   $ cat .gitignore</p>
-<p>   *.[oa] (忽略以.0或者.a结尾的文件)</p>
-<p>   *.     (忽略以~结尾的文件)</p>
-</li>
-<li><p>查看已经暂存和未暂存的更新</p>
-<p>   $ git status</p>
-<p>   changes to be commited</p>
-<p>   … 表示的是已经暂存的文件</p>
-<p>   changes not staged for commit</p>
-<p>   … 表示的是还未暂存的文件</p>
-</li>
-<li><p>查看尚未暂存的文件更新了哪些部分</p>
-<p>  $ git diff</p>
-</li>
-<li><p>查看已经暂存的文件和上次提交的快照的差异</p>
-<p>  $ git diff –cached</p>
-<p>  注意上述两个命令都是针对当前最新的未暂存的或者最新的暂存的文件</p>
-</li>
-<li><p>提交更新</p>
-<p>  $ git commit</p>
-<p>  $ git commit -m “content” 跟提交说明</p>
-</li>
-<li><p>跳过使用暂存区域</p>
-<p>  $ git commit -a </p>
-<p>  git会自动把所有的已经跟踪过的文件一并提交，从而跳过git add,注意针对的是已经跟踪过的文件（跟踪过的文件，当被再次修改的时候，可以直接git commit -a）</p>
-</li>
-<li><p>移除文件</p>
-<p> $ git rm + file</p>
-</li>
-<li><p>移动文件</p>
-<p> $ git mv file_from file to</p>
-</li>
-</ul>
-<p>​    </p>
 
         </div>
 
@@ -248,7 +200,7 @@
     <div class="content">
         
 <span class="post-time">
-    Last updated: <time datetime="2019-12-02T15:56:19.095Z" itemprop="dateUpdated">2019-12-02 23:56:19</time>
+    Last updated: <time datetime="2019-12-03T03:51:29.395Z" itemprop="dateUpdated">2019-12-03 11:51:29</time>
 </span><br>
 
 
@@ -268,7 +220,7 @@
 
         <div class="post-footer">
             
-	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/git/">git</a></li></ul>
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spring/">spring</a></li></ul>
 
 
             
@@ -278,7 +230,7 @@
 <div class="page-share" id="pageShare">
     <ul class="reset share-icons">
       <li>
-        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=//litten.me/2019/01/12/git基础/&title=《git基础》 — Tongtong's Blog&pic=//litten.me/img/tongtong.jpg" data-title="微博">
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=//litten.me/2019/12/03/ioc-xml/&title=《ioc-xml》 — Tongtong's Blog&pic=//litten.me/img/tongtong.jpg" data-title="微博">
           <i class="icon icon-weibo"></i>
         </a>
       </li>
@@ -288,22 +240,22 @@
         </a>
       </li>
       <li>
-        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=//litten.me/2019/01/12/git基础/&title=《git基础》 — Tongtong's Blog&source=" data-title=" QQ">
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=//litten.me/2019/12/03/ioc-xml/&title=《ioc-xml》 — Tongtong's Blog&source=" data-title=" QQ">
           <i class="icon icon-qq"></i>
         </a>
       </li>
       <li>
-        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=//litten.me/2019/01/12/git基础/" data-title=" Facebook">
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=//litten.me/2019/12/03/ioc-xml/" data-title=" Facebook">
           <i class="icon icon-facebook"></i>
         </a>
       </li>
       <li>
-        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《git基础》 — Tongtong's Blog&url=//litten.me/2019/01/12/git基础/&via=//litten.me" data-title=" Twitter">
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《ioc-xml》 — Tongtong's Blog&url=//litten.me/2019/12/03/ioc-xml/&via=//litten.me" data-title=" Twitter">
           <i class="icon icon-twitter"></i>
         </a>
       </li>
       <li>
-        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=//litten.me/2019/01/12/git基础/" data-title=" Google+">
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=//litten.me/2019/12/03/ioc-xml/" data-title=" Google+">
           <i class="icon icon-google-plus"></i>
         </a>
       </li>
@@ -323,21 +275,14 @@
     </div>
 
     
-<nav class="post-nav flex-row flex-justify-between">
-  
-    <div class="waves-block waves-effect prev">
-      <a href="/2019/12/03/ioc-xml/" id="post-prev" class="post-nav-link">
-        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
-        <h4 class="title">ioc-xml</h4>
-      </a>
-    </div>
+<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
   
 
   
     <div class="waves-block waves-effect next">
-      <a href="/2018/08/15/Java-堆外内存/" id="post-next" class="post-nav-link">
+      <a href="/2019/01/12/git基础/" id="post-next" class="post-nav-link">
         <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
-        <h4 class="title">Java-堆外内存</h4>
+        <h4 class="title">git基础</h4>
       </a>
     </div>
   
@@ -415,7 +360,7 @@
 <div class="global-share" id="globalShare">
     <ul class="reset share-icons">
       <li>
-        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=//litten.me/2019/01/12/git基础/&title=《git基础》 — Tongtong's Blog&pic=//litten.me/img/tongtong.jpg" data-title="微博">
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=//litten.me/2019/12/03/ioc-xml/&title=《ioc-xml》 — Tongtong's Blog&pic=//litten.me/img/tongtong.jpg" data-title="微博">
           <i class="icon icon-weibo"></i>
         </a>
       </li>
@@ -425,22 +370,22 @@
         </a>
       </li>
       <li>
-        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=//litten.me/2019/01/12/git基础/&title=《git基础》 — Tongtong's Blog&source=" data-title=" QQ">
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=//litten.me/2019/12/03/ioc-xml/&title=《ioc-xml》 — Tongtong's Blog&source=" data-title=" QQ">
           <i class="icon icon-qq"></i>
         </a>
       </li>
       <li>
-        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=//litten.me/2019/01/12/git基础/" data-title=" Facebook">
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=//litten.me/2019/12/03/ioc-xml/" data-title=" Facebook">
           <i class="icon icon-facebook"></i>
         </a>
       </li>
       <li>
-        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《git基础》 — Tongtong's Blog&url=//litten.me/2019/01/12/git基础/&via=//litten.me" data-title=" Twitter">
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《ioc-xml》 — Tongtong's Blog&url=//litten.me/2019/12/03/ioc-xml/&via=//litten.me" data-title=" Twitter">
           <i class="icon icon-twitter"></i>
         </a>
       </li>
       <li>
-        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=//litten.me/2019/01/12/git基础/" data-title=" Google+">
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=//litten.me/2019/12/03/ioc-xml/" data-title=" Google+">
           <i class="icon icon-google-plus"></i>
         </a>
       </li>
@@ -451,7 +396,7 @@
 <div class="page-modal wx-share" id="wxShare">
     <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
-    <img src="//api.qrserver.com/v1/create-qr-code/?data=//litten.me/2019/01/12/git基础/" alt="微信分享二维码">
+    <img src="//api.qrserver.com/v1/create-qr-code/?data=//litten.me/2019/12/03/ioc-xml/" alt="微信分享二维码">
 </div>
 
 
