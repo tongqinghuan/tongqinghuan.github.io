@@ -29,19 +29,19 @@
 <meta property="og:site_name" content="Tongtong&#39;s Blog">
 <meta property="og:description" content="方法入口在BeanDefinitionParserDelegate.parseCustomElement:(这里分析的是基于xml启动注解的方式) 12context:annotation-configcontext:component-scan 分析annotation-config//解析命名空间uri,并返回当前element对应的命名空间处理handler">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="//litten.me/ioc-annotation/hexo_blog/imag/annotation-config.png">
-<meta property="og:image" content="//litten.me/ioc-annotation/hexo_blog/imag/namespace.png">
-<meta property="og:image" content="//litten.me/ioc-annotation/hexo_blog/imag/namespace-init.png">
-<meta property="og:image" content="//litten.me/ioc-annotation/hexo_blog/imag/annotation-config-parase.png">
-<meta property="og:image" content="//litten.me/ioc-annotation/hexo_blog/imag/AnnotationAwareOrderComparator.png">
-<meta property="og:image" content="//litten.me/ioc-annotation/hexo_blog/imag/ContextAnnotationAutowireCandidateResolver.png">
-<meta property="og:image" content="//litten.me/ioc-annotation/hexo_blog/imag/CompositeComponentDefinition.png">
-<meta property="og:image" content="//litten.me/ioc-annotation/hexo_blog/imag/doscan.png">
+<meta property="og:image" content="//litten.me/hexo_blog/imag/annotation-config.png">
+<meta property="og:image" content="//litten.me/hexo_blog/imag/namespace.png">
+<meta property="og:image" content="//litten.me/hexo_blog/imag/namespace-init.png">
+<meta property="og:image" content="//litten.me/hexo_blog/imag/annotation-config-parase.png">
+<meta property="og:image" content="//litten.me/hexo_blog/imag/AnnotationAwareOrderComparator.png">
+<meta property="og:image" content="//litten.me/hexo_blog/imag/ContextAnnotationAutowireCandidateResolver.png">
+<meta property="og:image" content="//litten.me/hexo_blog/imag/CompositeComponentDefinition.png">
+<meta property="og:image" content="//litten.me/hexo_blog/imag/doscan.png">
 <meta property="og:updated_time" content="2019-12-03T03:45:29.159Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ioc-annotation">
 <meta name="twitter:description" content="方法入口在BeanDefinitionParserDelegate.parseCustomElement:(这里分析的是基于xml启动注解的方式) 12context:annotation-configcontext:component-scan 分析annotation-config//解析命名空间uri,并返回当前element对应的命名空间处理handler">
-<meta name="twitter:image" content="//litten.me/ioc-annotation/hexo_blog/imag/annotation-config.png">
+<meta name="twitter:image" content="//litten.me/hexo_blog/imag/annotation-config.png">
     
         <link rel="alternate" type="application/atom+xml" title="Tongtong&#39;s Blog" href="/atom.xml">
     
@@ -164,7 +164,7 @@
 <h4 id="分析annotation-config"><a href="#分析annotation-config" class="headerlink" title="分析annotation-config"></a>分析annotation-config</h4><p>//解析命名空间uri,并返回当前element对应的命名空间处理handler<br><figure class="image-bubble">
                 <div class="img-lightbox">
                     <div class="overlay"></div>
-                    <img src="/ioc-annotation/hexo_blog\imag\annotation-config.png" alt="annotation-config" title="">
+                    <img src="//litten.me/hexo_blog\imag\annotation-config.png" alt="annotation-config" title="">
                 </div>
                 <div class="image-caption">annotation-config</div>
             </figure></p>
@@ -172,27 +172,27 @@
 <figure class="image-bubble">
                 <div class="img-lightbox">
                     <div class="overlay"></div>
-                    <img src="/ioc-annotation/hexo_blog\imag\namespace.png" alt="" title="">
+                    <img src="//litten.me/hexo_blog\imag\namespace.png" alt="" title="">
                 </div>
                 <div class="image-caption"></div>
             </figure>
 <p>//namespaceHandler.init方法初始化了该命名空间下所有localName对应的BeanDefinitionPaser<br><figure class="image-bubble">
                 <div class="img-lightbox">
                     <div class="overlay"></div>
-                    <img src="/ioc-annotation/hexo_blog\imag\namespace-init.png" alt="namespace-init" title="">
+                    <img src="//litten.me/hexo_blog\imag\namespace-init.png" alt="namespace-init" title="">
                 </div>
                 <div class="image-caption">namespace-init</div>
             </figure></p>
 <p>//annotation-config真正的解析<br><figure class="image-bubble">
                 <div class="img-lightbox">
                     <div class="overlay"></div>
-                    <img src="/ioc-annotation/hexo_blog\imag\annotation-config-parase.png" alt="annotation-config-parase" title="">
+                    <img src="//litten.me/hexo_blog\imag\annotation-config-parase.png" alt="annotation-config-parase" title="">
                 </div>
                 <div class="image-caption">annotation-config-parase</div>
             </figure><br>AnnotationAwareOrderComparator<br>//其作用是比较标注了@Order或是javax.annotation.Priority @Priority注解的元素的优先级。这两种注解的一个常用功能就是设置配置加载的优先级<br><figure class="image-bubble">
                 <div class="img-lightbox">
                     <div class="overlay"></div>
-                    <img src="/ioc-annotation/hexo_blog\imag\AnnotationAwareOrderComparator.png" alt="AnnotationAwareOrderComparator" title="">
+                    <img src="//litten.me/hexo_blog\imag\AnnotationAwareOrderComparator.png" alt="AnnotationAwareOrderComparator" title="">
                 </div>
                 <div class="image-caption">AnnotationAwareOrderComparator</div>
             </figure><br>//ContextAnnotationAutowireCandidateResolver</p>
@@ -200,14 +200,14 @@
 <figure class="image-bubble">
                 <div class="img-lightbox">
                     <div class="overlay"></div>
-                    <img src="/ioc-annotation/hexo_blog\imag\ContextAnnotationAutowireCandidateResolver.png" alt="ContextAnnotationAutowireCandidateResolver" title="">
+                    <img src="//litten.me/hexo_blog\imag\ContextAnnotationAutowireCandidateResolver.png" alt="ContextAnnotationAutowireCandidateResolver" title="">
                 </div>
                 <div class="image-caption">ContextAnnotationAutowireCandidateResolver</div>
             </figure>
 <h3 id="annotation-config标签处理的逻辑关系整理"><a href="#annotation-config标签处理的逻辑关系整理" class="headerlink" title="annotation-config标签处理的逻辑关系整理"></a>annotation-config标签处理的逻辑关系整理</h3><p>普通的bean元素XML都对应一个BeanDefinition对象,但是对于Context开头的这种特殊的元素,它所对应的一般不再是普通意义上的BeanDefinition,而是配合一起完成某种功能的组件,这种组件spring抽象为ComPonentDefinition接口,组件的集合表示为CompositeComponentDefinition<br>最终的数据结构:<br><figure class="image-bubble">
                 <div class="img-lightbox">
                     <div class="overlay"></div>
-                    <img src="/ioc-annotation/hexo_blog\imag\CompositeComponentDefinition.png" alt="CompositeComponentDefinition" title="">
+                    <img src="//litten.me/hexo_blog\imag\CompositeComponentDefinition.png" alt="CompositeComponentDefinition" title="">
                 </div>
                 <div class="image-caption">CompositeComponentDefinition</div>
             </figure></p>
@@ -230,7 +230,7 @@
 <figure class="image-bubble">
                 <div class="img-lightbox">
                     <div class="overlay"></div>
-                    <img src="/ioc-annotation/hexo_blog\imag\doscan.png" alt="doscan" title="">
+                    <img src="//litten.me/hexo_blog\imag\doscan.png" alt="doscan" title="">
                 </div>
                 <div class="image-caption">doscan</div>
             </figure>
